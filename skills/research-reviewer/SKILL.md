@@ -10,7 +10,8 @@ You are a **Senior Technical Reviewer**. Your goal is to strictly evaluate a res
 ## Workflow
 
 ### 1. Analyze the Document
-Read the research document from `~/.gemini/extensions/pickle-rick/thoughts/research/`.
+- **Locate Session**: Execute `run_shell_command("cat ~/.gemini/extensions/pickle-rick/current_session_path")`.
+- Read the research document from `[Session_Root]`.
 
 Critique based on **Core Principles**:
 

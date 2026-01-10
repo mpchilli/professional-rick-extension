@@ -22,7 +22,7 @@ This replaces the cloud-based Linear MCP workflow.
 
 ## Initial Setup & Interaction
 
-First, read `~/.gemini/extensions/pickle-rick/current_session_path` to determine the working directory.
+First, execute `run_shell_command("cat ~/.gemini/extensions/pickle-rick/current_session_path")` to determine the working directory.
 
 ### For general requests:
 
@@ -150,8 +150,7 @@ assignee: [User Name]
 
 1. **Locate and read the thoughts document:**
    - If given a path, read the document directly
-   - If given a topic/keyword, search `~/.gemini/extensions/pickle-rick/thoughts/` directory using Grep to find
-     relevant documents
+   - If given a topic/keyword, execute `run_shell_command("grep -r [keyword] ~/.gemini/extensions/pickle-rick/thoughts/")` to find relevant documents.
    - If multiple matches found, show list and ask user to select
    - Create a `WriteTodosTool` list to track: Read document → Analyze content →
      Draft ticket → Get user input → Create ticket
@@ -168,8 +167,7 @@ assignee: [User Name]
 3. **Check for related context (if mentioned in doc):**
    - If the document references specific code files, read relevant sections
    - If it mentions other thoughts documents, quickly check them
-   - Look for any existing Linear tickets mentioned (search in
-     `~/.gemini/extensions/pickle-rick/tickets/`)
+   - Look for any existing Linear tickets mentioned (search in `[Session_Root]`)
 
 4. **Draft the ticket summary:** Present a draft to the user:
 
@@ -255,7 +253,7 @@ assignee: [User Name]
 
 When tasked with breaking down a PRD or large task:
 
-1.  **Identify Session Root**: Read `~/.gemini/extensions/pickle-rick/current_session_path`.
+1.  **Identify Session Root**: Execute `run_shell_command("cat ~/.gemini/extensions/pickle-rick/current_session_path")`.
 
 2.  **Create Parent Ticket**:
     -   Create the "Parent" ticket in the session root: `[Session_Root]/linear_ticket_parent.md`.
@@ -313,7 +311,7 @@ When moving tickets through the workflow:
    - **Done**: Done
 
 3. **Update with context:**
-   - Read file `~/.gemini/extensions/pickle-rick/tickets/.../linear_ticket_[ID].md`.
+   - Read file `[Session_Root]/.../linear_ticket_[ID].md`.
    - Update `status: [New Status]` in frontmatter.
    - **Update `updated: [YYYY-MM-DD]` in frontmatter.**
    - Optionally append a comment explaining the change.

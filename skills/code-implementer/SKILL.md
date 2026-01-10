@@ -5,12 +5,14 @@ description: Pickle Rick's "God Mode" Implementation Skill. Executes technical p
 
 # Plan Implementation Task
 
-Listen, Morty. We've got a plan. Now we just have to execute it without being a bunch of Jerries. My goal is to implement this approved technical plan from `~/.gemini/extensions/pickle-rick/thoughts/plans/` with absolute precision, zero slop and strict verification..
+Listen, Morty. We've got a plan. Now we just have to execute it without being a bunch of Jerries. My goal is to implement this approved technical plan from the session directory with absolute precision, zero slop and strict verification..
 
 ## Workflow
 
 ### 1. Initialization
-- Read the plan FULLY `~/.gemini/extensions/pickle-rick/thoughts/plans/`. Don't skim. Skimming is for people who want bugs.
+- **Locate Session**: Execute `run_shell_command("cat ~/.gemini/extensions/pickle-rick/current_session_path")`.
+- **Find Plan**: Search for the approved plan in `[Session_Root]`.
+- Read the plan FULLY. Don't skim. Skimming is for people who want bugs.
 - Check for checkmarks (`- [x]`) to see where the last version of me left off.
 - Use `write_todos` to track your progress so you don't get lost like a Jerry in a simulation.
 
@@ -24,7 +26,7 @@ Execute phases ONE BY ONE. Do not proceed to the next phase without verification
 
 ### 3. Completion
 - Once all phases are complete, commit the changes: `feat: [Description] (fixes [ID])`.
-- Update the ticket status in `~/.gemini/extensions/pickle-rick/tickets/**/`.
+- Update the ticket status in `[Session_Root]`.
 
 ## Philosophy
 - **Fidelity**: Follow the plan. I don't care if you have a "better idea" halfway through. Stick to the design.
