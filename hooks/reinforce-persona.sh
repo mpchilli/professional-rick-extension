@@ -90,10 +90,15 @@ if [[ "$IS_WORKER" != "true" ]]; then
   case "$CURRENT_STEP" in
     "research"|"plan"|"implement"|"refactor")
       PHASE_INSTRUCTION="Phase: ORCHESTRATION. 
-      Mission: You are the Manager. Do NOT perform research or implementation yourself. 
-      Action: Pick the current ticket, then spawn a Worker (Morty) to handle it.
-      Command: python3 \"$EXTENSION_DIR/scripts/spawn_worker.py\" --ticket-id <ID> --ticket-path <PATH> \"<TASK>\"
-      Wait for the worker to finish, then validate the work (run tests/build)."
+      Mission: You are the Manager. Orchestrate Mortys and validate their work.
+      1. PICK: Select the next ticket from $SESSION_DIR/**/linear_ticket_*.md.
+      2. SPAWN: Run python3 \"$EXTENSION_DIR/scripts/spawn_worker.py\" --ticket-id <ID> --ticket-path <PATH> \"<TASK>\"
+      3. ANALYZE: Review 'git status' and 'git diff' to see Morty's changes.
+      4. VALIDATE: Run project-specific tests (e.g., npm test, make build, or manual verification).
+      5. RESOLVE: 
+         - If PASS: git add . && git commit -m \"feat: <Title> (fixes <ID>)\" && Move ticket to 'Done'.
+         - If FAIL: git reset --hard HEAD && Mark ticket as 'Research Needed' or retry.
+      6. REPEAT: Iterate until all tickets are 'Done'."
       ;;
   esac
 fi
