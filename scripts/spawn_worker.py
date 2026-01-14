@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import argparse
+import os
+import shutil
 import subprocess
 import sys
-import os
-import time
 import textwrap
-import shutil
+import time
+
 
 # --- UI Styling ---
 class Style:
@@ -19,6 +20,7 @@ class Style:
     DIM = "\033[2m"
     RESET = "\033[0m"
 
+
 def get_width(max_w=90):
     try:
         cols = shutil.get_terminal_size((80, 20)).columns
@@ -26,37 +28,41 @@ def get_width(max_w=90):
     except:
         return 80
 
+
 def print_minimal_panel(title, fields, color_name="GREEN", icon="🥒"):
     width = get_width()
     c = getattr(Style, color_name)
     r = Style.RESET
     b = Style.BOLD
     d = Style.DIM
-    
+
     # Header (Borderless)
     if title:
         print(f"\n{c}{icon} {b}{title}{r}")
-    
+
     # Fields
     max_key_len = max([len(k) for k in fields.keys()]) + 1
-    
+
     for key, value in fields.items():
         val_width = width - max_key_len - 5
         wrapped_val = textwrap.wrap(str(value), width=val_width)
-        if not wrapped_val: wrapped_val = [""]
-        
+        if not wrapped_val:
+            wrapped_val = [""]
+
         # First line
         k_str = f"{key}:"
         print(f"  {d}{k_str:<{max_key_len}}{r} {wrapped_val[0]}")
-        
+
         # Subsequent lines
         for line in wrapped_val[1:]:
             print(f"  {' ':<{max_key_len}} {line}")
-    print() # Spacer
+    print()  # Spacer
+
 
 def format_time(seconds):
     m, s = divmod(seconds, 60)
     return f"{m}m {s}s"
+
 
 def main():
     parser = argparse.ArgumentParser(description="Spawn a Pickle Worker")
@@ -64,13 +70,20 @@ def main():
     parser.add_argument("--ticket-id", required=True, help="Ticket ID")
     parser.add_argument("--ticket-path", required=True, help="Path to ticket directory")
     parser.add_argument("--timeout", type=int, default=1200, help="Timeout in seconds")
-    parser.add_argument("--output-format", choices=["text", "json", "stream-json"], default="text", help="Output format for the Gemini CLI")
-    
+    parser.add_argument(
+        "--output-format",
+        choices=["text", "json", "stream-json"],
+        default="text",
+        help="Output format for the Gemini CLI",
+    )
+
     args = parser.parse_args()
 
     # Normalize path
     ticket_dir = args.ticket_path
-    if ticket_dir.endswith('.md') or (os.path.exists(ticket_dir) and os.path.isfile(ticket_dir)):
+    if ticket_dir.endswith(".md") or (
+        os.path.exists(ticket_dir) and os.path.isfile(ticket_dir)
+    ):
         ticket_dir = os.path.dirname(ticket_dir)
 
     os.makedirs(ticket_dir, exist_ok=True)
@@ -90,26 +103,31 @@ def main():
         timeout_state_path = parent_state_path
     elif os.path.exists(worker_state_path):
         timeout_state_path = worker_state_path
-    
+
     if timeout_state_path:
         try:
             import json
+
             with open(timeout_state_path, "r") as f:
                 state = json.load(f)
                 max_mins = state.get("max_time_minutes", 0)
                 start_epoch = state.get("start_time_epoch", 0)
-                
+
                 if max_mins > 0 and start_epoch > 0:
                     current_epoch = time.time()
                     elapsed = current_epoch - start_epoch
                     max_seconds = max_mins * 60
                     remaining = max_seconds - elapsed
-                    
+
                     if remaining < effective_timeout:
-                        effective_timeout = max(10, int(remaining)) # Give at least 10s to fail gracefully
-                        print(f"{Style.YELLOW}⚠️  Worker timeout clamped to remaining session time: {effective_timeout}s{Style.RESET}")
+                        effective_timeout = max(
+                            10, int(remaining)
+                        )  # Give at least 10s to fail gracefully
+                        print(
+                            f"{Style.YELLOW}⚠️  Worker timeout clamped to remaining session time: {effective_timeout}s{Style.RESET}"
+                        )
         except Exception as e:
-            pass # Fail open if state read fails
+            pass  # Fail open if state read fails
 
     # Initial Output
     print_minimal_panel(
@@ -119,75 +137,84 @@ def main():
             "Ticket": args.ticket_id,
             "Format": args.output_format,
             "Timeout": f"{effective_timeout}s (Req: {args.timeout}s)",
-            "PID": os.getpid()
+            "PID": os.getpid(),
         },
         color_name="CYAN",
-        icon="🥒"
+        icon="🥒",
     )
 
-    cmd = [
-        "gemini",
-        "-s", "-y"
-    ]
+    cmd = ["gemini", "-s", "-y", "-d"]
 
     if args.output_format != "text":
         cmd.extend(["-o", args.output_format])
 
-    cmd.extend([
-        "-p", f'/pickle-worker "{args.task}" --completion-promise "I AM DONE"'
-    ])
+    cmd.extend(
+        [
+            "-p",
+            f'Please announce what you are doing. /pickle-worker "{args.task}" --completion-promise "I AM DONE"',
+        ]
+    )
 
     if "PICKLE_WORKER_CMD_OVERRIDE" in os.environ:
         import shlex
+
         cmd = shlex.split(os.environ["PICKLE_WORKER_CMD_OVERRIDE"])
 
     start_time = time.time()
     return_code = 1
-    
+
     try:
         # Open with line buffering (buffering=1) to ensure logs are written immediately
         with open(session_log, "w", buffering=1) as log_file:
+            # Log the full command for debugging
+            log_file.write(f"Command executed: {' '.join(cmd)}\n")
+            log_file.write("-" * 80 + "\n\n")
+
             env = os.environ.copy()
             env["PICKLE_STATE_FILE"] = worker_state_path
-            env["PYTHONUNBUFFERED"] = "1" # Force unbuffered stdout for Python subprocesses
-            
+            env["PYTHONUNBUFFERED"] = (
+                "1"  # Force unbuffered stdout for Python subprocesses
+            )
+
             process = subprocess.Popen(
                 cmd,
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 text=True,
                 cwd=os.getcwd(),
-                env=env
+                env=env,
             )
-            
+
             # Spinner Loop
             spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
             idx = 0
-            
-            print(f"{Style.DIM}   Starting execution sequence...{Style.RESET}", end="\r")
-            
+
+            print(
+                f"{Style.DIM}   Starting execution sequence...{Style.RESET}", end="\r"
+            )
+
             while True:
                 ret_code = process.poll()
                 if ret_code is not None:
                     return_code = ret_code
                     break
-                
+
                 if time.time() - start_time > effective_timeout:
                     process.kill()
                     return_code = 124
                     with open(session_log, "a") as f:
                         f.write("\n\n[TIMEOUT] Worker killed after timeout.\n")
                     break
-                
+
                 # Elapsed time
                 elapsed_seconds = int(time.time() - start_time)
                 time_str = format_time(elapsed_seconds)
                 spin_char = spinner[idx % len(spinner)]
-                
+
                 status_line = f"   {Style.CYAN}{spin_char}{Style.RESET} Worker Active... {Style.DIM}[{time_str}]{Style.RESET}"
                 sys.stdout.write(f"\r{status_line}\033[K")
                 sys.stdout.flush()
-                
+
                 idx += 1
                 time.sleep(0.1)
 
@@ -203,7 +230,7 @@ def main():
     # Check Results
     is_success = False
     result_snippet = "No output"
-    
+
     if os.path.exists(session_log):
         with open(session_log, "r") as f:
             content = f.read()
@@ -211,7 +238,7 @@ def main():
                 is_success = True
                 result_snippet = "Worker successfully completed the task."
             else:
-                lines = content.strip().split('\n')
+                lines = content.strip().split("\n")
                 result_snippet = lines[-1] if lines else "Empty log"
                 # If snippet is too technical, maybe just say check log
                 if len(result_snippet) > 80:
@@ -219,19 +246,17 @@ def main():
 
     status_color = "GREEN" if is_success else "RED"
     status_icon = "✅" if is_success else "❌"
-    
+
     print_minimal_panel(
         "Worker Report",
-        {
-            "Status": f"{status_icon} (Exit: {return_code})",
-            "Result": result_snippet
-        },
+        {"Status": f"{status_icon} (Exit: {return_code})", "Result": result_snippet},
         color_name=status_color,
-        icon="🥒"
+        icon="🥒",
     )
 
     if not is_success:
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

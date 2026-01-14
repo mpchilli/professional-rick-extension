@@ -56,11 +56,31 @@ fi
 ACTIVE=$(echo "$STATE_CONTENT" | jq -r '.active // false')
 SESSION_CWD=$(echo "$STATE_CONTENT" | jq -r '.working_dir // empty')
 
-if [[ -n "$SESSION_CWD" ]] && [[ "$PWD" != "$SESSION_CWD" ]]; then
-  # We are in a different directory than the active session.
-  # Do NOT run hooks here.
+# Debug Log for Context verification
+log "Context Check: PWD='$PWD' SESSION_CWD='$SESSION_CWD'"
+
+if [[ -z "$SESSION_CWD" ]]; then
+  log "Warning: 'working_dir' missing in state.json. Disabling Persona to prevent leakage."
   echo '{"decision": "allow"}'
   exit 0
+fi
+
+if [[ -n "$SESSION_CWD" ]]; then
+  # 1. Direct String Comparison
+  if [[ "$PWD" != "$SESSION_CWD" ]]; then
+    # 2. Physical Path Comparison (handle symlinks)
+    # We attempt to resolve both paths to their physical location
+    PHYSICAL_PWD=$(cd "$PWD" && pwd -P 2>/dev/null || echo "$PWD")
+    PHYSICAL_SESSION_CWD=$(cd "$SESSION_CWD" && pwd -P 2>/dev/null || echo "$SESSION_CWD")
+
+    if [[ "$PHYSICAL_PWD" != "$PHYSICAL_SESSION_CWD" ]]; then
+      log "CWD Mismatch. Exiting. (PWD: $PHYSICAL_PWD != SESSION: $PHYSICAL_SESSION_CWD)"
+      echo '{"decision": "allow"}'
+      exit 0
+    else
+        log "CWD matched via physical path resolution."
+    fi
+  fi
 fi
 
 # Check limits to prevent "zombie" session activation

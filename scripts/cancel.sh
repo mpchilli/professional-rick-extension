@@ -24,9 +24,17 @@ fi
 
 # Check CWD
 SESSION_CWD=$(jq -r '.working_dir // empty' "$STATE_FILE")
-if [[ -n "$SESSION_CWD" ]] && [[ "$PWD" != "$SESSION_CWD" ]]; then
-  echo "❌ Cancelling Pickle Rick failed: You are in a different directory ($PWD) than the active session ($SESSION_CWD)." >&2
-  exit 1
+if [[ -n "$SESSION_CWD" ]]; then
+  if [[ "$PWD" != "$SESSION_CWD" ]]; then
+    # Physical Path Comparison
+    PHYSICAL_PWD=$(cd "$PWD" && pwd -P 2>/dev/null || echo "$PWD")
+    PHYSICAL_SESSION_CWD=$(cd "$SESSION_CWD" && pwd -P 2>/dev/null || echo "$SESSION_CWD")
+
+    if [[ "$PHYSICAL_PWD" != "$PHYSICAL_SESSION_CWD" ]]; then
+      echo "❌ Cancelling Pickle Rick failed: You are in a different directory ($PWD) than the active session ($SESSION_CWD)." >&2
+      exit 1
+    fi
+  fi
 fi
 
 # Update state file to set active: false

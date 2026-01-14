@@ -18,7 +18,6 @@ LOOP_LIMIT=3
 TIME_LIMIT=60
 WORKER_TIMEOUT=1200
 PROMISE_TOKEN="null"
-SESSION_NAME=""
 TASK_ARGS=()
 RESUME_MODE="false"
 RESUME_PATH=""
@@ -31,6 +30,13 @@ die() {
 }
 
 # -- Argument Parser --
+
+# Workaround for LLM tool invocation passing all args as a single string
+if [[ $# -eq 1 ]]; then
+  if [[ "$1" =~ ^- ]] || [[ "$1" =~ " --" ]]; then
+     eval set -- "$1"
+  fi
+fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -53,11 +59,6 @@ while [[ $# -gt 0 ]]; do
     --completion-promise)
       [[ -n "${2:-}" ]] || die "Missing promise text."
       PROMISE_TOKEN="$2"
-      shift 2
-      ;;
-    --name)
-      [[ -n "${2:-}" ]] || die "Missing name."
-      SESSION_NAME="$2"
       shift 2
       ;;
     --resume)
@@ -102,18 +103,10 @@ else
   # -- New Session Logic --
   [[ -n "$TASK_STR" ]] || die "No task specified. Run /pickle --help for usage."
 
-  if [[ -n "$SESSION_NAME" ]]; then
-    # Use provided name, sanitized
-    SESSION_SLUG=$(echo "$SESSION_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-|-$//g' | cut -c 1-50)
-  else
-    # Auto-generate: remove stop words and slugify
-    # Stop words: a, an, the, for, to, of, in, with, and, is, are
-    CLEAN_TASK=$(echo "$TASK_STR" | sed -E 's/\b(a|an|the|for|to|of|in|with|and|is|are)\b//gi')
-    SESSION_SLUG=$(echo "$CLEAN_TASK" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-|-$//g' | cut -c 1-50)
-  fi
-
   TODAY=$(date +%Y-%m-%d)
-  SESSION_ID="${TODAY}-${SESSION_SLUG}"
+  # Generate a random 8-char hash (4 bytes hex)
+  HASH=$(openssl rand -hex 4)
+  SESSION_ID="${TODAY}-${HASH}"
 
   FULL_SESSION_PATH="$SESSIONS_ROOT/$SESSION_ID"
   STATE_PATH="$FULL_SESSION_PATH/state.json"
