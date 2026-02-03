@@ -1,15 +1,12 @@
 import { DashboardDialog } from "./DashboardDialog.js";
-import { Sidebar } from "./Sidebar.js";
-import { SessionData } from "../tasks/types.js";
+import { SessionData } from "../../types/tasks.js";
 import { CliRenderer } from "@opentui/core";
 
 export class DialogSidebar {
-  private sidebar: Sidebar;
   private dashboardDialog: DashboardDialog;
-  private useDialog = false;
+  private useDialog = true;
 
   constructor(renderer: CliRenderer) {
-    this.sidebar = new Sidebar(renderer);
     this.dashboardDialog = new DashboardDialog(renderer);
     
     // Add the dialog to the renderer root
@@ -21,75 +18,47 @@ export class DialogSidebar {
   }
 
   public update(session: SessionData, silent: boolean = false) {
-    if (this.useDialog) {
-      this.dashboardDialog.update(session);
-      if (!silent && !this.dashboardDialog.isOpen()) {
-        this.dashboardDialog.show();
-      }
-    } else {
-      this.sidebar.update(session, silent);
+    this.dashboardDialog.update(session);
+    if (!silent && !this.dashboardDialog.isOpen()) {
+      this.dashboardDialog.show();
     }
   }
 
   public show() {
-    if (this.useDialog) {
-      this.dashboardDialog.show();
-    } else {
-      this.sidebar.root.visible = true;
-      this.sidebar.root.right = 0;
-    }
+    this.dashboardDialog.show();
   }
 
   public hide() {
-    if (this.useDialog) {
-      this.dashboardDialog.hide();
-    } else {
-      this.sidebar.hide();
-    }
+    this.dashboardDialog.hide();
   }
 
   public isOpen(): boolean {
-    if (this.useDialog) {
-      return this.dashboardDialog.isOpen();
-    }
-    return this.sidebar.isOpen();
+    return this.dashboardDialog.isOpen();
   }
 
   public showInput(placeholder?: string) {
-    if (this.useDialog) {
-      // Dialog doesn't support input, fall back to sidebar
-      this.sidebar.showInput(placeholder);
-    } else {
-      this.sidebar.showInput(placeholder);
-    }
+    // Dialog doesn't support input
   }
 
   public hideInput() {
-    this.sidebar.hideInput();
   }
 
   public focusInput() {
-    this.sidebar.focusInput();
   }
 
   public get onHide() {
-    return this.sidebar.onHide;
+    return undefined;
   }
 
   public set onHide(callback: (() => void) | undefined) {
-    this.sidebar.onHide = callback;
   }
 
   public get input() {
-    return this.sidebar.input;
+    return undefined;
   }
 
   public get root() {
-    return this.useDialog ? this.dashboardDialog.root : this.sidebar.root;
-  }
-
-  public get sidebarComponent() {
-    return this.sidebar;
+    return this.dashboardDialog.root;
   }
 
   public get dialogComponent() {

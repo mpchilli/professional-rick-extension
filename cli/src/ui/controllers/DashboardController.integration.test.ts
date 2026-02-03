@@ -35,8 +35,7 @@ describe("DashboardController Integration", () => {
   test("should initialize controller", () => {
     const controller = new DashboardController(
       mockRenderer,
-      mockSessionContainer,
-      mockSidebar
+      mockSessionContainer
     );
 
     expect(controller).toBeDefined();

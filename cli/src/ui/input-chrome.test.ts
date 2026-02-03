@@ -45,8 +45,8 @@ describe("Input Chrome Utilities", () => {
       // First Ctrl+C
       const handled1 = handler({ ctrl: true, name: "c" } as KeyEvent);
       expect(handled1).toBe(true);
-      expect(mockHintText.content).toBe("Press Ctrl+C again to exit");
-      expect(mockHintText.fg).toBe(THEME.warning);
+      expect(mockHintText.content).toBe("Press Ctrl+C again to exit" as any);
+      expect(mockHintText.fg).toBe(THEME.warning as any);
       expect(mockRenderer.requestRender).toHaveBeenCalled();
       expect(mockRenderer.destroy).not.toHaveBeenCalled();
 

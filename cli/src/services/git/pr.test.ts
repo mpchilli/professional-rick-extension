@@ -69,7 +69,7 @@ describe("PR Service", () => {
 
                         expect(mockGit.push).toHaveBeenCalled();
                         expect(mockExec).toHaveBeenCalled();
-                        const args = mockExec.mock.calls[0][1] as string[];
+                        const args = (mockExec.mock.calls[0] as any[])[1] as string[];
                         expect(args).toContain("pr");
                         expect(args).toContain("create");
                         expect(args).toContain("feat/test");

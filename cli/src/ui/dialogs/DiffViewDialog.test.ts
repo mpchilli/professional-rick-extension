@@ -20,7 +20,7 @@ describe("DiffViewDialog", () => {
     // Use spyOn instead of global mock.module to avoid polluting other tests
     spies = [
       spyOn(git, "getChangedFiles").mockImplementation(async () => [
-        { path: "file1.ts", status: "M", additions: 10, deletions: 5 },
+        { path: "file1.ts", status: "modified", additions: 10, deletions: 5 },
       ]),
       spyOn(git, "getFileDiff").mockResolvedValue("diff"),
       spyOn(git, "getStatusIndicator").mockReturnValue("M"),

@@ -34,7 +34,7 @@ describe("UI Logger", () => {
     
     expect(mockMkdir).toHaveBeenCalled();
     expect(mockAppendFile).toHaveBeenCalled();
-    const content = mockAppendFile.mock.calls[0][1];
+    const content = (mockAppendFile.mock.calls[0] as any[])[1];
     expect(content).toContain("[INFO] Test message\n");
   });
 
@@ -42,27 +42,27 @@ describe("UI Logger", () => {
     logSuccess("Great success");
     await waitForAppend();
     expect(mockAppendFile).toHaveBeenCalled();
-    expect(mockAppendFile.mock.calls[0][1]).toContain("[SUCCESS] Great success\n");
+    expect((mockAppendFile.mock.calls[0] as any[])[1]).toContain("[SUCCESS] Great success\n");
   });
 
   test("logError should write [ERROR] prefix", async () => {
     logError("Terrible failure");
     await waitForAppend();
     expect(mockAppendFile).toHaveBeenCalled();
-    expect(mockAppendFile.mock.calls[0][1]).toContain("[ERROR] Terrible failure\n");
+    expect((mockAppendFile.mock.calls[0] as any[])[1]).toContain("[ERROR] Terrible failure\n");
   });
 
   test("logWarn should write [WARN] prefix", async () => {
     logWarn("Be careful");
     await waitForAppend();
     expect(mockAppendFile).toHaveBeenCalled();
-    expect(mockAppendFile.mock.calls[0][1]).toContain("[WARN] Be careful\n");
+    expect((mockAppendFile.mock.calls[0] as any[])[1]).toContain("[WARN] Be careful\n");
   });
 
   test("logDebug should write [DEBUG] prefix", async () => {
     logDebug("Secret stuff");
     await waitForAppend();
     expect(mockAppendFile).toHaveBeenCalled();
-    expect(mockAppendFile.mock.calls[0][1]).toContain("[DEBUG] Secret stuff\n");
+    expect((mockAppendFile.mock.calls[0] as any[])[1]).toContain("[DEBUG] Secret stuff\n");
   });
 });

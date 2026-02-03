@@ -5,7 +5,7 @@
 ### From npm
 
 ```bash
-npm install -g pickle-rick
+npm install -g im-pickle-rick
 ```
 
 ### From Source

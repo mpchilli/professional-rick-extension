@@ -133,7 +133,7 @@ export class Dialog {
     closeButton.add(closeText);
 
     closeButton.onMouse = (e: MouseEvent) => {
-      if (e.type === "click" || e.type === "up") {
+      if ((e.type as any) === "click" || e.type === "up") {
         this.hide();
       } else if (e.type === "over") {
         closeText.fg = THEME.accent;
@@ -184,7 +184,7 @@ export class Dialog {
       }
 
       optionRow.onMouse = (e: MouseEvent) => {
-        if (e.type === "click" || e.type === "up") {
+        if ((e.type as any) === "click" || e.type === "up") {
           option.onSelect(this);
         } else if (e.type === "over") {
           titleText.fg = THEME.accent;

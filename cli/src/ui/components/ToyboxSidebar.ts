@@ -72,7 +72,6 @@ export class ToyboxSidebar {
       content: "Sessions",
       fg: THEME.accent,
       attributes: TextAttributes.BOLD,
-      fontSize: 1,
     });
 
     header.add(this.titleText);
@@ -85,7 +84,7 @@ export class ToyboxSidebar {
 
   private setupMouseHandlers() {
     this.root.onMouse = (event: MouseEvent) => {
-      if (event.type === "click") {
+      if ((event.type as any) === "click") {
         // Allow clicking through to content
         return;
       }
@@ -264,7 +263,7 @@ export class ToyboxSidebar {
       content: session.status.toUpperCase(),
       fg: statusColor,
       attributes: TextAttributes.BOLD,
-      fontSize: 1,
+
     });
 
     statusRow.add(statusIndicator);
@@ -280,7 +279,7 @@ export class ToyboxSidebar {
       content: promptText,
       fg: THEME.text,
       marginBottom: 1,
-      fontSize: 1,
+
     });
 
     // Session metadata
@@ -297,7 +296,7 @@ export class ToyboxSidebar {
       id: `time-${cardId}`,
       content: `Started ${timeAgo} ago`,
       fg: THEME.dim,
-      fontSize: 1,
+
     });
 
     const sessionIdText = new TextRenderable(this.renderer, {

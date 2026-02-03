@@ -36,7 +36,7 @@ describe("GameSidebarManager", () => {
     manager.enable();
     
     // First press: Open
-    const handled1 = manager.handleKey({ name: "s", ctrl: true });
+    const handled1 = manager.handleKey({ name: "s", ctrl: true } as any);
     expect(handled1).toBe(true);
     expect(mockRenderer.root.add).toHaveBeenCalled(); // Should add sidebar to root
     
@@ -47,7 +47,7 @@ describe("GameSidebarManager", () => {
 
   test("should ignore keys when disabled", () => {
     manager.disable();
-    const handled = manager.handleKey({ name: "s", ctrl: true });
+    const handled = manager.handleKey({ name: "s", ctrl: true } as any);
     expect(handled).toBe(false);
     expect(mockRenderer.root.add).not.toHaveBeenCalled();
   });

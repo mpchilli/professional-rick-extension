@@ -25,7 +25,7 @@
 ### From npm (Recommended)
 
 ```bash
-npm install -g pickle-rick
+npm install -g im-pickle-rick
 ```
 
 After installation, the `pickle` command will be available globally.

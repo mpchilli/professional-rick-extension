@@ -136,7 +136,7 @@ export class SessionChip extends BoxRenderable {
       } else if (event.type === "out") {
         this.cancelButton.fg = THEME.dim;
         this.renderer.requestRender();
-      } else if (event.type === "click" || event.type === "up") {
+      } else if ((event.type as any) === "click" || event.type === "up") {
         if (this.onCancelCallback) {
           this.onCancelCallback(this.session);
         }
@@ -164,7 +164,7 @@ export class SessionChip extends BoxRenderable {
       } else if (event.type === "out") {
         this.reviewButton.fg = THEME.accent;
         this.renderer.requestRender();
-      } else if (event.type === "click" || event.type === "up") {
+      } else if ((event.type as any) === "click" || event.type === "up") {
         if (this.onReviewCallback) {
           this.onReviewCallback(this.session);
         }

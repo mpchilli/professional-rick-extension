@@ -16,7 +16,8 @@ describe("LandingView", () => {
   });
 
   test("should create landing view", async () => {
-    const view = await createLandingView(mockRenderer);
+    const onEnter = mock(() => {});
+    const view = await createLandingView(mockRenderer, onEnter);
     expect(view.root).toBeDefined();
     expect(view.input).toBeDefined();
   });

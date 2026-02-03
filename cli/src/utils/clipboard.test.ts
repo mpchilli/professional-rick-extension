@@ -43,7 +43,7 @@ describe("clipboard.ts", () => {
         await Clipboard.copy("hello world");
 
         expect(mockSpawn).toHaveBeenCalled();
-        const args = mockSpawn.mock.calls[0][0] as string[];
+        const args = (mockSpawn.mock.calls[0] as any[])[0] as string[];
         expect(args[0]).toBe("pbcopy");
     });
 
@@ -51,14 +51,14 @@ describe("clipboard.ts", () => {
         mockPlatform.mockReturnValue("linux");
         mockWhich.mockImplementation((tool) => {
             if (tool === "wl-copy") return null;
-            if (tool === "xclip") return "/usr/bin/xclip";
+            if (tool === "xclip") return "/usr/bin/xclip" as any;
             return null;
         });
 
         await Clipboard.copy("linux test");
 
         expect(mockSpawn).toHaveBeenCalled();
-        const args = mockSpawn.mock.calls[0][0] as string[];
+        const args = (mockSpawn.mock.calls[0] as any[])[0] as string[];
         expect(args[0]).toBe("xclip");
     });
 
@@ -68,7 +68,7 @@ describe("clipboard.ts", () => {
         await Clipboard.copy("win test");
 
         expect(mockSpawn).toHaveBeenCalled();
-        const args = mockSpawn.mock.calls[0][0] as string[];
+        const args = (mockSpawn.mock.calls[0] as any[])[0] as string[];
         expect(args).toContain("powershell.exe");
         expect(args).toContain("Set-Clipboard");
     });

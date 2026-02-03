@@ -130,7 +130,7 @@ export const createOpentuiMocks = () => {
     SelectRenderable: class implements MockSelect {
       public id: string;
       public visible = true;
-      public options: Array<{ name: string; value: string; description?: string }> = [];
+      public options: Array<{ title: string; value: string; description?: string }> = [];
       private handlers: Record<string, Function[]> = {};
       constructor(public renderer: MockRenderer, public options_init: MockRenderableOptions) {
         this.id = options_init?.id || "mock-select";

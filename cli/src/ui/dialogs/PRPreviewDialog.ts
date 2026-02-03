@@ -7,10 +7,11 @@ import {
 	KeyEvent,
 	InputRenderable,
 	MarkdownRenderable,
+	SyntaxStyle,
 } from "@opentui/core";
 import { THEME } from "../theme.js";
 import type { SessionData } from "../../types/tasks.js";
-import { generatePRDescription, type PRDescription } from "../../services/git/index.js";
+import { generatePRDescription } from "../../services/git/index.js";
 
 export interface PRPreviewDialogEvents {
 	onConfirm: (session: SessionData, title: string, body: string) => Promise<void>;
@@ -122,14 +123,11 @@ export class PRPreviewDialog {
 		this.titleInput = new InputRenderable(renderer, {
 			id: "pr-preview-title-input",
 			width: "100%",
-			height: 3,
 			placeholder: "Enter PR title...",
 			backgroundColor: THEME.surface,
 			cursorColor: THEME.accent,
 			textColor: THEME.text,
 			placeholderColor: THEME.dim,
-			border: true,
-			borderColor: THEME.darkAccent,
 		});
 		titleSection.add(this.titleInput);
 
@@ -168,8 +166,8 @@ export class PRPreviewDialog {
 		this.bodyPreview = new MarkdownRenderable(renderer, {
 			id: "pr-preview-body-content",
 			content: "",
-			fg: THEME.text,
 			width: "100%",
+			syntaxStyle: SyntaxStyle.fromStyles({}),
 		});
 		this.bodyScrollContainer.add(this.bodyPreview);
 

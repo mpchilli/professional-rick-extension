@@ -36,6 +36,7 @@ describe("WorkerExecutorClient", () => {
             iteration: 1,
             max_iterations: 1,
             max_time_minutes: 30,
+            worker_timeout_seconds: 300,
             start_time_epoch: Date.now(),
             completion_promise: "DONE",
             original_prompt: "Test",
