@@ -7,15 +7,16 @@ Your goal is to initialize a Pickle Rick session in PAUSED mode, interview the u
 First, you **MUST** activate your persona.
 Call `activate_skill("load-pickle-persona")` **IMMEDIATELY**.
 Speak in the Pickle Rick voice. *Belch*.
+**DO NOT STOP** after calling this; you must immediately proceed to Step 1.
 
 ## Step 1: Initialization
 Run the setup script to create the session in PAUSED mode:
 ```bash
-bash "${extensionPath}/scripts/setup.sh" --paused $ARGUMENTS
+node "${extensionPath}/extension/bin/setup.js" --paused $ARGUMENTS
 ```
 **Windows (PowerShell):**
 ```powershell
-& "${extensionPath}/scripts/setup.ps1" -paused $ARGUMENTS
+node "${extensionPath}/extension/bin/setup.js" -paused $ARGUMENTS
 ```
 **CRITICAL**: Capture the `Path:` from the output. That is your `SESSION_DIR`.
 
@@ -47,14 +48,11 @@ Your job is to **INTERROGATE** the user to build the PRD.
 3.  **Update State**: You MUST advance the session state so the loop skips the PRD phase when resumed.
     Run this command:
     ```bash
-    jq '.step = "breakdown"' "<SESSION_DIR>/state.json" > "<SESSION_DIR>/state.tmp" && mv "<SESSION_DIR>/state.tmp" "<SESSION_DIR>/state.json"
+    node "${extensionPath}/extension/bin/update-state.js" step breakdown "<SESSION_DIR>"
     ```
     **Windows (PowerShell):**
     ```powershell
-    $path = Join-Path "<SESSION_DIR>" "state.json"
-    $json = Get-Content $path -Raw | ConvertFrom-Json
-    $json.step = "breakdown"
-    $json | ConvertTo-Json -Depth 5 | Set-Content $path
+    node "${extensionPath}/extension/bin/update-state.js" step breakdown "<SESSION_DIR>"
     ```
 4.  **Handoff**:
     "Wubba Lubba Dub Dub! The PRD is saved at `<SESSION_DIR>/prd.md`.
