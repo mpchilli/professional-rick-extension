@@ -112,3 +112,42 @@ TypeScript compilation (`npm run build`) is the best validator — if it passes,
 ### 7. Build Before Tests
 
 Run `npm run build` before `npm test` to ensure compiled JS matches the TS source. Tests run against compiled JS, so stale builds will produce false failures.
+
+## Extension Name Locations & References
+
+For future renaming or refactoring, the extension name (currently `architect-loop-extension` / `Pro-Rick-GPro`) is hardcoded or referenced in the following locations:
+
+### Manifests & Configuration
+- **`gemini-extension.json`**:
+  - Field: `"name"`
+- **`package.json`**:
+  - Field: `"name"`
+  - Field: `"repository.url"`
+  - Field: `"bugs.url"`
+  - Field: `"homepage"`
+
+### Documentation
+- **`GEMINI.md`**:
+  - Description of `gemini-extension.json`
+- **`USER_GUIDE.md`**:
+  - Context configuration: `"includeDirectories"` path
+- **`README.md`**:
+  - Installation/Usage section: `"includeDirectories"` path
+  - Session logs path
+  - Configuration snippet: `"name"`
+
+### Source Code (Paths & Logics)
+- **`extension/src/services/core-utils.ts`**:
+  - Function: `getExtensionRoot()` (Defines the root extension path)
+- **`extension/src/services/git-utils.ts`**:
+  - Function: `get_github_user()` (Fallback return value)
+- **`extension/src/hooks/dispatch.ts`**:
+  - Constant: `EXTENSION_DIR` (Default path)
+- **`extension/src/hooks/handlers/reinforce-persona.ts`**:
+  - Variable: `extensionDir` (Fallback path env var)
+- **`extension/src/hooks/handlers/increment-iteration.ts`**:
+  - Variable: `extensionDir` (Fallback path env var)
+- **`extension/src/hooks/handlers/check-limit.ts`**:
+  - Variable: `extensionDir` (Fallback path env var)
+- **`extension/src/hooks/handlers/stop-hook.ts`**:
+  - Variable: `extensionDir` (Fallback path env var, appears twice)
