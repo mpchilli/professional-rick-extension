@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 async function main() {
-    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
     const globalDebugLog = path.join(extensionDir, 'debug.log');
     let sessionHooksLog = null;
     const log = (msg) => {
@@ -36,7 +36,7 @@ async function main() {
     const input = JSON.parse(inputData || '{}');
     log(`Processing AfterAgent hook. Input size: ${inputData.length}`);
     // 2. Determine State File
-    let stateFile = process.env.PICKLE_STATE_FILE;
+    let stateFile = process.env.ARCHITECT_STATE_FILE;
     if (!stateFile) {
         const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
         log(`Checking sessions map at: ${sessionsMapPath}`);
@@ -65,7 +65,7 @@ async function main() {
         return;
     }
     // 5. Bypass for Workers or Inactive loops
-    const role = process.env.PICKLE_ROLE;
+    const role = process.env.ARCHITECT_ROLE;
     const isWorker = role === 'worker' || state.worker;
     log(`State: active=${state.active}, iteration=${state.iteration}/${state.max_iterations}`);
     log(`Context: role=${role}, isWorker=${isWorker}, cwd=${process.cwd()}`);
@@ -103,7 +103,7 @@ async function main() {
     // CONTINUE CONDITIONS: Block exit to force next iteration
     if (isTaskDone || isTicketDone || isBreakdownDone || isPrdDone || isTicketSelected) {
         log(`Decision: BLOCK (Checkpoint reached)`);
-        let feedback = '🥒 **Pickle Rick Loop Active** - ';
+        let feedback = '🤖 **AI Architect Loop Active** - ';
         if (isPrdDone)
             feedback += 'PRD finished, moving to breakdown...';
         if (isBreakdownDone)
@@ -113,7 +113,7 @@ async function main() {
         if (isTaskDone || isTicketDone)
             feedback += 'Ticket finished, moving to next...';
         if (isWorkerDone)
-            feedback += 'Worker finished, Rick is validating...';
+            feedback += 'Worker finished, Architect is validating...';
         console.log(JSON.stringify({
             decision: 'block',
             systemMessage: feedback,
@@ -144,7 +144,7 @@ async function main() {
     }
     // 8. Default: Continue Loop (Prevent Exit)
     log('Decision: BLOCK (Default continuation)');
-    let defaultFeedback = `🥒 **Pickle Rick Loop Active** (Iteration ${state.iteration})`;
+    let defaultFeedback = `🤖 **AI Architect Loop Active** (Iteration ${state.iteration})`;
     if (state.max_iterations > 0)
         defaultFeedback += ` of ${state.max_iterations}`;
     console.log(JSON.stringify({
@@ -158,7 +158,7 @@ async function main() {
 }
 main().catch((err) => {
     try {
-        const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+        const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
         const debugLog = path.join(extensionDir, 'debug.log');
         fs.appendFileSync(debugLog, `[FATAL] ${err.stack}\n`);
     }

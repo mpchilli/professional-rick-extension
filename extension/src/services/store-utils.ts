@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
-import { run_cmd, Style, getExtensionRoot } from './pickle-utils.js';
+
+import { run_cmd, Style, getExtensionRoot } from './core-utils.js';
 
 function getBranch(repoPath: string): string {
   try {
@@ -15,7 +15,7 @@ function getBranch(repoPath: string): string {
   }
 }
 
-export function addToJar(sessionDir: string): string {
+export function addToArchive(sessionDir: string): string {
   // 1. Read state.json
   const statePath = path.join(sessionDir, 'state.json');
   if (!fs.existsSync(statePath)) {
@@ -34,11 +34,11 @@ export function addToJar(sessionDir: string): string {
     throw new Error(`prd.md not found in ${sessionDir}`);
   }
 
-  // 3. Setup Jar storage
+  // 3. Setup Archive storage
   const today = new Date().toISOString().split('T')[0];
   const sessionId = path.basename(sessionDir);
-  const jarRoot = path.join(getExtensionRoot(), 'jar');
-  const taskDir = path.join(jarRoot, today, sessionId);
+  const archiveRoot = path.join(getExtensionRoot(), 'archive');
+  const taskDir = path.join(archiveRoot, today, sessionId);
   fs.mkdirSync(taskDir, { recursive: true });
 
   // 4. Copy PRD
@@ -51,30 +51,31 @@ export function addToJar(sessionDir: string): string {
     prd_path: 'prd.md',
     created_at: new Date().toISOString(),
     task_id: sessionId,
-    status: 'marinating',
+    status: 'archived',
   };
   fs.writeFileSync(path.join(taskDir, 'meta.json'), JSON.stringify(meta, null, 2));
 
   // 6. Deactivate the current session to prevent immediate execution
   state.active = false;
-  state.completion_promise = 'JARRED'; // Signal completion
+  state.completion_promise = 'ARCHIVED'; // Signal completion
   fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
 
   return taskDir;
 }
 
 // CLI Support
-if (process.argv[1] && path.basename(process.argv[1]).startsWith('jar-utils')) {
+// CLI Support
+if (process.argv[1] && path.basename(process.argv[1]).startsWith('store-utils')) {
   const args = process.argv.slice(2);
   const sessionIndex = args.indexOf('--session');
   if (sessionIndex === -1) {
-    console.log('Usage: node jar-utils.js add --session <path>');
+    console.log('Usage: node store-utils.js add --session <path>');
     process.exit(1);
   }
   const sessionDir = args[sessionIndex + 1];
   try {
-    const resultPath = addToJar(sessionDir);
-    console.log(`Task successfully jarred at: ${resultPath}`);
+    const resultPath = addToArchive(sessionDir);
+    console.log(`Task successfully archived at: ${resultPath}`);
   } catch (err: any) {
     console.error(`${Style.RED}Error: ${err.message}${Style.RESET}`);
     process.exit(1);

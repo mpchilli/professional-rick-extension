@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
 import * as path from 'path';
-import { printMinimalPanel, getExtensionRoot } from '../services/pickle-utils.js';
+import { printMinimalPanel, getExtensionRoot } from '../services/core-utils.js';
 function main() {
     const args = process.argv.slice(2);
     let sessionPath = '';
@@ -21,9 +21,9 @@ function main() {
         console.error('Worker Error: No session path found.');
         process.exit(1);
     }
-    printMinimalPanel('Morty Worker Initialized', {
+    printMinimalPanel('Worker Initialized', {
         Session: path.basename(sessionPath),
         CWD: process.cwd(),
-    }, 'BLUE', '👶');
+    }, 'BLUE', '🤖');
 }
 main();

@@ -1,7 +1,7 @@
 {
-  "name": "pickle-rick-extension",
+  "name": "ai-architect-extension",
   "version": "1.0.0",
-  "description": "```bash gemini extensions install https://github.com/galz10/pickle-rick-extension ```",
+  "description": "Professional AI Architect for Gemini CLI",
   "main": "index.js",
   "devDependencies": {
     "husky": "^9.1.7",

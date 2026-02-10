@@ -2,16 +2,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
-import { addToJar } from './jar-utils.js';
+import { addToArchive } from './store-utils.js';
 
 vi.mock('node:fs');
-vi.mock('./pickle-utils.js', () => ({
+vi.mock('./core-utils.js', () => ({
   run_cmd: vi.fn(),
   getExtensionRoot: vi.fn(() => '/test-root'),
   Style: { RED: '', RESET: '' },
 }));
 
-describe('jar_utils', () => {
+describe('store_utils', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -28,7 +28,7 @@ describe('jar_utils', () => {
     vi.mocked(fs.copyFileSync).mockImplementation(() => undefined);
     vi.mocked(fs.writeFileSync).mockImplementation(() => undefined);
 
-    const result = addToJar(sessionDir);
+    const result = addToArchive(sessionDir);
 
     expect(fs.mkdirSync).toHaveBeenCalled();
     expect(fs.copyFileSync).toHaveBeenCalled();
@@ -36,6 +36,6 @@ describe('jar_utils', () => {
       expect.stringContaining('meta.json'),
       expect.any(String)
     );
-    expect(result).toContain('jar');
+    expect(result).toContain('archive');
   });
 });

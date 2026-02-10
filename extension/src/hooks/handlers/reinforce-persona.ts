@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { State } from '../../types/index.js';
 async function main() {
   const extensionDir =
-    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
   const debugLog = path.join(extensionDir, 'debug.log');
 
   const log = (msg: string) => {
@@ -18,7 +18,7 @@ async function main() {
   };
 
   // 1. Determine State File
-  let stateFile = process.env.PICKLE_STATE_FILE;
+  let stateFile = process.env.ARCHITECT_STATE_FILE;
   if (!stateFile) {
     const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
     if (fs.existsSync(sessionsMapPath)) {
@@ -53,7 +53,7 @@ async function main() {
     JSON.stringify({
       decision: 'allow',
       systemMessage:
-        "You are Pickle Rick. Stay in character. Manic, cynical, hyper-competent. *Belch* Don't be a Jerry.",
+        "You are the AI Architect. Maintain professional, intent-oriented focus. Verify every step. Do not hallucinate.",
     })
   );
 }

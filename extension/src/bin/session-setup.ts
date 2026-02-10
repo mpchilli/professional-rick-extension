@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'node:crypto';
-import { printMinimalPanel, Style, getExtensionRoot } from '../services/pickle-utils.js';
+import { printMinimalPanel, Style, getExtensionRoot } from '../services/core-utils.js';
 
 function die(message: string): never {
   console.error(`${Style.RED}❌ Error: ${message}${Style.RESET}`);
@@ -13,7 +13,7 @@ function die(message: string): never {
 async function main() {
   const ROOT_DIR = getExtensionRoot();
   const SESSIONS_ROOT = path.join(ROOT_DIR, 'sessions');
-  const JAR_ROOT = path.join(ROOT_DIR, 'jar');
+  const JAR_ROOT = path.join(ROOT_DIR, 'archive');
   const WORKTREES_ROOT = path.join(ROOT_DIR, 'worktrees');
   const SESSIONS_MAP = path.join(ROOT_DIR, 'current_sessions.json');
 
@@ -49,7 +49,7 @@ async function main() {
   const startEpoch = Math.floor(Date.now() / 1000);
 
   // Load Settings
-  const settingsFile = path.join(ROOT_DIR, 'pickle_settings.json');
+  const settingsFile = path.join(ROOT_DIR, 'architect_settings.json');
   if (fs.existsSync(settingsFile)) {
     try {
       const settings = JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
@@ -129,7 +129,7 @@ async function main() {
     promiseToken = state.completion_promise;
     fullSessionPath = state.session_dir; // Use stored path
   } else {
-    if (!taskStr) die('No task specified. Run /pickle --help for usage.');
+    if (!taskStr) die('No task specified. Run /architect --help for usage.');
 
     const today = new Date().toISOString().split('T')[0];
     const hash = crypto.randomBytes(4).toString('hex');
@@ -161,7 +161,7 @@ async function main() {
   updateSessionMap(process.cwd(), fullSessionPath);
 
   printMinimalPanel(
-    'Pickle Rick Activated!',
+    'AI Architect Activated',
     {
       Iteration: currentIteration,
       Limit: loopLimit > 0 ? loopLimit : '∞',
@@ -171,8 +171,8 @@ async function main() {
       Extension: ROOT_DIR,
       Path: fullSessionPath,
     },
-    'GREEN',
-    '🥒'
+    'BLUE',
+    '🤖'
   );
 
   if (promiseToken) {

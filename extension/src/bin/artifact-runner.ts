@@ -2,14 +2,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { spawn_cmd, printBanner, Style, getExtensionRoot } from '../services/pickle-utils.js';
+import { spawn_cmd, printBanner, Style, getExtensionRoot } from '../services/core-utils.js';
 
 async function main() {
   const ROOT_DIR = getExtensionRoot();
-  const JAR_ROOT = path.join(ROOT_DIR, 'jar');
+  const JAR_ROOT = path.join(ROOT_DIR, 'archive');
 
   if (!fs.existsSync(JAR_ROOT)) {
-    console.log('Pickle Jar is empty. No tasks to run.');
+    console.log('Archive is empty. No tasks to run.');
     return;
   }
 
@@ -25,8 +25,8 @@ async function main() {
 
       if (fs.existsSync(metaPath)) {
         const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-        if (meta.status === 'marinating') {
-          printBanner(`Opening Jar: ${taskId}`, 'MAGENTA');
+        if (meta.status === 'marinating' || meta.status === 'archived') {
+          printBanner(`Opening Archive: ${taskId}`, 'MAGENTA');
 
           // Resume logic here
           const sessionDir = path.join(ROOT_DIR, 'sessions', taskId);
@@ -37,7 +37,7 @@ async function main() {
             fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
 
             // Execute loop
-            const cmd = ['gemini', '/pickle', '--resume', sessionDir];
+            const cmd = ['gemini', '/architect', '--resume', sessionDir];
             await spawn_cmd(cmd, { cwd: meta.repo_path });
 
             // Update status

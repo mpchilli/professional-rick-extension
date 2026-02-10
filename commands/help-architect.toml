@@ -1,14 +1,14 @@
-description = "Show help and usage guide for Pickle Rick"
+description = "Show help and usage guide for AI Architect"
 prompt = """
-Display the Pickle Rick help documentation.
+Display the AI Architect help documentation.
 
 Summarize the available commands for the user:
-- `/pickle <prompt>`: Start the autonomous development loop (Manager Mode).
-- `/pickle-prd <prompt>`: Interactively draft a PRD and initialize a session.
-- `/eat-pickle`: Stop/Cancel the current loop.
-- `/help-pickle`: Show this message.
+- `/architect <prompt>`: Start the autonomous development loop (Manager Mode).
+- `/draft-prd <prompt>`: Interactively draft a PRD and initialize a session.
+- `/cancel-session`: Stop/Cancel the current loop.
+- `/help-architect`: Show this message.
 
-**Advanced Flags for /pickle:**
+**Advanced Flags for /architect:**
 - `--resume [PATH]`: Resume an existing session.
 - `--max-iterations <N>`: Stop after N iterations (default: 5).
 - `--max-time <M>`: Stop after M minutes (default: 60). (Worker default: 20m).

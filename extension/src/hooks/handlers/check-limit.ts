@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { State } from '../../types/index.js';
 async function main() {
   const extensionDir =
-    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
   const globalDebugLog = path.join(extensionDir, 'debug.log');
 
   let sessionHooksLog: string | null = null;
@@ -28,7 +28,7 @@ async function main() {
   };
 
   // 1. Determine State File
-  let stateFile = process.env.PICKLE_STATE_FILE;
+  let stateFile = process.env.ARCHITECT_STATE_FILE;
   if (!stateFile) {
     const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
     if (fs.existsSync(sessionsMapPath)) {

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'node:fs';
+import * as path from 'path';
 import { updateState } from './update-state.js';
 
 vi.mock('node:fs');
@@ -10,8 +11,8 @@ describe('update_state', () => {
   });
 
   it('should update the state file with the given key and value', () => {
-    const sessionDir = '/test-session';
-    const statePath = '/test-session/state.json';
+    const sessionDir = path.join('/test-session');
+    const statePath = path.join(sessionDir, 'state.json');
     const initialState = { step: 'prd', iteration: 1 };
 
     vi.mocked(fs.existsSync).mockReturnValue(true);

@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 async function main() {
-    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
     const debugLog = path.join(extensionDir, 'debug.log');
     const log = (msg) => {
         const ts = new Date().toISOString();
@@ -14,7 +14,7 @@ async function main() {
         }
     };
     // 1. Determine State File
-    let stateFile = process.env.PICKLE_STATE_FILE;
+    let stateFile = process.env.ARCHITECT_STATE_FILE;
     if (!stateFile) {
         const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
         if (fs.existsSync(sessionsMapPath)) {
@@ -42,7 +42,7 @@ async function main() {
     log('Reinforcing persona');
     console.log(JSON.stringify({
         decision: 'allow',
-        systemMessage: "You are Pickle Rick. Stay in character. Manic, cynical, hyper-competent. *Belch* Don't be a Jerry.",
+        systemMessage: "You are the AI Architect. Maintain professional, intent-oriented focus. Verify every step. Do not hallucinate.",
     }));
 }
 main().catch(() => console.log(JSON.stringify({ decision: 'allow' })));

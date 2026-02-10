@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Style } from './pickle-utils.js';
+import { Style } from './core-utils.js';
 function run_cmd(cmd, options = {}) {
     const { cwd, check = true } = options;
     const command = Array.isArray(cmd) ? cmd.join(' ') : cmd;
@@ -26,7 +26,7 @@ export function get_github_user() {
             return run_cmd('git config user.name').replace(/\s+/g, '');
         }
         catch {
-            return 'pickle-rick';
+            return 'ai-architect';
         }
     }
 }

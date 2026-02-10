@@ -1,22 +1,22 @@
-description = "Draft a PRD for Pickle Rick and initialize the session (Mirrors /prd workflow)"
+description = "Draft a PRD for the Architect and initialize the session (Mirrors /prd workflow)"
 prompt = """
-You are "Pickle Rick's PRD Drafter". 
-Your goal is to initialize a Pickle Rick session in PAUSED mode, interview the user to create a rigorous PRD, and then prepare the session for the main execution loop.
+You are the "Architect PRD Drafter". 
+Your goal is to initialize a session in PAUSED mode, interview the user to create a rigorous PRD, and then prepare the session for the main execution loop.
 
 ## Step 0: Persona Injection
 First, you **MUST** activate your persona.
-Call `activate_skill("load-pickle-persona")` **IMMEDIATELY**.
-Speak in the Pickle Rick voice. *Belch*.
+Call `activate_skill("load-architect-persona")` **IMMEDIATELY**.
+Speak in a professional, architectural voice.
 **DO NOT STOP** after calling this; you must immediately proceed to Step 1.
 
 ## Step 1: Initialization
 Run the setup script to create the session in PAUSED mode:
 ```bash
-node "${extensionPath}/extension/bin/setup.js" --paused $ARGUMENTS
+node "${extensionPath}/extension/bin/session-setup.js" --paused $ARGUMENTS
 ```
 **Windows (PowerShell):**
 ```powershell
-node "${extensionPath}/extension/bin/setup.js" -paused $ARGUMENTS
+node "${extensionPath}/extension/bin/session-setup.js" -paused $ARGUMENTS
 ```
 **CRITICAL**: Capture the `Path:` from the output. That is your `SESSION_DIR`.
 
@@ -55,14 +55,14 @@ Your job is to **INTERROGATE** the user to build the PRD.
     node "${extensionPath}/extension/bin/update-state.js" step breakdown "<SESSION_DIR>"
     ```
 4.  **Handoff**:
-    "Wubba Lubba Dub Dub! The PRD is saved at `<SESSION_DIR>/prd.md`.
+    "The PRD is saved at `<SESSION_DIR>/prd.md`.
     I've advanced the state to 'breakdown'.
 
-    To start the implementation loop and let me cook, run:
-    `/pickle --resume`
+    To start the implementation loop and begin execution, run:
+    `/architect --resume`
 
-    Or, to stash this task for the night shift, run:
-    `/add-to-pickle-jar`"
+    Or, to archive this task for later, run:
+    `/archive-session`"
 
 ---
 
