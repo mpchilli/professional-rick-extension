@@ -11,7 +11,7 @@ It implements a rigid, iterative engineering lifecycle: **PRD -> Breakdown -> Re
 ## Key Components
 
 ### 1. Configuration
-- **`gemini-extension.json`**: The main manifest file defining the extension name (`ai-architect`) and context file (`GEMINI.md`).
+- **`gemini-extension.json`**: The main manifest file defining the extension name (`Pro-Rick-GPro`) and context file (`GEMINI.md`).
 
 ### 2. Persona Definition
 - **`hooks/reinforce-persona.js`**: The core personality enforcer. It defines:

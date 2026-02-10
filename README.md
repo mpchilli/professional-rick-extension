@@ -133,7 +133,7 @@ To ensure functionality, you must:
     ```json
     {
       "context": {
-        "includeDirectories": ["~/.gemini/extensions/ai-architect"]
+        "includeDirectories": ["~/.gemini/extensions/Pro-Rick-GPro"]
       }
     }
     ```
@@ -141,7 +141,7 @@ To ensure functionality, you must:
 ### 🔍 Viewing Session Logs
 All session data (including research, plans, and tickets) is stored in:
 ```bash
-~/.gemini/extensions/ai-architect/sessions
+~/.gemini/extensions/Pro-Rick-GPro/sessions
 ```
 
 ## 🧠 Skills & Capabilities
@@ -178,7 +178,7 @@ The extension is configured via `gemini-extension.json`.
 
 ```json
 {
-  "name": "ai-architect",
+  "name": "Pro-Rick-GPro",
   "version": "0.1.0",
   "contextFileName": "GEMINI.md"
 }

@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 async function main() {
-    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
+    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
     const globalDebugLog = path.join(extensionDir, 'debug.log');
     let sessionHooksLog = null;
     const log = (msg) => {

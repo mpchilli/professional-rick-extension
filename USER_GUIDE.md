@@ -14,7 +14,7 @@ Add this to your `~/.gemini/settings.json` to enable the agent and secure git op
   "hooks": { "enabled": true },
   "experimental": { "skills": true },
   "context": {
-    "includeDirectories": ["~/.gemini/extensions/ai-architect"]
+    "includeDirectories": ["~/.gemini/extensions/Pro-Rick-GPro"]
   },
   "tools": {
     "exclude": ["run_shell_command(git push)"],

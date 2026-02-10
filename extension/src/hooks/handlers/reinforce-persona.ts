@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { State } from '../../types/index.js';
 async function main() {
   const extensionDir =
-    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/ai-architect');
+    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
   const debugLog = path.join(extensionDir, 'debug.log');
 
   const log = (msg: string) => {

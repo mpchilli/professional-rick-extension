@@ -28,7 +28,7 @@ export function get_github_user(): string {
     try {
       return run_cmd('git config user.name').replace(/\s+/g, '');
     } catch {
-      return 'ai-architect';
+      return 'Pro-Rick-GPro';
     }
   }
 }

@@ -117,7 +117,7 @@ export async function spawn_cmd(cmd, options = {}) {
     });
 }
 export function getExtensionRoot() {
-    return path.join(os.homedir(), '.gemini/extensions/ai-architect');
+    return path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
 }
 export function getSessionDir() {
     try {

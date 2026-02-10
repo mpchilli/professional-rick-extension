@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as os from 'node:os';
 
-const EXTENSION_DIR = join(os.homedir(), '.gemini/extensions/ai-architect');
+const EXTENSION_DIR = join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
 const HANDLERS_DIR = join(EXTENSION_DIR, 'extension', 'hooks', 'handlers');
 const LOG_PATH = join(EXTENSION_DIR, 'debug.log');
 

@@ -14,7 +14,7 @@
     - Rename extension to "AI Architect".
     - Update description.
 - [ ] Update `package.json`:
-    - Name: `ai-architect-extension`
+    - Name: `Pro-Rick-GPro`
     - Description: "Professional AI Architect for Gemini"
 - [ ] Refactor `commands/`:
     - Delete `pickle.toml`, `pickle-prd.toml`, `eat-pickle.toml`, `send-to-morty.toml`.
