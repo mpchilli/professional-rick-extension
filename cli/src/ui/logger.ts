@@ -1,7 +1,7 @@
 import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 
-const LOG_DIR = join(process.cwd(), ".pickle");
+const LOG_DIR = join(process.cwd(), ".architect");
 const LOG_FILE = join(LOG_DIR, "cli.log");
 
 async function writeLog(line: string): Promise<void> {

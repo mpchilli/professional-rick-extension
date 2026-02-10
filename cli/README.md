@@ -1,11 +1,13 @@
-# Pickle Rick 🥒
+# Architect Loop CLI ⚙️
+
+> **Attribution:** This CLI was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10. While the original persona was entertaining, this professional fork prioritises clarity, accessibility, and ease of use for serious engineering work.
 
 ## 📥 Installation
 
 ### From npm
 
 ```bash
-npm install -g im-pickle-rick
+npm install -g architect-loop
 ```
 
 ### From Source
@@ -26,35 +28,31 @@ bun link
 > [!WARNING]
 > **USE AT YOUR OWN RISK.** This CLI orchestrates autonomous AI coding agents that modify files and execute commands. While sessions run in isolated git worktrees, the agent may behave unexpectedly and consume significant tokens. Always review changes before merging.
 
-![Pickle Rick](../resources/pickle-rick.png)
-
-> "I turned myself into a CLI tool, Morty! I'm Pickle Riiiiick!"
-
-Pickle Rick is an autonomous coding agent orchestrator with a beautiful TUI (Terminal UI) dashboard. Point it at a task, walk away, and let a hyper-intelligent AI work through your coding problems using a structured engineering workflow - all running safely in isolated git worktrees.
+Architect Loop is an autonomous coding agent orchestrator with a beautiful TUI (Terminal UI) dashboard. Point it at a task, walk away, and let a structured AI agent work through your coding problems using a disciplined engineering workflow — all running safely in isolated git worktrees.
 
 ## 🚀 Overview
 
-Pickle Rick executes complex coding tasks through an iterative AI agent loop:
+The Architect Loop executes complex coding tasks through an iterative AI agent loop:
 
 1. **PRD** - Draft Product Requirements Document
 2. **Breakdown** - Create atomic tickets from requirements
-3. **Research** - Analyze codebase patterns and data flows
+3. **Research** - Analyse codebase patterns and data flows
 4. **Plan** - Design technical implementation approach
 5. **Implement** - Execute with rigorous testing
-6. **Refactor** - Cleanup and eliminate "AI slop"
+6. **Refactor** - Cleanup and eliminate low-quality patterns
 
-## 🥒 The Pickle Rick Method
+## ⚙️ The Architect Loop Method
 
-This CLI implements the **Pickle Rick technique** - an iterative, self-referential AI development loop where the agent continuously improves its work until completion.
+This CLI implements the **Architect Loop technique** — an iterative, self-referential AI development loop where the agent continuously improves its work until completion.
 
 ### How It Works
 
 ```bash
 # Launch the TUI dashboard
-pickle
+architect
 
 # Or run directly with a prompt
-pickle "Implement JWT authentication"
+architect "Implement JWT authentication"
 
 # The agent automatically:
 # 1. Creates an isolated git worktree
@@ -75,7 +73,7 @@ pickle "Implement JWT authentication"
 ### Launch TUI Dashboard
 
 ```bash
-pickle
+architect
 ```
 
 Opens the interactive terminal interface where you can:
@@ -86,14 +84,14 @@ Opens the interactive terminal interface where you can:
 ### Run with a Prompt
 
 ```bash
-pickle "Your task description here"
+architect "Your task description here"
 ```
 
 **Examples:**
 ```bash
-pickle "Add unit tests for the authentication module"
-pickle "Refactor the database layer to use connection pooling"
-pickle "Fix the bug where users can't logout on mobile"
+architect "Add unit tests for the authentication module"
+architect "Refactor the database layer to use connection pooling"
+architect "Fix the bug where users can't logout on mobile"
 ```
 
 ### Command Options
@@ -109,18 +107,18 @@ pickle "Fix the bug where users can't logout on mobile"
 
 ```bash
 # List all sessions
-pickle sessions
+architect sessions
 
 # Validate settings file
-pickle validate-settings
+architect validate-settings
 
 # Auto-fix common settings issues
-pickle validate-settings --fix
+architect validate-settings --fix
 ```
 
 ## ⚙️ Configuration
 
-Settings are stored at `~/.pickle/settings.json`:
+Settings are stored at `~/.architect/settings.json`:
 
 ```json
 {
@@ -148,15 +146,15 @@ Settings are stored at `~/.pickle/settings.json`:
 ### Session Storage
 
 Sessions are stored in:
-- **Local**: `.pickle/sessions/<date-hash>/` in your project
-- **Worktrees**: `.pickle/worktrees/session-<name>/` for isolated execution
-- **Global**: `~/.gemini/extensions/pickle-rick/sessions/`
+- **Local**: `.architect/sessions/<date-hash>/` in your project
+- **Worktrees**: `.architect/worktrees/session-<name>/` for isolated execution
+- **Global**: `~/.gemini/extensions/architect-loop/sessions/`
 
 ### Resuming Sessions
 
 ```bash
 # Resume a specific session
-pickle -r .pickle/sessions/2024-01-15-abc123/
+architect -r .architect/sessions/2024-01-15-abc123/
 ```
 
 The agent continues from where it left off with full context preserved.
@@ -202,7 +200,7 @@ bun run check
 bun test
 ```
 
-## ✅ When to Use Pickle Rick
+## ✅ When to Use the Architect Loop
 
 **Good for:**
 - Well-defined tasks with clear success criteria
@@ -211,14 +209,14 @@ bun test
 - Tasks with automatic verification (tests, linters)
 
 **Not good for:**
-- Tasks requiring human judgment mid-execution
+- Tasks requiring human judgement mid-execution
 - One-shot simple operations
 - Tasks with unclear success criteria
 - Production debugging
 
 ## 🛡️ Safety & Sandboxing
 
-Pickle Rick executes code autonomously. Safety features include:
+The Architect Loop executes code autonomously. Safety features include:
 
 - **Git Worktree Isolation**: Changes happen in separate worktrees
 - **No Auto-Push**: Changes are never pushed without explicit action
@@ -239,4 +237,4 @@ MIT
 
 ---
 
-> "Wubba Lubba Dub-Dub! 🥒"
+> "Engineering excellence through disciplined iteration." ⚙️

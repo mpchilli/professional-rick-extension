@@ -3,15 +3,15 @@ import { mkdir, readdir, copyFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import simpleGit, { type SimpleGit } from "simple-git";
 
-export async function createPickleWorktree(
+export async function createSessionWorktree(
         sessionName: string, 
         baseBranch: string, 
         workingDir: string,
         gitInstance?: SimpleGit
 ): Promise<{ worktreeDir: string; branchName: string }> {
-    const worktreeBase = join(workingDir, ".pickle", "worktrees");
+    const worktreeBase = join(workingDir, ".architect", "worktrees");
     const worktreeDir = join(worktreeBase, `session-${sessionName}`);
-    const branchName = `pickle/session-${sessionName}`;
+    const branchName = `architect/session-${sessionName}`;
 
     if (!existsSync(worktreeBase)) {
         await mkdir(worktreeBase, { recursive: true });
@@ -47,12 +47,12 @@ export async function getGitRoot(dir: string, gitInstance?: SimpleGit): Promise<
 }
 
 /**
- * Recursively copy files from source to destination, excluding .git and .pickle
+ * Recursively copy files from source to destination, excluding .git and .architect
  */
 async function copyFilesRecursively(
         srcDir: string,
         destDir: string,
-        excludeDirs: string[] = [".git", ".pickle"]
+        excludeDirs: string[] = [".git", ".architect"]
 ): Promise<void> {
         const entries = await readdir(srcDir, { withFileTypes: true });
 
@@ -107,12 +107,12 @@ export async function syncWorktreeToOriginal(
                 await originalGit.fetch(".", branchName);
 
                 // Merge the branch into current HEAD
-                await originalGit.merge([branchName, "--no-ff", "-m", `Merge branch '${branchName}' (Pickle session)`]);
+                await originalGit.merge([branchName, "--no-ff", "-m", `Merge branch '${branchName}' (Architect Loop session)`]);
         } catch (error) {
                 // If merge fails (conflicts), try copying files directly
                 console.error("Merge failed, attempting file copy fallback:", error);
 
-                // Copy files from worktree to git root (excludes .git and .pickle directories)
+                // Copy files from worktree to git root (excludes .git and .architect directories)
                 await copyFilesRecursively(worktreeDir, gitRoot);
         }
 }
@@ -122,7 +122,7 @@ export async function syncWorktreeToOriginal(
  * @param worktreeDir - The worktree directory to remove
  * @param originalDir - The original directory (will find git root automatically)
  */
-export async function cleanupPickleWorktree(
+export async function cleanupSessionWorktree(
         worktreeDir: string,
         originalDir: string,
         gitInstance?: SimpleGit

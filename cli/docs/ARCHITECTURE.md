@@ -1,8 +1,10 @@
 # Architecture
 
+> **Attribution:** This CLI was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10. While the original persona was entertaining, this professional fork prioritises clarity, accessibility, and ease of use for serious engineering work.
+
 ## Overview
 
-Pickle Rick CLI is an autonomous coding agent orchestrator with a TUI (Terminal UI) interface built on `@opentui/core`. It executes tasks through AI providers (like Gemini CLI) in isolated git worktrees.
+Architect Loop CLI is an autonomous coding agent orchestrator with a TUI (Terminal UI) interface built on `@opentui/core`. It executes tasks through AI providers (like Gemini CLI) in isolated git worktrees.
 
 ## Core Components
 
@@ -30,7 +32,7 @@ Pickle Rick CLI is an autonomous coding agent orchestrator with a TUI (Terminal 
               ▼               ▼               ▼
 ┌──────────────────┐ ┌──────────────┐ ┌──────────────────┐
 │  Task Source     │ │  AI Provider │ │  Git Services    │
-│  (pickle-source) │ │  (providers/)│ │  (git/)          │
+│  (task-source)   │ │  (providers/)│ │  (git/)          │
 └──────────────────┘ └──────────────┘ └──────────────────┘
 ```
 
@@ -40,28 +42,28 @@ Pickle Rick CLI is an autonomous coding agent orchestrator with a TUI (Terminal 
 
 CLI commands using Commander.js:
 - Default action launches TUI dashboard
-- `pickle` command runs agent with optional prompt or resume
+- `loop` command runs agent with optional prompt or resume
 - `sessions` lists past sessions
 
 ### 2. Session & Settings Management (`src/services/config/`)
 
-- Sessions stored in `.pickle/sessions/<date-hash>/`
+- Sessions stored in `.architect/sessions/<date-hash>/`
 - State persisted as `state.json` with Zod validation
-- Global sessions also at `~/.gemini/extensions/pickle-rick/sessions/`
-- User settings at `~/.pickle/settings.json` (provider/model configuration)
+- Global sessions also at `~/.gemini/extensions/architect-loop/sessions/`
+- User settings at `~/.architect/settings.json` (provider/model configuration)
 
 ### 3. Execution Pipeline (`src/services/execution/`)
 
 - **SequentialExecutor**: Main orchestration loop
-- **PickleTaskSource**: Task state machine managing phases
+- **TaskSource**: Task state machine managing phases
 - Creates isolated git worktrees for each session to avoid conflicts
 
 ### 4. AI Providers (`src/services/providers/`)
 
 - **GeminiProvider**: Wraps Gemini CLI with streaming JSON output
 - **OpencodeProvider**: Alternative provider using opencode CLI
-- Provider selected via `~/.pickle/settings.json` or defaults to Gemini
-- Temporarily disables pickle-rick extension during execution to prevent recursion
+- Provider selected via `~/.architect/settings.json` or defaults to Gemini
+- Temporarily disables the extension during execution to prevent recursion
 - Supports session resumption via `resumeSessionId`
 
 ### 5. TUI Components (`src/ui/`)
@@ -96,7 +98,7 @@ The agent progresses through phases:
 - **research**: Investigate codebase and gather context
 - **plan**: Design implementation approach
 - **implement**: Write the code
-- **refactor**: Clean up and optimize
+- **refactor**: Clean up and optimise
 - **done**: All tasks completed
 
 ## Git Worktree Isolation
@@ -106,7 +108,7 @@ Sessions execute in isolated worktrees to prevent conflicts:
 ```
 project/
 ├── .git/                    # Main repository
-├── .pickle/
+├── .architect/
 │   ├── sessions/            # Session state
 │   │   └── 2024-01-15-abc/
 │   │       └── state.json
@@ -117,8 +119,8 @@ project/
 └── src/                     # Main project source
 ```
 
-- Created at `.pickle/worktrees/session-<name>/`
-- Project state synced via rsync (excluding `.git`, `.pickle`)
+- Created at `.architect/worktrees/session-<name>/`
+- Project state synced via rsync (excluding `.git`, `.architect`)
 - Session context mirrored inside worktree for sandbox bypass
 - Offers merge back to base branch on completion
 
@@ -168,12 +170,12 @@ src/
 ├── services/
 │   ├── commands/         # Worker commands
 │   ├── config/           # Settings & state management
-│   │   ├── settings.ts   # User settings (~/.pickle/settings.json)
+│   │   ├── settings.ts   # User settings (~/.architect/settings.json)
 │   │   ├── state.ts      # Session state management
 │   │   └── types.ts      # Zod schemas
 │   ├── execution/        # Orchestration
 │   │   ├── sequential.ts # Main executor loop
-│   │   ├── pickle-source.ts # Task state machine
+│   │   ├── task-source.ts # Task state machine
 │   │   └── prompt.ts     # Prompt generation
 │   ├── git/              # Git operations
 │   │   ├── worktree.ts   # Worktree management

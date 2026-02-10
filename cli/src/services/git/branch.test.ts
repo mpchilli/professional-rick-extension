@@ -49,8 +49,8 @@ describe("Branch Service", () => {
         describe("createTaskBranch", () => {
                 test("should create a branch with slugified task name", async () => {
                         const branchName = await branchService.createTaskBranch("New Task", "main");
-                        expect(branchName).toBe("pickle/new-task");
-                        expect(mockGit.checkoutLocalBranch).toHaveBeenCalledWith("pickle/new-task");
+                        expect(branchName).toBe("architect/new-task");
+                        expect(mockGit.checkoutLocalBranch).toHaveBeenCalledWith("architect/new-task");
                 });
 
                 test("should stash if there are uncommitted changes", async () => {
@@ -58,7 +58,7 @@ describe("Branch Service", () => {
 
                         await branchService.createTaskBranch("New Task", "main");
 
-                        expect(mockGit.stash).toHaveBeenCalledWith(["push", "-m", "pickle-autostash"]);
+                        expect(mockGit.stash).toHaveBeenCalledWith(["push", "-m", "architect-autostash"]);
                         expect(mockGit.stash).toHaveBeenCalledWith(["pop"]);
                 });
 
@@ -74,7 +74,7 @@ describe("Branch Service", () => {
 
                         await branchService.createTaskBranch("New Task", "main");
 
-                        expect(mockGit.checkout).toHaveBeenCalledWith("pickle/new-task");
+                        expect(mockGit.checkout).toHaveBeenCalledWith("architect/new-task");
                 });
         });
 

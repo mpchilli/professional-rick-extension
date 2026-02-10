@@ -3,7 +3,7 @@ import { homedir } from "node:os";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const DEFAULT_EXTENSION_PATH = join(homedir(), ".gemini/extensions/pickle-rick");
+const DEFAULT_EXTENSION_PATH = join(homedir(), ".gemini/extensions/architect-loop");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,7 +33,7 @@ export function resolveSkillPath(skillName: string): string {
     const execDir = dirname(process.execPath);
 
     // 0. Local Dev Priority: Check `../src/skills/<name>.md` relative to binary
-    // If running from `dist/pickle`, this maps to `src/skills/<name>.md`
+    // If running from `dist/architect`, this maps to `src/skills/<name>.md`
     const devLocalSkill = join(execDir, "../src/skills", `${skillName}.md`);
     if (existsSync(devLocalSkill)) return devLocalSkill;
 
@@ -47,7 +47,7 @@ export function resolveSkillPath(skillName: string): string {
     if (existsSync(localSrcSkill)) return localSrcSkill;
 
     // 3. Local Source (Root): Check `../../../skills/<name>/SKILL.md` relative to this file
-    // src/utils/resources.ts -> src -> cli -> pickle-rick-extension -> skills
+    // src/utils/resources.ts -> src -> cli -> architect-loop-extension -> skills
     const localRootSkill = join(__dirname, "../../../skills", skillName, "SKILL.md");
     if (existsSync(localRootSkill)) return localRootSkill;
 

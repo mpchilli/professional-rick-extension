@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 
 export function findProjectRoot(startDir: string): string {
     let current = startDir;
-    const markers = [".pickle-root", ".git", "package.json", "gemini-extension.json"];
+    const markers = [".architect-root", ".git", "package.json", "gemini-extension.json"];
 
     while (true) {
         for (const marker of markers) {

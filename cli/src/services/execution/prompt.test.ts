@@ -7,11 +7,11 @@ import type { Task } from "../../types/tasks.js";
 mock.module("../../utils/resources.js", () => ({
     resolveSkillPath: (name: string) => `/mock/skills/${name}.md`,
     getExtensionRoot: () => "/mock/extension",
-    getCliCommand: () => "pickle"
+    getCliCommand: () => "loop"
 }));
 
 mock.module("../../utils/persona.js", () => ({
-    PICKLE_PERSONA: "I AM PICKLE RICK"
+    AGENT_PERSONA: "I AM Architect Loop"
 }));
 
 // Mock fs/promises and fs
@@ -65,7 +65,7 @@ describe("Prompt Logic (buildPrompt)", () => {
         
         expect(prompt).toContain("Phase: REQUIREMENTS");
         expect(prompt).toContain("PRD Skill content");
-        expect(prompt).toContain("I AM PICKLE RICK");
+        expect(prompt).toContain("I AM Architect Loop");
     });
 
     test("should generate Breakdown phase prompt", async () => {

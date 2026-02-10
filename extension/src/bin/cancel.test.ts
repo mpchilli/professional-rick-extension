@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { cancelSession } from './cancel.js';
 
 vi.mock('node:fs');
@@ -16,7 +17,7 @@ describe('cancel', () => {
   it('should set active to false in state.json', () => {
     const cwd = '/test-dir';
     const sessionPath = '/test-session';
-    const statePath = '/test-session/state.json';
+    const statePath = path.join('/test-session', 'state.json');
     const sessionsMap = { [cwd]: sessionPath };
 
     vi.mocked(fs.existsSync).mockReturnValue(true);

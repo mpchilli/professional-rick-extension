@@ -6,7 +6,7 @@ import { SessionStateSchema, type SessionState } from "./types.js";
 import { findProjectRoot } from "../../utils/project-root.js";
 import { loadSettings } from "./settings.js";
 
-export const GLOBAL_SESSIONS_DIR = join(homedir(), ".gemini", "extensions", "pickle-rick", "sessions");
+export const GLOBAL_SESSIONS_DIR = join(homedir(), ".gemini", "extensions", "architect-loop", "sessions");
 
 export interface SessionSummary {
     original_prompt: string;
@@ -17,7 +17,7 @@ export interface SessionSummary {
 
 // Helper to get session path relative to CWD
 export function getSessionPath(cwd: string, sessionId: string): string {
-    return join(cwd, ".pickle", "sessions", sessionId);
+    return join(cwd, ".architect", "sessions", sessionId);
 }
 
 export async function loadState(sessionDir: string): Promise<SessionState | null> {
@@ -48,7 +48,7 @@ export async function createSession(cwd: string, prompt: string, is_prd_mode: bo
     
     await mkdir(sessionDir, { recursive: true });
     
-    // Load settings from ~/.pickle/settings.json to get max_iterations
+    // Load settings from ~/.architect/settings.json to get max_iterations
     const settings = await loadSettings();
     const maxIterations = settings.max_iterations ?? 10;
     
@@ -93,7 +93,7 @@ export async function listSessions(cwd?: string): Promise<SessionSummary[]> {
     if (cwd) {
         try {
             const root = findProjectRoot(cwd);
-            const localDir = join(root, ".pickle", "sessions");
+            const localDir = join(root, ".architect", "sessions");
             if (existsSync(localDir)) {
                 const entries = await readdir(localDir, { withFileTypes: true });
                 for (const entry of entries) {

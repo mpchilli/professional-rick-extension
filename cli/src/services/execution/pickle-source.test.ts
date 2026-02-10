@@ -1,11 +1,11 @@
 import { expect, test, describe, beforeEach, afterEach } from "bun:test";
-import { PickleTaskSource } from "./pickle-source.js";
+import { AgentTaskSource } from "./task-source.js";
 import { writeFile, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { existsSync, writeFileSync } from "node:fs";
 import type { SessionState } from "../config/types.js";
 
-describe("PickleTaskSource Sequencing", () => {
+describe("AgentTaskSource Sequencing", () => {
     
     // TODO: Fix ENOENT race condition in test setup
     test.skip("should sort tickets by order field", async () => {
@@ -35,7 +35,7 @@ describe("PickleTaskSource Sequencing", () => {
         await writeFile(join(testDir, "ticket_1.md"), `---\nid: t1\ntitle: First\nstatus: Triage\norder: 10\n---\nBody`);
         await writeFile(join(testDir, "ticket_2.md"), `---\nid: t2\ntitle: Second\nstatus: Triage\norder: 20\n---\nBody`);
 
-        const source = new PickleTaskSource(testDir);
+        const source = new AgentTaskSource(testDir);
         
         const task1 = await source.getNextTask();
         expect(task1?.id).toBe("t1");
@@ -79,7 +79,7 @@ describe("PickleTaskSource Sequencing", () => {
          await new Promise(r => setTimeout(r, 100));
          await writeFile(join(testDir, "ticket_b.md"), `---\nid: tb\ntitle: B\nstatus: Triage\norder: 10\n---\nBody`);
 
-         const source = new PickleTaskSource(testDir);
+         const source = new AgentTaskSource(testDir);
          const task1 = await source.getNextTask();
          expect(task1?.id).toBe("ta");
 

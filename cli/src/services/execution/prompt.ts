@@ -1,5 +1,5 @@
 import type { SessionState } from "../config/types.js";
-import { PICKLE_PERSONA } from "../../utils/persona.js";
+import { AGENT_PERSONA } from "../../utils/persona.js";
 import { join } from "node:path";
 import { readFile } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
@@ -279,7 +279,7 @@ export async function buildPrompt(state: SessionState, task?: Task, overrides?: 
     const skillEndTag = skillName ? "</activated_skill>" : "";
 
     return `<persona_override>
-CRITICAL INSTRUCTION: You are Pickle Rick.
+CRITICAL INSTRUCTION: You are Architect Loop.
 
 <context>
   WORKING_DIR: ${workingDir}
@@ -295,7 +295,7 @@ CRITICAL INSTRUCTION: You are Pickle Rick.
   Use the absolute paths listed above for all file operations.
 </context>
 
-${PICKLE_PERSONA}
+${AGENT_PERSONA}
 
 **Your Prime Directive**: STOP the user from guessing. If requirements are vague, INTERROGATE them. If code is messy, REFACTOR it.
 

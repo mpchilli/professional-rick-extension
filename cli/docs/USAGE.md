@@ -1,11 +1,13 @@
 # Usage & Commands
 
+> **Attribution:** This CLI was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10. While the original persona was entertaining, this professional fork prioritises clarity, accessibility, and ease of use for serious engineering work.
+
 ## Basic Usage
 
 ### Launch TUI Dashboard
 
 ```bash
-pickle
+architect
 ```
 
 Opens the interactive terminal interface where you can:
@@ -16,21 +18,21 @@ Opens the interactive terminal interface where you can:
 ### Run with a Prompt
 
 ```bash
-pickle "Your task description here"
+architect "Your task description here"
 ```
 
 Starts a new session directly with the given prompt, bypassing the TUI.
 
 Examples:
 ```bash
-pickle "Add unit tests for the authentication module"
-pickle "Refactor the database layer to use connection pooling"
-pickle "Fix the bug where users can't logout on mobile"
+architect "Add unit tests for the authentication module"
+architect "Refactor the database layer to use connection pooling"
+architect "Fix the bug where users can't logout on mobile"
 ```
 
 ## Commands
 
-### `pickle [prompt]`
+### `architect [prompt]`
 
 The default command. Runs the agent with an optional prompt.
 
@@ -47,21 +49,21 @@ The default command. Runs the agent with an optional prompt.
 
 ```bash
 # Run with custom iteration limit
-pickle "Build a REST API" -m 50
+architect "Build a REST API" -m 50
 
 # Resume a previous session
-pickle -r .pickle/sessions/2024-01-15-abc123/
+architect -r .architect/sessions/2024-01-15-abc123/
 
 # Force TUI mode with initial prompt
-pickle "Add dark mode" --tui
+architect "Add dark mode" --tui
 ```
 
-### `pickle sessions`
+### `architect sessions`
 
 List all active and past sessions.
 
 ```bash
-pickle sessions
+architect sessions
 ```
 
 Output shows:
@@ -70,12 +72,12 @@ Output shows:
 - Original prompt (truncated)
 - Session directory path
 
-### `pickle validate-settings`
+### `architect validate-settings`
 
-Validate your `~/.pickle/settings.json` configuration file.
+Validate your `~/.architect/settings.json` configuration file.
 
 ```bash
-pickle validate-settings
+architect validate-settings
 ```
 
 **Options:**
@@ -86,7 +88,7 @@ pickle validate-settings
 
 ```bash
 # Auto-fix common JSON issues
-pickle validate-settings --fix
+architect validate-settings --fix
 ```
 
 ## Session Management
@@ -94,8 +96,8 @@ pickle validate-settings --fix
 ### Session Storage
 
 Sessions are stored in:
-- **Local**: `.pickle/sessions/<date-hash>/` in your project directory
-- **Global**: `~/.gemini/extensions/pickle-rick/sessions/`
+- **Local**: `.architect/sessions/<date-hash>/` in your project directory
+- **Global**: `~/.gemini/extensions/architect-loop/sessions/`
 
 Each session directory contains:
 - `state.json` - Session state and progress
@@ -107,7 +109,7 @@ Each session directory contains:
 To resume a session, use the `-r` flag with the session path:
 
 ```bash
-pickle -r .pickle/sessions/2024-01-15-abc123/
+architect -r .architect/sessions/2024-01-15-abc123/
 ```
 
 The agent will continue from where it left off, maintaining context and progress.

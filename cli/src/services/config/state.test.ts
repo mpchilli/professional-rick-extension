@@ -5,7 +5,7 @@ const mockFiles = new Map<string, string>();
 
 mock.module("node:fs", () => ({
   existsSync: (path: string) => {
-    return mockFiles.has(path) || (path.includes(".pickle/sessions") && !path.includes("definitely-not-there"));
+    return mockFiles.has(path) || (path.includes(".architect/sessions") && !path.includes("definitely-not-there"));
   }
 }));
 
@@ -47,11 +47,11 @@ describe("Config State", () => {
   });
 
   test("getSessionPath should return correct path", () => {
-    expect(getSessionPath("/app", "sid")).toBe(join("/app", ".pickle", "sessions", "sid"));
+    expect(getSessionPath("/app", "sid")).toBe(join("/app", ".architect", "sessions", "sid"));
   });
 
   test("saveState and loadState should work together", async () => {
-    const sessionDir = "/project/.pickle/sessions/test-session";
+    const sessionDir = "/project/.architect/sessions/test-session";
     const state: any = {
       active: true,
       working_dir: "/project",

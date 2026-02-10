@@ -1,5 +1,7 @@
 # Installation & Build
 
+> **Attribution:** This CLI was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10. While the original persona was entertaining, this professional fork prioritises clarity, accessibility, and ease of use for serious engineering work.
+
 ## Prerequisites
 
 ### Required
@@ -15,7 +17,7 @@
 
 - **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (default)
   ```bash
-  npm install -g @anthropic-ai/gemini-cli
+  npm install -g @google/gemini-cli
   ```
 
 - Or another supported provider (see [Configuration](./CONFIGURATION.md))
@@ -25,17 +27,17 @@
 ### From npm (Recommended)
 
 ```bash
-npm install -g im-pickle-rick
+npm install -g architect-loop
 ```
 
-After installation, the `pickle` command will be available globally.
+After installation, the `architect` command will be available globally.
 
 ### From Source
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/pickle-rick-cli.git
-   cd pickle-rick-cli
+   git clone https://github.com/galz10/pickle-rick-extension.git
+   cd pickle-rick-extension/cli
    ```
 
 2. Install dependencies:
@@ -79,25 +81,25 @@ bun test src/path/to/file.test.ts
 
 After running `bun run build`:
 
-- `dist/pickle` - Compiled native executable for macOS ARM64
+- `dist/architect` - Compiled native executable for macOS ARM64
 - `dist/worker-executor.js` - Worker script for parallel execution
 
 ## Verifying Installation
 
 ```bash
 # Check version
-pickle --version
+architect --version
 
 # Launch TUI dashboard
-pickle
+architect
 
 # Show help
-pickle --help
+architect --help
 ```
 
 ## Troubleshooting
 
-### "command not found: pickle"
+### "command not found: architect"
 
 If installed via npm, ensure your npm global bin directory is in your PATH:
 ```bash

@@ -38,7 +38,7 @@ export async function runWorker(
     const sessionLog = join(targetDir, `worker_session_${process.pid}.log`);
     const extensionRoot = getExtensionRoot();
 
-    // --- Timeout Clamping Logic (Ported from spawn_morty.py) ---
+    // --- Timeout Clamping Logic (Ported from spawn_worker.py) ---
     // Check parent dir (Manager state) first, then current dir (Worker state resume)
     let timeoutStatePath: string | null = null;
     const parentState = join(targetDir, "..", "state.json");
@@ -125,7 +125,7 @@ export async function runWorker(
 
     // Fallback prompt enforcement
     if (workerPrompt.length < 200) {
-        workerPrompt += `\n\nTask: "${task}"\n1. Activate persona: activate_skill("load-pickle-persona").\n2. Output: <promise>I AM DONE</promise>`;
+        workerPrompt += `\n\nTask: "${task}"\n1. Activate persona: activate_skill("load-persona").\n2. Output: <promise>I AM DONE</promise>`;
     }
 
     // 3. Build Command
@@ -154,26 +154,26 @@ export async function runWorker(
     let cmdArgs = args;
 
     // Check for Command Override (for testing or specialized environments)
-    if (process.env.PICKLE_WORKER_CMD_OVERRIDE) {
-        const parts = process.env.PICKLE_WORKER_CMD_OVERRIDE.split(" ");
+    if (process.env.AGENT_WORKER_CMD_OVERRIDE) {
+        const parts = process.env.AGENT_WORKER_CMD_OVERRIDE.split(" ");
         command = parts[0];
         // We assume the override includes necessary base args, but we might need to append prompt/includes
-        // Actually, spawn_morty.py REPLACES the cmd with the override + prompt.
+        // Actually, spawn_worker.py REPLACES the cmd with the override + prompt.
         // Let's assume the override replaces the 'gemini' part but keeps the args we built, 
         // OR replaces the whole thing.
-        // spawn_morty.py: cmd = shlex.split(os.environ["PICKLE_WORKER_CMD_OVERRIDE"])
+        // spawn_worker.py: cmd = shlex.split(os.environ["AGENT_WORKER_CMD_OVERRIDE"])
         // It ignores the built args if override is present?
-        // Wait, spawn_morty.py lines:
+        // Wait, spawn_worker.py lines:
         //   cmd = ["gemini", ...]
         //   ... build cmd ...
-        //   if "PICKLE_WORKER_CMD_OVERRIDE": cmd = shlex.split(...)
+        //   if "AGENT_WORKER_CMD_OVERRIDE": cmd = shlex.split(...)
         // So it COMPLETELY replaces it. That seems wrong if we want to pass the prompt.
         // BUT, if the override is just the binary, we should prepend it.
         // Let's assume the user knows what they are doing if they use the override.
         // FOR NOW: Let's stick to standard behavior unless forced.
-        // If I want to match spawn_morty exactly:
-        if (process.env.PICKLE_WORKER_CMD_OVERRIDE) {
-             const override = process.env.PICKLE_WORKER_CMD_OVERRIDE.split(" ");
+        // If I want to match spawn_worker exactly:
+        if (process.env.AGENT_WORKER_CMD_OVERRIDE) {
+             const override = process.env.AGENT_WORKER_CMD_OVERRIDE.split(" ");
              command = override[0];
              cmdArgs = [...override.slice(1), ...args]; // Prepend flags from override, append ours?
              // Actually, usually override is like "gemini-beta".
@@ -203,7 +203,7 @@ export async function runWorker(
             env: { 
                 ...process.env, 
                 PYTHONUNBUFFERED: "1",
-                PICKLE_STATE_FILE: workerState // Pass state file location to worker
+                LOOP_STATE_FILE: workerState // Pass state file location to worker
             },
             stdio: ["ignore", "pipe", "pipe"]
         });

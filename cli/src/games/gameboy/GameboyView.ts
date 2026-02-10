@@ -54,9 +54,9 @@ export function launchGameboy(renderer: CliRenderer, options: GameboyViewOptions
   try {
     // Launch the gameboy from the library
     launchGameboyCore(renderer, {
-      romDirectory: join(homedir(), ".pickle", "emulator"),
-      saveDirectory: join(homedir(), ".pickle", "emulator", "saves"),
-      logFile: join(homedir(), ".pickle", "gameboy.log"),
+      romDirectory: join(homedir(), ".architect", "emulator"),
+      saveDirectory: join(homedir(), ".architect", "emulator", "saves"),
+      logFile: join(homedir(), ".architect", "gameboy.log"),
       theme: {
         bg: THEME.bg,
         text: THEME.text,

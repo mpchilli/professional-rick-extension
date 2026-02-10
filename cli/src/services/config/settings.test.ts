@@ -5,7 +5,7 @@ import { mkdir, writeFile, readFile } from "node:fs/promises";
 // Mock fs/promises
 mock.module("node:fs/promises", () => ({
   readFile: async (path: string) => {
-    if (path.includes("/.pickle/settings.json")) {
+    if (path.includes("/.architect/settings.json")) {
       return JSON.stringify({
         model: {
           provider: "gemini",

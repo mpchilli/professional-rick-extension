@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Settings schema for ~/.pickle/settings.json
-export const PickleSettingsSchema = z.object({
+// Settings schema for ~/.architect/settings.json
+export const AgentSettingsSchema = z.object({
   model: z.object({
     provider: z.enum(["gemini", "opencode", "claude", "cursor", "codex", "qwen", "droid", "copilot"]).optional(),
     model: z.string().optional(),
@@ -9,7 +9,7 @@ export const PickleSettingsSchema = z.object({
   max_iterations: z.number().optional(),
 });
 
-export type PickleSettings = z.infer<typeof PickleSettingsSchema>;
+export type AgentSettings = z.infer<typeof AgentSettingsSchema>;
 
 export const SessionStateSchema = z.object({
   active: z.boolean(),

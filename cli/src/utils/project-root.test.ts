@@ -5,7 +5,7 @@ import { join } from "node:path";
 const mockExistsSync = mock((path: string) => {
   if (path === join("/home/user/project", ".git")) return true;
   if (path === join("/home/user/project/sub", "package.json")) return false;
-  if (path === join("/home/user/root-marker", ".pickle-root")) return true;
+  if (path === join("/home/user/root-marker", ".architect-root")) return true;
   return false;
 });
 
@@ -23,7 +23,7 @@ describe("project-root.ts", () => {
     expect(mockExistsSync).toHaveBeenCalledWith(join("/home/user/project", ".git"));
   });
 
-  test("should find root based on .pickle-root marker", () => {
+  test("should find root based on .architect-root marker", () => {
     const root = findProjectRoot("/home/user/root-marker/some/nested/path");
     expect(root).toBe("/home/user/root-marker");
   });

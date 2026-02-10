@@ -2,6 +2,8 @@
 
 This file provides guidance for agentic coding agents working in this repository.
 
+> **Attribution:** This CLI was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10. While the original persona was entertaining, this professional fork prioritises clarity, accessibility, and ease of use for serious engineering work.
+
 ## Build & Development Commands
 
 ```bash
@@ -92,7 +94,7 @@ async function loadState(path) {
 - **Renderables**: All UI components extend renderable classes
 - **Event Handling**: Use proper event listener patterns with cleanup
 - **State Management**: Keep UI state in controller classes, not renderables
-- **Theme**: Use centralized theme constants from `./theme.js`
+- **Theme**: Use centralised theme constants from `./theme.js`
 
 ### Testing
 - **Framework**: Use Bun's built-in test runner
@@ -121,18 +123,18 @@ try {
 
 ### Git & Session Management
 - **Worktrees**: Sessions execute in isolated git worktrees
-- **State Persistence**: All state must be serializable to JSON via Zod schemas
+- **State Persistence**: All state must be serialisable to JSON via Zod schemas
 - **Cleanup**: Always clean up resources (worktrees, processes, event listeners)
 - **Idempotency**: Operations should be safe to retry
 
 ### Performance Considerations
 - **Streaming**: Use streaming APIs for CLI output and large data
-- **Lazy Loading**: Initialize TUI components only when needed
+- **Lazy Loading**: Initialise TUI components only when needed
 - **Memory**: Clean up event listeners and intervals in component lifecycle
 - **Throttling**: Rate-limit expensive operations like file system scans
 
 ### Security Best Practices
 - **No Secrets**: Never commit API keys, tokens, or sensitive data
 - **Input Validation**: Validate all user input with Zod schemas
-- **Command Injection**: Use parameterized arrays for exec commands
-- **Path Safety**: Validate and sanitize file paths, prevent directory traversal
+- **Command Injection**: Use parameterised arrays for exec commands
+- **Path Safety**: Validate and sanitise file paths, prevent directory traversal

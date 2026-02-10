@@ -21,13 +21,13 @@ export async function createTaskBranch(
 	workDir = process.cwd(),
 ): Promise<string> {
 	const git: SimpleGit = simpleGit(workDir);
-	const branchName = `pickle/${slugify(task)}`;
+	const branchName = `architect/${slugify(task)}`;
 
 	// Stash any changes
 	let stashed = false;
 	const status = await git.status();
 	if (status.files.length > 0) {
-		await git.stash(["push", "-m", "pickle-autostash"]);
+		await git.stash(["push", "-m", "architect-autostash"]);
 		stashed = true;
 	}
 

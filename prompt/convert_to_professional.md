@@ -34,3 +34,68 @@ Output your response in this exact order:
 3. **The Refactored Code:** The complete, functional code blocks per file.
 4. **Commit Log:** The list of atomic git commit commands for the changes made.
 5. **Integrity Confirmation:** A final report verifying all references are intact and logic is preserved. (as prompt/5_Confirmation.md)
+
+---
+
+# Phase 5: Lessons Learned & Checklist for Future Conversions
+
+> This section was added after completing the full conversion of this repository. Use it as a reference guide for similar projects.
+
+## Conversion Checklist
+
+### Extension Core (TypeScript)
+- [ ] **Hooks** (`hooks/*.ts`): rename persona files, update `reinforce-persona`, `stop-hook`, `check-limit`, `increment-iteration`
+- [ ] **Services** (`extension/src/services/*.ts`): rename utility files (e.g. `pickle-utils.ts` → `core-utils.ts`), update all imports
+- [ ] **Bin Scripts** (`extension/src/bin/*.ts`): update import paths and session references
+- [ ] **Tests** (`*.test.ts`): update mock paths and jest.mock references
+- [ ] **Config** (`gemini-extension.json`, `GEMINI.md`): update extension name and root documentation
+
+### Skills (`.md` Files)
+- [ ] **Persona footers**: Replace character-specific "Pickle Rick Persona (MANDATORY)" with professional "Agent Persona (MANDATORY)"
+- [ ] **Body text**: Replace character references (Morty, Jerry, Rick) with professional equivalents (Worker Agent, Manager Agent)
+- [ ] **Both root and CLI copies**: Skills exist in both `skills/` and `cli/src/skills/` — update both
+
+### CLI Source Code (`cli/src/*.ts`)
+- [ ] **Function names**: `createPickleWorktree` → `createSessionWorktree`, `cleanupPickleWorktree` → `cleanupSessionWorktree`
+- [ ] **Type names**: `PickleSettings` → `AgentSettings`, `PickleSettingsSchema` → `AgentSettingsSchema`
+- [ ] **Class names**: `PickleTaskSource` → `AgentTaskSource`
+- [ ] **Constants**: `PICKLE_PERSONA` → `AGENT_PERSONA`, `PICKLE_WORKER_CMD_OVERRIDE` → `AGENT_WORKER_CMD_OVERRIDE`
+- [ ] **Paths**: `.pickle/` → `.architect/`, `pickle-rick` → `architect-loop`
+- [ ] **Branch prefixes**: `pickle/session-` → `architect/session-`
+- [ ] **Mode strings**: `"pickle"` → `"loop"`, `"pickle-prd"` → `"draft-prd"`
+- [ ] **UI labels**: `"Pickle"` → `"Architect"`, `"Pickle PRD"` → `"Draft PRD"`
+- [ ] **File names**: `pickle-source.ts` → keep filename but update exports/imports
+
+### Documentation
+- [ ] Root docs: `TIPS_AND_TRICKS.md`, `STEP_BY_STEP_GUIDE.md`, `README.md`
+- [ ] CLI docs: `cli/README.md`, `cli/CLAUDE.md`, `cli/AGENTS.md`
+- [ ] CLI sub-docs: `cli/docs/ARCHITECTURE.md`, `CONFIGURATION.md`, `INSTALLATION.md`, `USAGE.md`
+- [ ] Add attribution to original repo in all doc files
+
+### Package Files
+- [ ] `package.json` (root): update name, description
+- [ ] `cli/package.json`: update name, description, bin command
+- [ ] `package-lock.json`: auto-generated — will regenerate on `npm install`
+
+## Lessons Learned
+
+### 1. Cross-Platform Path Separators
+Tests that hardcode forward-slash paths (`/`) fail on Windows (backslash `\`). Use `path.join()` in all test assertions involving file paths.
+
+### 2. PowerShell Bulk Replacement Works Well
+For 30+ files with consistent patterns, PowerShell's `-replace` operator is highly effective. Run multiple passes for nested/complex patterns. Use `Write-Host` instead of `Write-Output` for reliable console output.
+
+### 3. CLI Skills Are Duplicated
+The `cli/src/skills/*.md` files are copies of the root `skills/*/SKILL.md` but flattened. Both must be updated independently.
+
+### 4. Attribution Is Important
+When forking and refactoring an open-source project, always add clear attribution to the original repository in documentation files.
+
+### 5. Line Ending Sensitivity
+PowerShell string `.Replace()` is sensitive to line endings (CRLF vs LF). Use regex `-replace` with `\r?\n` patterns, or use line-by-line processing for reliability.
+
+### 6. Compile-Safe Refactoring
+TypeScript compilation (`npm run build`) is the best validator — if it passes, your import/export renames are correct. Always build after renaming.
+
+### 7. Build Before Tests
+Run `npm run build` before `npm test` to ensure compiled JS matches the TS source. Tests run against compiled JS, so stale builds will produce false failures.

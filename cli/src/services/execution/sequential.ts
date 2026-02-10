@@ -8,8 +8,8 @@ import { mkdir, appendFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { execCommand } from "../providers/base.js";
 import { getConfiguredModel } from "../providers/index.js";
-import { PickleTaskSource } from "./pickle-source.js";
-import { createPickleWorktree, cleanupPickleWorktree, createPullRequest, getCurrentBranch, isGhAvailable, generatePRDescription } from "../git/index.js";
+import { AgentTaskSource } from "./task-source.js";
+import { createSessionWorktree, cleanupSessionWorktree, createPullRequest, getCurrentBranch, isGhAvailable, generatePRDescription } from "../git/index.js";
 import type { Task, WorktreeInfo } from "../../types/tasks.js";
 import { createInterface } from "node:readline";
 
@@ -90,7 +90,7 @@ export class SequentialExecutor {
 
         let executionResult: ExecutionResult = {};
 
-        const taskSource = new PickleTaskSource(this.state.session_dir);
+        const taskSource = new AgentTaskSource(this.state.session_dir);
         const logFile = join(this.state.session_dir, "session.log");
         
         const log = async (msg: string) => {
@@ -147,13 +147,13 @@ export class SequentialExecutor {
                 if (task.id.startsWith("phase-") === false) {
                     if (!sessionWorktree) {
                         try {
-                            sessionWorktree = await createPickleWorktree(sessionName, baseBranch, this.state.working_dir);
+                            sessionWorktree = await createSessionWorktree(sessionName, baseBranch, this.state.working_dir);
                             await log(pc.dim(`🏗️  Session Worktree: ${sessionWorktree.worktreeDir}`));
                             
                             // Replicate the entire project state to the worktree (including uncommitted files)
-                            // We EXCLUDE .git (to keep worktree metadata) and .pickle (to avoid infinite recursion)
+                            // We EXCLUDE .git (to keep worktree metadata) and .architect (to avoid infinite recursion)
                             await log(pc.dim("🔄 Syncing project state to worktree..."));
-                            await this.syncFiles(this.state.working_dir, sessionWorktree.worktreeDir, [".git", ".pickle"]);
+                            await this.syncFiles(this.state.working_dir, sessionWorktree.worktreeDir, [".git", ".architect"]);
                             
                             // Clear Gemini session ID when switching execution context
                             this.state.gemini_session_id = undefined;
@@ -167,7 +167,7 @@ export class SequentialExecutor {
                         engineWorkDir = sessionWorktree.worktreeDir;
                         
                         // Mirror the Session Directory inside the worktree to bypass sandbox
-                        localSessionDir = join(sessionWorktree.worktreeDir, ".pickle", "sessions", sessionName);
+                        localSessionDir = join(sessionWorktree.worktreeDir, ".architect", "sessions", sessionName);
                         await mkdir(localSessionDir, { recursive: true });
                         
                         await log(pc.dim("🔄 Syncing session context to worktree..."));
@@ -308,7 +308,7 @@ Your choice (m/p/s): `));
 
                             if (choice === 'm' || choice === 'merge') {
                                 await log(pc.dim("Syncing files from worktree..."));
-                                await this.syncFiles(sessionWorktree.worktreeDir, this.state.working_dir, [".git", ".pickle"]);
+                                await this.syncFiles(sessionWorktree.worktreeDir, this.state.working_dir, [".git", ".architect"]);
 
                                 await log(pc.dim("Merging worktree..."));
                                 try {
@@ -321,7 +321,7 @@ Your choice (m/p/s): `));
                                 // Cleanup after merge
                                 await log(pc.dim("Deleting worktree..."));
                                 try {
-                                    await cleanupPickleWorktree(sessionWorktree.worktreeDir, this.state.working_dir);
+                                    await cleanupSessionWorktree(sessionWorktree.worktreeDir, this.state.working_dir);
                                     await log(pc.green("Worktree deleted."));
                                 } catch (e) {
                                     await log(pc.red(`⚠️ Cleanup failed: ${e}`));
@@ -378,7 +378,7 @@ Your choice (m/p/s): `));
                                 // Cleanup worktree after PR
                                 await log(pc.dim("Deleting worktree..."));
                                 try {
-                                    await cleanupPickleWorktree(sessionWorktree.worktreeDir, this.state.working_dir);
+                                    await cleanupSessionWorktree(sessionWorktree.worktreeDir, this.state.working_dir);
                                     await log(pc.green("Worktree deleted."));
                                 } catch (e) {
                                     await log(pc.red(`⚠️ Cleanup failed: ${e}`));

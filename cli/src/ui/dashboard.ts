@@ -137,7 +137,7 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
 
   inputContainer.onMouse = createInputContainerMouseHandler(inputContainer, input);
 
-  const { row: metadataRow, pickleLabel: metadataRowL, modelLabel } = createProviderMetadataRow(renderer, "metadataRow");
+  const { row: metadataRow, brandLabel: metadataRowL, modelLabel } = createProviderMetadataRow(renderer, "metadataRow");
 
   inputContainer.add(new BoxRenderable(renderer, { id: "spacer1", height: 1 }));
   inputContainer.add(inputRow);
@@ -303,7 +303,7 @@ export async function startDashboard(initialPrompt?: string) {
 
     renderer.start();
   } catch (error) {
-    console.error("❌ Failed to start Pickle Rick Dashboard:", error);
+    console.error("❌ Failed to start Architect Loop Dashboard:", error);
     process.exit(1);
   }
 }

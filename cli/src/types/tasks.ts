@@ -34,7 +34,7 @@ export interface GitStatusInfo {
 }
 
 /**
- * Metadata for a running Pickle session
+ * Metadata for a running Architect Loop session
  */
 export interface SessionData {
   id: string;

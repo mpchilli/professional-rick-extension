@@ -208,7 +208,7 @@ export class ToyboxView {
       {
         id: "snake",
         title: "Snake",
-        description: "Pickle Snake! Eat to grow.",
+        description: "Architect Snake! Eat to grow.",
         color: THEME.accent,
         onClick: () => {
           this.disable();

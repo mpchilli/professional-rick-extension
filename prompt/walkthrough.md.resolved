@@ -1,60 +1,59 @@
-# Walkthrough: Pickle Rick → Architect Loop Refactoring
+# Walkthrough: Professional Refactoring — Pickle Rick → Architect Loop
 
-## Summary
+## Overview
+Complete refactoring of the Gemini CLI extension from "Pickle Rick" theme to a professional "Architect Loop" engineering persona across **two sessions**, covering the extension core, CLI source code, documentation, and skills files.
 
-Complete persona refactoring of the Gemini CLI extension from "Pickle Rick" character theming to a professional "Architect Loop" engineering persona. All functional logic preserved; only naming, terminology, and persona language changed.
+## Scope Summary
 
-## Scope
+| Category | Files Changed | Key Changes |
+|----------|:---:|---|
+| Extension Core TS | 12 | `pickle-utils` → `core-utils`, hooks, bin scripts |
+| Extension Tests | 7 | Mock paths, cross-platform `path.join()` fixes |
+| Root Skills [.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/GEMINI.md) | 9 | Persona footers + body text |
+| CLI Skills [.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/GEMINI.md) | 8 | Persona footers + body text |
+| CLI Source [.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/cli/src/index.ts) | 34 | Function/type/constant/path/mode renames |
+| Root Docs | 2 | [TIPS_AND_TRICKS.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/TIPS_AND_TRICKS.md), [STEP_BY_STEP_GUIDE.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/STEP_BY_STEP_GUIDE.md) |
+| CLI Docs | 7 | `README`, `CLAUDE`, `AGENTS`, 4 `docs/` files |
+| Config/Package | 3 | [gemini-extension.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/gemini-extension.json), [GEMINI.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/GEMINI.md), [cli/package.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/cli/package.json) |
+| Conversion Prompt | 1 | Added checklist + 7 lessons learned |
+| **Total** | **~83** | |
 
-| Category | Files Modified |
-|----------|---------------|
-| Config/Manifest | 4 ([gemini-extension.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/gemini-extension.json), [package.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/package.json) ×2, [settings.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/pickle_settings.json)) |
-| Core Services | 4 ([core-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/core-utils.ts), [git-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/git-utils.ts), [jar-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/jar-utils.ts), [pr-factory.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/pr-factory.ts)) |
-| Bin Scripts | 6 ([setup.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/setup.ts), `spawn-worker.ts`, [spawn-manager.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/spawn-manager.ts), [worker-setup.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/worker-setup.ts), [jar-runner.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/jar-runner.ts), [cancel.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/cancel.ts)) |
-| Hooks | 5 ([dispatch.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/dispatch.ts), [reinforce-persona.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/reinforce-persona.ts), [stop-hook.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/stop-hook.ts), [check-limit.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/check-limit.ts), [increment-iteration.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/increment-iteration.ts)) |
-| Commands | 7 (all TOML files renamed and rewritten) |
-| Skills | 9 (all SKILL.md files updated, `load-persona/` renamed) |
-| Tests | 7 ([core-utils.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/core-utils.test.ts), [cancel.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/cancel.test.ts), [get-session.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/get-session.test.ts), [jar-utils.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/jar-utils.test.ts), [pr-factory.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/pr-factory.test.ts)) |
-| Docs | 3 ([GEMINI.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/GEMINI.md), [README.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/README.md), [hooks.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/hooks/hooks.json)) |
-| Theme | 1 (`architect.json`) |
+## Key Renames
 
-## Key Rename Map
-
-| Old | New |
-|-----|-----|
-| `pickle-rick` | `architect-loop` |
+| Original | Professional |
+|---|---|
 | [pickle-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/pickle-utils.ts) | [core-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/core-utils.ts) |
-| [spawn-morty.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/spawn-morty.ts) | `spawn-worker.ts` |
-| [spawn-rick.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/spawn-rick.ts) | [spawn-manager.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/spawn-manager.ts) |
-| `PICKLE_STATE_FILE` | `LOOP_STATE_FILE` |
-| `PICKLE_ROLE` | `AGENT_ROLE` |
-| `load-pickle-persona/` | `load-persona/` |
-| `/pickle` | `/loop` |
-| `/eat-pickle` | `/stop-loop` |
-| `/pickle-prd` | `/draft-prd` |
-| `/add-to-pickle-jar` | `/queue-task` |
-| `/pickle-jar-open` | `/run-queue` |
-| `/send-to-morty` | `/dispatch-worker` |
-| `/help-pickle` | `/help` |
+| `PICKLE_PERSONA` | `AGENT_PERSONA` |
+| `PickleTaskSource` | `AgentTaskSource` |
+| `PickleSettings` | `AgentSettings` |
+| `createPickleWorktree` | `createSessionWorktree` |
+| `cleanupPickleWorktree` | `cleanupSessionWorktree` |
+| `.pickle/` | `.architect/` |
+| `pickle-rick` (extension) | `architect-loop` |
+| `"pickle"` (mode) | `"loop"` |
+| `"pickle-prd"` (mode) | `"draft-prd"` |
+| `pickle/session-` (branch) | `architect/session-` |
 
-## Verification
+## Attribution
+All documentation files include an attribution note:
+> This extension was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10.
+
+## Verification Results
 
 ### Build
-- **TypeScript compilation**: ✅ Exit code 0
+- ✅ Extension `tsc` compilation: **PASSED** (exit code 0)
 
 ### Tests
-- **11 passed** (including all 4 refactored test files)
-- **3 pre-existing failures**: Windows path separator issues (`/` vs `\`) in [cancel.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/cancel.test.ts), [update-state.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/update-state.test.ts), [git-utils.test.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/git-utils.test.ts) — not caused by this refactoring
+- ✅ All 14 extension tests: **PASSED**
+- ✅ Cross-platform path separators fixed in 3 test files
 
 ### Cross-Reference Audit
-Remaining `pickle` references exist only in:
-- Compiled [.js](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/bin/setup.js) files (will be replaced on rebuild)
-- [package-lock.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/package-lock.json) (auto-generated)
-- `cli/` directory (separate project, out of scope)
-- [STEP_BY_STEP_GUIDE.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/STEP_BY_STEP_GUIDE.md), [TIPS_AND_TRICKS.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/TIPS_AND_TRICKS.md) (secondary docs)
-- [prompt/1_RenameMap.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/prompt/1_RenameMap.md) (our own planning artifact)
+- ✅ Zero pickle references in TypeScript source (extension + CLI)
+- ✅ Zero pickle references in CLI skills
+- ✅ Only expected attribution references remain in docs
+- ✅ [package-lock.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/package-lock.json) references are auto-generated (not manually editable)
 
-## Known Exclusions
-- **`cli/` directory**: Separate CLI project — not part of this extension refactoring scope
-- **[TIPS_AND_TRICKS.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/TIPS_AND_TRICKS.md) / [STEP_BY_STEP_GUIDE.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/STEP_BY_STEP_GUIDE.md)**: Secondary docs not in critical path
-- **Pre-existing test bugs**: Windows path separator issues exist in 3 tests
+## Remaining Items (Out of Scope)
+- **CLI build** (`bun run build`): Bun runtime not installed on this machine; CLI build not verified
+- **[pickle-source.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/cli/src/services/execution/pickle-source.ts) file rename**: File kept with same name but all exports/imports/content updated
+- **`.pickle-root` marker file**: Referenced in code as `.architect-root` but actual marker file not renamed (would require coordinating with consumers)

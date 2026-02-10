@@ -3,7 +3,7 @@ import { join } from "node:path";
 import type { Task, TaskSource } from "../../types/tasks.js";
 import { loadState, saveState } from "../config/state.js";
 import type { SessionState } from "../config/types.js";
-export class PickleTaskSource implements TaskSource {
+export class AgentTaskSource implements TaskSource {
     constructor(private sessionDir: string) {}
 
     private async getState(): Promise<SessionState> {
@@ -195,7 +195,7 @@ export class PickleTaskSource implements TaskSource {
             const entries = await readdir(dir);
             for (const entry of entries) {
                 // Slop Filter: Skip ignored directories
-                if (entry === ".git" || entry === "node_modules" || entry === ".pickle") {
+                if (entry === ".git" || entry === "node_modules" || entry === ".architect") {
                     continue;
                 }
 

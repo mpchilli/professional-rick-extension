@@ -1,10 +1,10 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { homedir } from "node:os";
-import { PickleSettings, PickleSettingsSchema } from "./types.js";
+import { AgentSettings, AgentSettingsSchema } from "./types.js";
 import type { AIProviderName } from "../providers/types.js";
 
-const SETTINGS_DIR = join(homedir(), ".pickle");
+const SETTINGS_DIR = join(homedir(), ".architect");
 const SETTINGS_PATH = join(SETTINGS_DIR, "settings.json");
 
 // Valid provider names
@@ -73,7 +73,7 @@ export function validateSettings(content: string): ValidationResult {
   const wasFixed = parsed !== undefined && content !== JSON.stringify(parsed);
   
   // Validate against schema
-  const schemaResult = PickleSettingsSchema.safeParse(parsed);
+  const schemaResult = AgentSettingsSchema.safeParse(parsed);
   if (!schemaResult.success) {
     schemaResult.error.errors.forEach((err) => {
       errors.push(`Schema error at ${err.path.join('.')}: ${err.message}`);
@@ -118,7 +118,7 @@ export function validateSettings(content: string): ValidationResult {
 /**
  * Validate and load settings with detailed error reporting
  */
-export async function loadSettingsWithValidation(): Promise<{ settings: PickleSettings; validation: ValidationResult }> {
+export async function loadSettingsWithValidation(): Promise<{ settings: AgentSettings; validation: ValidationResult }> {
   try {
     const content = await readFile(SETTINGS_PATH, "utf-8");
     const validation = validateSettings(content);
@@ -128,7 +128,7 @@ export async function loadSettingsWithValidation(): Promise<{ settings: PickleSe
       ? JSON.parse(validation.fixed)
       : JSON.parse(content);
     
-    const settings = PickleSettingsSchema.parse(parsed);
+    const settings = AgentSettingsSchema.parse(parsed);
     return { settings, validation };
   } catch (e) {
     // File doesn't exist or is completely unreadable
@@ -155,14 +155,14 @@ export async function loadSettingsWithValidation(): Promise<{ settings: PickleSe
 }
 
 /**
- * Load settings from ~/.pickle/settings.json
+ * Load settings from ~/.architect/settings.json
  * Returns default settings if file doesn't exist or is invalid
  */
-export async function loadSettings(): Promise<PickleSettings> {
+export async function loadSettings(): Promise<AgentSettings> {
   try {
     const content = await readFile(SETTINGS_PATH, "utf-8");
     const json = JSON.parse(content);
-    return PickleSettingsSchema.parse(json);
+    return AgentSettingsSchema.parse(json);
   } catch (e) {
     // Return empty/default settings if file doesn't exist or is invalid
     return {};
@@ -170,13 +170,13 @@ export async function loadSettings(): Promise<PickleSettings> {
 }
 
 /**
- * Save settings to ~/.pickle/settings.json
+ * Save settings to ~/.architect/settings.json
  * Creates the directory if it doesn't exist
  */
-export async function saveSettings(settings: PickleSettings): Promise<void> {
+export async function saveSettings(settings: AgentSettings): Promise<void> {
   try {
     await mkdir(SETTINGS_DIR, { recursive: true });
-    const validated = PickleSettingsSchema.parse(settings);
+    const validated = AgentSettingsSchema.parse(settings);
     await writeFile(SETTINGS_PATH, JSON.stringify(validated, null, 2), "utf-8");
   } catch (e) {
     throw new Error(`Failed to save settings: ${e}`);
@@ -209,7 +209,7 @@ export async function updateModelSettings(
   model?: string
 ): Promise<void> {
   const settings = await loadSettings();
-  const newSettings: PickleSettings = {
+  const newSettings: AgentSettings = {
     ...settings,
     model: {
       provider,

@@ -15,7 +15,7 @@ import { existsSync } from "node:fs";
 const program = new Command();
 
 program
-  .name("pickle")
+  .name("loop")
   .description("Hyper-intelligent coding agent loop (Morty-mode)")
   .version("1.0.0")
   .argument("[prompt]", "The task description")
@@ -40,12 +40,12 @@ program
             console.error(pc.red(`❌ Failed to load session at ${options.resume}`));
             process.exit(1);
         }
-        console.log(pc.green(`🥒 Pickle Rick is resuming session at ${options.resume}...`));
+        console.log(pc.green(`🥒 Architect Loop is resuming session at ${options.resume}...`));
     } else {
         state = await createSession(process.cwd(), prompt);
         state.max_iterations = parseInt(options.maxIterations);
         state.completion_promise = options.completionPromise;
-        console.log(pc.green("🥒 Pickle Rick is starting a new session..."));
+        console.log(pc.green("🥒 Architect Loop is starting a new session..."));
     }
 
     const provider = await createProvider();
@@ -81,7 +81,7 @@ program
 
 program
   .command("validate-settings")
-  .description("Validate ~/.pickle/settings.json configuration")
+  .description("Validate ~/.architect/settings.json configuration")
   .option("--fix", "Automatically fix common issues (like trailing commas)")
   .action(async (options) => {
     const { settings, validation } = await loadSettingsWithValidation();

@@ -1,4 +1,4 @@
-// High-Fidelity "Pickle Sleek" Palette
+// High-Fidelity "Architect Sleek" Palette
 export const THEME = {
   bg: "#050f05",
   surface: "#0a140a",

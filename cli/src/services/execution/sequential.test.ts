@@ -7,7 +7,7 @@ import * as state from "../config/state.js";
 import * as git from "../git/index.js";
 import * as prompt from "./prompt.js";
 import * as providers from "../providers/index.js";
-import { PickleTaskSource } from "./pickle-source.js";
+import { AgentTaskSource } from "./task-source.js";
 
 describe("SequentialExecutor", () => {
     let baseState: SessionState;
@@ -47,21 +47,21 @@ describe("SequentialExecutor", () => {
             spyOn(state, "saveState").mockImplementation(async (dir, s) => { currentState = s; }),
             spyOn(state, "loadState").mockImplementation(async (dir) => currentState),
             spyOn(git, "getCurrentBranch").mockResolvedValue("main"),
-            spyOn(git, "createPickleWorktree").mockResolvedValue({ worktreeDir: "/mock/worktree", branchName: "session-branch" }),
-            spyOn(git, "cleanupPickleWorktree").mockResolvedValue(undefined),
+            spyOn(git, "createSessionWorktree").mockResolvedValue({ worktreeDir: "/mock/worktree", branchName: "session-branch" }),
+            spyOn(git, "cleanupSessionWorktree").mockResolvedValue(undefined),
             spyOn(git, "isGhAvailable").mockResolvedValue(false),
             spyOn(git, "generatePRDescription").mockResolvedValue({ title: "PR", body: "Body" }),
             spyOn(prompt, "buildPrompt").mockResolvedValue("Mocked Prompt"),
             spyOn(providers, "getConfiguredModel").mockResolvedValue("mock-model"),
-            // Mock the PickleTaskSource methods
-            spyOn(PickleTaskSource.prototype, "getNextTask").mockImplementation(async function(this: any) {
+            // Mock the AgentTaskSource methods
+            spyOn(AgentTaskSource.prototype, "getNextTask").mockImplementation(async function(this: any) {
                 if (!this._mockTasks) {
                     this._mockTasks = [{ id: "task1", title: "Task 1", body: "", completed: false }];
                 }
                 return this._mockTasks.shift() || null;
             }),
-            spyOn(PickleTaskSource.prototype, "markComplete").mockResolvedValue(undefined),
-            spyOn(PickleTaskSource.prototype, "countRemaining").mockResolvedValue(0),
+            spyOn(AgentTaskSource.prototype, "markComplete").mockResolvedValue(undefined),
+            spyOn(AgentTaskSource.prototype, "countRemaining").mockResolvedValue(0),
         ];
     });
 

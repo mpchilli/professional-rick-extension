@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'fs';
+import * as path from 'path';
 import { update_ticket_status, get_branch_name } from './git-utils.js';
 
 vi.mock('fs');
@@ -25,7 +26,7 @@ describe('git_utils', () => {
     it('should update the status in a ticket file', () => {
       const ticketId = '123';
       const sessionDir = '/session';
-      const ticketPath = '/session/linear_ticket_123.md';
+      const ticketPath = path.join('/session', 'linear_ticket_123.md');
       const initialContent = `---
 status: "Todo"
 updated: "2026-01-01"

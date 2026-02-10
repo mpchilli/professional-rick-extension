@@ -14,7 +14,7 @@ import { sessionTracker, type TrackedSession } from "../../utils/session-tracker
 import { DashboardDialog } from "../dialogs/DashboardDialog.js";
 import { DiffViewDialog } from "../dialogs/DiffViewDialog.js";
 import { PRPreviewDialog } from "../dialogs/PRPreviewDialog.js";
-import { cleanupPickleWorktree, syncWorktreeToOriginal, createPullRequest, isGhAvailable, getGitStatusInfo } from "../../services/git/index.js";
+import { cleanupSessionWorktree, syncWorktreeToOriginal, createPullRequest, isGhAvailable, getGitStatusInfo } from "../../services/git/index.js";
 import { isGameboyActive } from "../../games/gameboy/GameboyView.js";
 import { execCommand } from "../../services/providers/base.js";
 
@@ -291,7 +291,7 @@ export class DashboardController {
     // Always update the selected session
     this.selectedSession = session;
     if (this.ui) {
-      this.ui.metadataLabel.content = session.isPrdMode ? "Pickle PRD" : "Pickle";
+      this.ui.metadataLabel.content = session.isPrdMode ? "Draft PRD" : "loop";
     }
     
     // Update dashboard dialog
@@ -439,7 +439,7 @@ export class DashboardController {
     this.isHomeHidden = true;
   }
 
-  public startDashboardSession(prompt: string, mode: "pickle" | "pickle-prd" = "pickle") {
+  public startDashboardSession(prompt: string, mode: "loop" | "draft-prd" = "loop") {
     if (!this.ui) return;
 
     this.ui.landingView.parent?.remove(this.ui.landingView.id);
@@ -451,12 +451,12 @@ export class DashboardController {
     this.ui.input.focus();
   }
 
-  async spawnSession(prompt: string, mode: "pickle" | "pickle-prd" = "pickle") {
+  async spawnSession(prompt: string, mode: "loop" | "draft-prd" = "loop") {
     if (!prompt.trim()) return;
 
     this.hideHomeView();
 
-    const isPrdMode = mode === "pickle-prd";
+    const isPrdMode = mode === "draft-prd";
     const cwd = process.cwd();
     const state = await createSession(cwd, prompt, isPrdMode);
 
@@ -464,7 +464,7 @@ export class DashboardController {
     const gitStatus = await getGitStatusInfo(cwd);
 
     if (this.ui) {
-      this.ui.metadataLabel.content = isPrdMode ? "Pickle PRD" : "Pickle";
+      this.ui.metadataLabel.content = isPrdMode ? "Draft PRD" : "loop";
     }
 
     const session: SessionData = {
@@ -573,7 +573,7 @@ export class DashboardController {
       await syncWorktreeToOriginal(worktreeDir, originalDir, branchName);
 
       // 2. Clean up the worktree
-      await cleanupPickleWorktree(worktreeDir, originalDir);
+      await cleanupSessionWorktree(worktreeDir, originalDir);
 
       // Clear worktree info after merge
       session.worktreeInfo = undefined;
@@ -605,7 +605,7 @@ export class DashboardController {
       await createPullRequest(branchName, baseBranch, title, body);
 
       // Clean up worktree (don't sync since we're using PR)
-      await cleanupPickleWorktree(worktreeDir, originalDir);
+      await cleanupSessionWorktree(worktreeDir, originalDir);
       
       // Clear worktree info after PR creation
       session.worktreeInfo = undefined;
@@ -633,7 +633,7 @@ export class DashboardController {
     const originalDir = session.workingDir;
 
     try {
-      await cleanupPickleWorktree(worktreeDir, originalDir);
+      await cleanupSessionWorktree(worktreeDir, originalDir);
       session.worktreeInfo = undefined;
 
       const chip = this.chips.find(c => c.session.id === session.id);

@@ -15,15 +15,15 @@ import { MultiLineInputRenderable, MultiLineInputEvents } from "../components/Mu
 import { buildVerticalBar, createInputContainerMouseHandler, createProviderMetadataRow, createCtrlCExitHandler } from "../input-chrome.js";
 
 /**
- * Creates the landing view for the Pickle Rick CLI.
+ * Creates the landing view for the Architect Loop CLI.
  * Returns the root container and the input component for further event handling.
  */
 export async function createLandingView(
   renderer: CliRenderer,
-  onEnter: (prompt: string, mode: "pickle" | "pickle-prd") => void
+  onEnter: (prompt: string, mode: "loop" | "draft-prd") => void
 ) {
   const INPUT_CHROME_LINES = 4;
-  let mode: "pickle" | "pickle-prd" = "pickle";
+  let mode: "loop" | "draft-prd" = "loop";
 
   // Fetch Metadata
   const cwd = process.cwd();

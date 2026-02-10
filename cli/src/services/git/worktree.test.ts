@@ -16,7 +16,7 @@ mock.module("simple-git", () => ({
 }));
 
 // More precise fs mocking
-const mockExistsSync = mock((p: string) => p.includes(".pickle") && !p.includes("session-test"));
+const mockExistsSync = mock((p: string) => p.includes(".architect") && !p.includes("session-test"));
 mock.module("node:fs", () => ({
   existsSync: mockExistsSync,
 }));
@@ -35,15 +35,15 @@ describe("Worktree Service", () => {
     mockExistsSync.mockClear();
   });
 
-  describe("createPickleWorktree", () => {
+  describe("createSessionWorktree", () => {
     test("should call git worktree add", async () => {
       // Ensure worktree doesn't exist so it triggers the prune and add
-      mockExistsSync.mockReturnValueOnce(true); // .pickle exists
+      mockExistsSync.mockReturnValueOnce(true); // .architect exists
       mockExistsSync.mockReturnValueOnce(false); // session-test doesn't exist
 
-      const { worktreeDir, branchName } = await worktreeService.createPickleWorktree("test", "main", "/wd", mockGit as any);
+      const { worktreeDir, branchName } = await worktreeService.createSessionWorktree("test", "main", "/wd", mockGit as any);
 
-      expect(branchName).toBe("pickle/session-test");
+      expect(branchName).toBe("architect/session-test");
       expect(mockGit.raw).toHaveBeenCalledWith(["worktree", "prune"]);
       expect(mockGit.raw).toHaveBeenCalledWith([
         "worktree", "add", "-B", branchName, worktreeDir, "main"
@@ -72,7 +72,7 @@ describe("Worktree Service", () => {
       // Mock worktree has changes
       mockGit.status.mockResolvedValueOnce({ files: ["mod.ts"] } as any);
 
-      await worktreeService.syncWorktreeToOriginal("/wt", "/orig", "pickle/test", mockGit as any, mockGit as any);
+      await worktreeService.syncWorktreeToOriginal("/wt", "/orig", "architect/test", mockGit as any, mockGit as any);
 
       expect(mockGit.add).toHaveBeenCalledWith("-A");
       expect(mockGit.commit).toHaveBeenCalled();
@@ -85,12 +85,12 @@ describe("Worktree Service", () => {
     });
   });
 
-  describe("cleanupPickleWorktree", () => {
+  describe("cleanupSessionWorktree", () => {
     test("should call worktree remove", async () => {
       // Mock worktree exists
       mockExistsSync.mockReturnValue(true);
 
-      await worktreeService.cleanupPickleWorktree("/wt", "/orig", mockGit as any);
+      await worktreeService.cleanupSessionWorktree("/wt", "/orig", mockGit as any);
 
       expect(mockGit.raw).toHaveBeenCalledWith(["worktree", "remove", "-f", "/wt"]);
       expect(mockGit.raw).toHaveBeenCalledWith(["worktree", "prune"]);

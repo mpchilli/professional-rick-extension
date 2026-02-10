@@ -1,14 +1,16 @@
 # Configuration
 
+> **Attribution:** This CLI was forked and adapted from the original [Pickle Rick Extension](https://github.com/galz10/pickle-rick-extension) by galz10. While the original persona was entertaining, this professional fork prioritises clarity, accessibility, and ease of use for serious engineering work.
+
 ## Settings File
 
-Pickle Rick CLI uses a settings file at `~/.pickle/settings.json` for configuration.
+Architect Loop CLI uses a settings file at `~/.architect/settings.json` for configuration.
 
 ### Creating the Settings File
 
 ```bash
-mkdir -p ~/.pickle
-touch ~/.pickle/settings.json
+mkdir -p ~/.architect
+touch ~/.architect/settings.json
 ```
 
 ### Settings Schema
@@ -71,7 +73,7 @@ touch ~/.pickle/settings.json
 Use the built-in validator to check your configuration:
 
 ```bash
-pickle validate-settings
+architect validate-settings
 ```
 
 This will:
@@ -83,7 +85,7 @@ This will:
 ### Auto-fix Common Issues
 
 ```bash
-pickle validate-settings --fix
+architect validate-settings --fix
 ```
 
 This can automatically fix:
@@ -111,7 +113,7 @@ Add these to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.) for persistence.
 
 | Location | Purpose |
 |----------|---------|
-| `.pickle/sessions/` | Project-local sessions |
-| `.pickle/worktrees/` | Isolated git worktrees |
-| `~/.pickle/settings.json` | Global settings |
-| `~/.gemini/extensions/pickle-rick/sessions/` | Global session archive |
+| `.architect/sessions/` | Project-local sessions |
+| `.architect/worktrees/` | Isolated git worktrees |
+| `~/.architect/settings.json` | Global settings |
+| `~/.gemini/extensions/architect-loop/sessions/` | Global session archive |

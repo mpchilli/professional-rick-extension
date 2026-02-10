@@ -1,10 +1,10 @@
 {
-  "name": "im-pickle-rick",
+  "name": "architect-loop",
   "version": "0.1.0",
-  "description": "Pickle Rick CLI Orchestrator - Autonomous coding agent with TUI interface",
+  "description": "Architect Loop CLI Orchestrator - Autonomous coding agent with TUI interface",
   "type": "module",
   "bin": {
-    "pickle": "bin.js"
+    "architect": "bin.js"
   },
   "files": [
     "bin.js",

@@ -40,14 +40,14 @@ export class GeminiProvider extends BaseProvider {
     onProgress: (step: string, content?: string) => void,
     options?: ProviderOptions,
   ): Promise<AIResult> {
-    // Disable the pickle-rick extension to prevent recursion or interference
+    // Disable the architect-loop extension to prevent recursion or interference
     try {
-      await execCommand(this.cliCommand, ["extensions", "disable", "pickle-rick"], workDir);
+      await execCommand(this.cliCommand, ["extensions", "disable", "architect-loop"], workDir);
     } catch (e) {
       // Silently ignore if it fails (might not be installed)
     }
 
-    const extensionPath = join(homedir(), ".gemini/extensions/pickle-rick");
+    const extensionPath = join(homedir(), ".gemini/extensions/architect-loop");
     const promptFile = join(workDir, ".gemini-prompt.txt");
     await writeFile(promptFile, prompt, "utf-8");
 
@@ -162,7 +162,7 @@ export class GeminiProvider extends BaseProvider {
 
       // Re-enable the extension
       try {
-        await execCommand(this.cliCommand, ["extensions", "enable", "pickle-rick"], workDir);
+        await execCommand(this.cliCommand, ["extensions", "enable", "architect-loop"], workDir);
       } catch (e) {} // Ignore errors during cleanup
     }
   }

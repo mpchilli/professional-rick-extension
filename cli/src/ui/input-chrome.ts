@@ -72,12 +72,12 @@ export function createProviderMetadataRow(
     gap: 1,
   });
 
-  const pickleLabel = new TextRenderable(renderer, {
+  const brandLabel = new TextRenderable(renderer, {
     id: `${idPrefix}-meta-l`,
-    content: "Pickle",
+    content: "loop",
     fg: THEME.green,
   });
-  row.add(pickleLabel);
+  row.add(brandLabel);
 
   const providerLabel = new TextRenderable(renderer, {
     id: `${idPrefix}-meta-m`,
@@ -114,7 +114,7 @@ export function createProviderMetadataRow(
 
   return {
     row,
-    pickleLabel,
+    brandLabel,
     providerLabel,
     modelLabel,
   };
