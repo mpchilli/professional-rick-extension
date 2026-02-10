@@ -1,0 +1,49 @@
+# Professional Refactoring - Personality Transplant
+
+## Phase 1: Planning
+- [x] Read and understand the conversion prompt
+- [x] Read every source file (~50 files)
+- [x] Build full dependency graph
+- [x] Write Rename Map ([prompt/1_RenameMap.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/prompt/1_RenameMap.md))
+- [x] Write Implementation Plan ([implementation_plan.md](file:///C:/Users/ukchim01/.gemini/antigravity/brain/b3595d50-a8c3-455c-b154-48ba8d9f35d4/implementation_plan.md))
+- [x] User approval
+
+## Phase 2: Config & Manifest
+- [x] Rename [gemini-extension.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/gemini-extension.json) name field
+- [x] Rename [pickle_settings.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/pickle_settings.json) → [settings.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/pickle_settings.json)
+- [x] Update root [package.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/package.json) name/description/URLs
+- [x] Update [extension/package.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/package.json) name
+
+## Phase 3: Core Services (TS Source)
+- [x] Rename [pickle-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/pickle-utils.ts) → [core-utils.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/core-utils.ts) (update imports everywhere)
+- [x] Update [getExtensionRoot()](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/core-utils.ts#155-158) path
+- [x] Update env vars
+- [x] Update [get_github_user()](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/git-utils.ts#25-36) fallback
+- [x] Update [pr-factory.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/services/pr-factory.ts) PR title/body text
+
+## Phase 4: Bin Scripts (TS Source)
+- [x] Update [setup.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/setup.ts), `spawn-worker.ts`, [spawn-manager.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/spawn-manager.ts), [worker-setup.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/worker-setup.ts), [jar-runner.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/jar-runner.ts), [cancel.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/bin/cancel.ts)
+
+## Phase 5: Hook Handlers (TS Source)
+- [x] Update [dispatch.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/dispatch.ts), [reinforce-persona.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/reinforce-persona.ts), [stop-hook.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/stop-hook.ts), [check-limit.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/check-limit.ts), [increment-iteration.ts](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/extension/src/hooks/handlers/increment-iteration.ts)
+
+## Phase 6: Commands (TOML)
+- [x] Renamed & rewrote all 7 TOML files
+
+## Phase 7: Skills
+- [x] Renamed `load-pickle-persona/` → `load-persona/` and rewrote SKILL.md
+- [x] Updated persona footers in all 7 standard skills
+- [x] Updated code-implementer Morty persona → Worker persona
+- [x] Removed remaining Jerry/Morty/Pickle/Slop references from all skill body text
+
+## Phase 8: Hooks, Theme & Docs
+- [x] Updated [hooks/hooks.json](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/hooks/hooks.json)
+- [x] Renamed theme file → `architect.json`
+- [x] Updated all test files (7 total)
+- [x] Rewrote [GEMINI.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/GEMINI.md)
+- [x] Rewrote [README.md](file:///c:/Users/ukchim01/Downloads/Ai%20Tools/professional-rick-extension/README.md)
+
+## Phase 9: Rebuild & Verify
+- [x] Compile TypeScript — build succeeded (exit 0)
+- [x] Run tests — 11 passed, 3 pre-existing Windows path failures (not from refactoring)
+- [x] Cross-reference audit — no `pickle` references remain in TS source

@@ -6,7 +6,7 @@ import { State, HookInput } from '../../types/index.js';
 
 async function main() {
   const extensionDir =
-    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
 
   const globalDebugLog = path.join(extensionDir, 'debug.log');
 
@@ -43,7 +43,7 @@ async function main() {
   log(`Processing AfterAgent hook. Input size: ${inputData.length}`);
 
   // 2. Determine State File
-  let stateFile = process.env.PICKLE_STATE_FILE;
+  let stateFile = process.env.LOOP_STATE_FILE;
   if (!stateFile) {
     const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
     log(`Checking sessions map at: ${sessionsMapPath}`);
@@ -76,7 +76,7 @@ async function main() {
   }
 
   // 5. Bypass for Workers or Inactive loops
-  const role = process.env.PICKLE_ROLE;
+  const role = process.env.AGENT_ROLE;
   const isWorker = role === 'worker' || state.worker;
 
   log(`State: active=${state.active}, iteration=${state.iteration}/${state.max_iterations}`);
@@ -128,12 +128,12 @@ async function main() {
   if (isTaskDone || isTicketDone || isBreakdownDone || isPrdDone || isTicketSelected) {
     log(`Decision: BLOCK (Checkpoint reached)`);
 
-    let feedback = '🥒 **Pickle Rick Loop Active** - ';
+    let feedback = '⚙️ **Iteration Loop Active** - ';
     if (isPrdDone) feedback += 'PRD finished, moving to breakdown...';
     if (isBreakdownDone) feedback += 'Breakdown finished, moving to implementation...';
     if (isTicketSelected) feedback += 'Ticket selected, starting research...';
     if (isTaskDone || isTicketDone) feedback += 'Ticket finished, moving to next...';
-    if (isWorkerDone) feedback += 'Worker finished, Rick is validating...';
+    if (isWorkerDone) feedback += 'Worker finished, manager is validating...';
 
     console.log(
       JSON.stringify({
@@ -172,7 +172,7 @@ async function main() {
   // 8. Default: Continue Loop (Prevent Exit)
   log('Decision: BLOCK (Default continuation)');
 
-  let defaultFeedback = `🥒 **Pickle Rick Loop Active** (Iteration ${state.iteration})`;
+  let defaultFeedback = `⚙️ **Iteration Loop Active** (Iteration ${state.iteration})`;
   if (state.max_iterations > 0) defaultFeedback += ` of ${state.max_iterations}`;
 
   console.log(
@@ -190,7 +190,7 @@ async function main() {
 main().catch((err) => {
   try {
     const extensionDir =
-      process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+      process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
     const debugLog = path.join(extensionDir, 'debug.log');
     fs.appendFileSync(debugLog, `[FATAL] ${err.stack}\n`);
   } catch {

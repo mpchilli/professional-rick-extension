@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 async function main() {
-    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
     const globalDebugLog = path.join(extensionDir, 'debug.log');
     let sessionHooksLog = null;
     const log = (msg) => {
@@ -24,7 +24,7 @@ async function main() {
         }
     };
     // 1. Determine State File
-    let stateFile = process.env.PICKLE_STATE_FILE;
+    let stateFile = process.env.LOOP_STATE_FILE;
     if (!stateFile) {
         const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
         if (fs.existsSync(sessionsMapPath)) {
@@ -44,7 +44,7 @@ async function main() {
         console.log(JSON.stringify({ decision: 'allow' }));
         return;
     }
-    const role = process.env.PICKLE_ROLE;
+    const role = process.env.AGENT_ROLE;
     if (state.active && role !== 'worker') {
         sessionHooksLog = path.join(path.dirname(stateFile), 'hooks.log');
         state.iteration = (state.iteration || 0) + 1;

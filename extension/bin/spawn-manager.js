@@ -2,14 +2,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'node:crypto';
-import { printBanner, Style, getExtensionRoot } from '../services/pickle-utils.js';
+import { printBanner, Style, getExtensionRoot } from '../services/core-utils.js';
 async function main() {
     const ROOT_DIR = getExtensionRoot();
     const SESSIONS_ROOT = path.join(ROOT_DIR, 'sessions');
     const args = process.argv.slice(2);
     const task = args.join(' ');
     if (!task) {
-        console.error('Usage: node spawn-rick.js <task description>');
+        console.error('Usage: node spawn-manager.js <task description>');
         process.exit(1);
     }
     const today = new Date().toISOString().split('T')[0];
@@ -30,7 +30,7 @@ async function main() {
         session_dir: sessionDir,
     };
     fs.writeFileSync(path.join(sessionDir, 'state.json'), JSON.stringify(state, null, 2));
-    printBanner('Rick Cycle Initialized', 'GREEN');
+    printBanner('Manager Initialized', 'GREEN');
     console.log(`Session: ${sessionId}`);
     console.log(`Path:    ${sessionDir}\n`);
 }

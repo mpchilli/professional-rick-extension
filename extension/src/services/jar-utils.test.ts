@@ -5,7 +5,7 @@ import * as os from 'node:os';
 import { addToJar } from './jar-utils.js';
 
 vi.mock('node:fs');
-vi.mock('./pickle-utils.js', () => ({
+vi.mock('./core-utils.js', () => ({
   run_cmd: vi.fn(),
   getExtensionRoot: vi.fn(() => '/test-root'),
   Style: { RED: '', RESET: '' },

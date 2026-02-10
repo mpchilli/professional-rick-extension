@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { printMinimalPanel, getExtensionRoot } from '../services/pickle-utils.js';
+import { printMinimalPanel, getExtensionRoot } from '../services/core-utils.js';
 
 function main() {
   const args = process.argv.slice(2);
@@ -28,13 +28,13 @@ function main() {
   }
 
   printMinimalPanel(
-    'Morty Worker Initialized',
+    'Worker Initialized',
     {
       Session: path.basename(sessionPath),
       CWD: process.cwd(),
     },
     'BLUE',
-    '👶'
+    '⚙️'
   );
 }
 

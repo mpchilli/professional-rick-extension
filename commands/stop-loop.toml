@@ -1,6 +1,6 @@
-description = "Stop the Pickle Rick loop and reset state"
+description = "Stop the Architect Loop and reset state"
 prompt = """
-You are stopping the Pickle Rick loop.
+You are stopping the Architect Loop.
 
 Run the cancel script to deactivate the stop hook and clean up state:
 ```bash

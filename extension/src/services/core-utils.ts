@@ -49,7 +49,7 @@ export function printMinimalPanel(
   title: string,
   fields: Record<string, string | number | boolean | null | undefined>,
   colorName: StyleColor = 'GREEN',
-  icon: string = '🥒'
+  icon: string = '⚙️'
 ) {
   const width = getWidth();
   const c = Style[colorName] || Style.GREEN;
@@ -153,7 +153,7 @@ export async function spawn_cmd(
 }
 
 export function getExtensionRoot(): string {
-  return path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+  return path.join(os.homedir(), '.gemini/extensions/architect-loop');
 }
 
 export function getSessionDir(): string | null {

@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { run_cmd, Style, getExtensionRoot } from './pickle-utils.js';
+import { run_cmd, Style, getExtensionRoot } from './core-utils.js';
 
 function getBranch(repoPath: string): string {
   try {
@@ -51,13 +51,13 @@ export function addToJar(sessionDir: string): string {
     prd_path: 'prd.md',
     created_at: new Date().toISOString(),
     task_id: sessionId,
-    status: 'marinating',
+    status: 'queued',
   };
   fs.writeFileSync(path.join(taskDir, 'meta.json'), JSON.stringify(meta, null, 2));
 
   // 6. Deactivate the current session to prevent immediate execution
   state.active = false;
-  state.completion_promise = 'JARRED'; // Signal completion
+  state.completion_promise = 'QUEUED'; // Signal completion
   fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
 
   return taskDir;
@@ -74,7 +74,7 @@ if (process.argv[1] && path.basename(process.argv[1]).startsWith('jar-utils')) {
   const sessionDir = args[sessionIndex + 1];
   try {
     const resultPath = addToJar(sessionDir);
-    console.log(`Task successfully jarred at: ${resultPath}`);
+    console.log(`Task successfully queued at: ${resultPath}`);
   } catch (err: any) {
     console.error(`${Style.RED}Error: ${err.message}${Style.RESET}`);
     process.exit(1);

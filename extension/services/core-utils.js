@@ -41,7 +41,7 @@ export function wrapText(text, width) {
         lines.push(currentLine);
     return lines.length > 0 ? lines : [''];
 }
-export function printMinimalPanel(title, fields, colorName = 'GREEN', icon = '🥒') {
+export function printMinimalPanel(title, fields, colorName = 'GREEN', icon = '⚙️') {
     const width = getWidth();
     const c = Style[colorName] || Style.GREEN;
     const r = Style.RESET;
@@ -117,7 +117,7 @@ export async function spawn_cmd(cmd, options = {}) {
     });
 }
 export function getExtensionRoot() {
-    return path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    return path.join(os.homedir(), '.gemini/extensions/architect-loop');
 }
 export function getSessionDir() {
     try {

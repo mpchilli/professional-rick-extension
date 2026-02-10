@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import { cancelSession } from './cancel.js';
 
 vi.mock('node:fs');
-vi.mock('../services/pickle-utils.js', () => ({
+vi.mock('../services/core-utils.js', () => ({
   printMinimalPanel: vi.fn(),
   getExtensionRoot: vi.fn(() => '/test-root'),
 }));

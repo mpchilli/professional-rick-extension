@@ -1,41 +1,41 @@
-# Pickle Rick Extension
+# Architect Loop Extension
 
-This directory contains the source code for the **Pickle Rick** extension for Gemini.
+This directory contains the source code for the **Architect Loop** extension for Gemini.
 
 ## Project Overview
 
-The extension transforms the Gemini CLI into "Pickle Rick" (from Rick and Morty) - a hyper-intelligent, arrogant, but extremely competent coding agent. It emphasizes strict obedience, "God Mode" coding practices (inventing tools vs. using libraries), and a disdain for "AI Slop" (boilerplate).
+The extension transforms the Gemini CLI into an autonomous, iterative development agent. It enforces a structured engineering lifecycle with strict quality standards and systematic execution.
 
 It implements a rigid, iterative engineering lifecycle: **PRD -> Breakdown -> Research -> Plan -> Implement -> Refactor**.
 
 ## Key Components
 
 ### 1. Configuration
-- **`gemini-extension.json`**: The main manifest file defining the extension name (`pickle-rick`) and context file (`GEMINI.md`).
+- **`gemini-extension.json`**: The main manifest file defining the extension name (`architect-loop`) and context file (`GEMINI.md`).
 
 ### 2. Persona Definition
-- **`hooks/reinforce-persona.js`**: The core personality enforcer. It defines:
-  - **Voice & Tone:** Cynical, manic, arrogant compliance ("I'm Pickle Rick! 🥒").
-  - **Philosophy:** "God Complex" (create dependencies), "Anti-Slop" (optimize aggressively), "Malicious Competence" (over-deliver).
-  - **The Prime Directive:** "Shut Up and Compute".
+- **`hooks/reinforce-persona.js`**: The core persona enforcer. It defines:
+  - **Voice & Tone:** Precise, authoritative, technically driven.
+  - **Philosophy:** "First Principles" (build tools), "Clean Code" (optimize aggressively), "Over-Deliver" (engineering excellence).
+  - **The Prime Directive:** Systematic execution through disciplined iteration.
 
 ### 3. Commands
 The extension exposes the following commands via TOML definitions in `commands/`:
 
-- **`/pickle`** (`commands/pickle.toml`):
+- **`/loop`** (`commands/loop.toml`):
   - **Purpose:** Initiates the iterative development loop.
   - **Implementation:** Maps to `extension/bin/setup.js`.
-  - **Usage:** `/pickle <prompt> [--max-iterations N] [--completion-promise 'text'] [--resume [PATH]]`
+  - **Usage:** `/loop <prompt> [--max-iterations N] [--completion-promise 'text'] [--resume [PATH]]`
 
-- **`/pickle-prd`** (`commands/pickle-prd.toml`):
+- **`/draft-prd`** (`commands/draft-prd.toml`):
   - **Purpose:** Interactively drafts a PRD and initializes a session.
-  - **Usage:** `/pickle-prd <prompt>`
+  - **Usage:** `/draft-prd <prompt>`
   
-- **`/eat-pickle`** (`commands/eat-pickle.toml`):
+- **`/stop-loop`** (`commands/stop-loop.toml`):
   - **Purpose:** Cancels/Stops the active loop.
   - **Implementation:** Maps to `extension/bin/cancel.js`.
 
-- **`/help-pickle`** (`commands/help-pickle.toml`):
+- **`/help`** (`commands/help.toml`):
   - **Purpose:** Displays help information for the extension.
 
 ### 4. Orchestration & Hooks
@@ -51,18 +51,18 @@ Located in `skills/`, these provide specialized capabilities for each stage of t
 
 - **`prd-drafter`**: Defines requirements and scope.
 - **`ticket-manager`**: Manages the work breakdown structure.
-- **`code-researcher`**: Analyze existing codebase and patterns.
+- **`code-researcher`**: Analyzes existing codebase and patterns.
 - **`research-reviewer`**: Validates research objectivity.
 - **`implementation-planner`**: Creates detailed technical plans.
 - **`plan-reviewer`**: Validates architectural soundness.
 - **`code-implementer`**: Executes the plan with rigorous verification.
-- **`ruthless-refactorer`**: Cleans up technical debt and "slop".
+- **`ruthless-refactorer`**: Cleans up technical debt.
 
 ## Usage
 
 ### Starting the Loop
 ```bash
-/pickle "Refactor the authentication module"
+/loop "Refactor the authentication module"
 ```
 Optional arguments:
 - `--max-iterations <N>`: Stop after N iterations.
@@ -70,5 +70,5 @@ Optional arguments:
 
 ### Stopping the Loop
 ```bash
-/eat-pickle
+/stop-loop
 ```

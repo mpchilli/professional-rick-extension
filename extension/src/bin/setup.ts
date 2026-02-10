@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'node:crypto';
-import { printMinimalPanel, Style, getExtensionRoot } from '../services/pickle-utils.js';
+import { printMinimalPanel, Style, getExtensionRoot } from '../services/core-utils.js';
 
 function die(message: string): never {
   console.error(`${Style.RED}❌ Error: ${message}${Style.RESET}`);
@@ -49,7 +49,7 @@ async function main() {
   const startEpoch = Math.floor(Date.now() / 1000);
 
   // Load Settings
-  const settingsFile = path.join(ROOT_DIR, 'pickle_settings.json');
+  const settingsFile = path.join(ROOT_DIR, 'settings.json');
   if (fs.existsSync(settingsFile)) {
     try {
       const settings = JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
@@ -129,7 +129,7 @@ async function main() {
     promiseToken = state.completion_promise;
     fullSessionPath = state.session_dir; // Use stored path
   } else {
-    if (!taskStr) die('No task specified. Run /pickle --help for usage.');
+    if (!taskStr) die('No task specified. Run /help for usage.');
 
     const today = new Date().toISOString().split('T')[0];
     const hash = crypto.randomBytes(4).toString('hex');
@@ -161,7 +161,7 @@ async function main() {
   updateSessionMap(process.cwd(), fullSessionPath);
 
   printMinimalPanel(
-    'Pickle Rick Activated!',
+    'Loop Activated!',
     {
       Iteration: currentIteration,
       Limit: loopLimit > 0 ? loopLimit : '∞',
@@ -172,7 +172,7 @@ async function main() {
       Path: fullSessionPath,
     },
     'GREEN',
-    '🥒'
+    '⚙️'
   );
 
   if (promiseToken) {

@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { printMinimalPanel, getExtensionRoot } from '../services/pickle-utils.js';
+import { printMinimalPanel, getExtensionRoot } from '../services/core-utils.js';
 
 export function cancelSession(cwd: string) {
   const SESSIONS_MAP = path.join(getExtensionRoot(), 'current_sessions.json');

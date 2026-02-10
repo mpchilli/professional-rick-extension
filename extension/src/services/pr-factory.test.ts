@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'node:fs';
 import { createPR } from './pr-factory.js';
-import { run_cmd } from './pickle-utils.js';
+import { run_cmd } from './core-utils.js';
 
 vi.mock('node:fs');
-vi.mock('./pickle-utils.js', () => ({
+vi.mock('./core-utils.js', () => ({
   run_cmd: vi.fn(),
   getExtensionRoot: vi.fn(() => '/test-root'),
   Style: { GREEN: '', RED: '', RESET: '' },

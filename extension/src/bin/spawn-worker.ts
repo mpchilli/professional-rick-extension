@@ -7,7 +7,7 @@ import {
   Style,
   formatTime,
   getExtensionRoot,
-} from '../services/pickle-utils.js';
+} from '../services/core-utils.js';
 import { spawn } from 'child_process';
 
 async function main() {
@@ -90,7 +90,7 @@ async function main() {
   }
 
   printMinimalPanel(
-    'Spawning Morty Worker',
+    'Spawning Worker',
     {
       Request: task,
       Ticket: ticketId,
@@ -99,7 +99,7 @@ async function main() {
       PID: process.pid,
     },
     'CYAN',
-    '🥒'
+    '⚙️'
   );
 
   const extensionRoot = getExtensionRoot();
@@ -116,9 +116,9 @@ async function main() {
   }
 
   // Prompt Construction
-  const tomlPath = path.join(extensionRoot, 'commands/send-to-morty.toml');
+  const tomlPath = path.join(extensionRoot, 'commands/dispatch-worker.toml');
   let basePrompt =
-    '# **TASK REQUEST**\n$ARGUMENTS\n\nYou are a Morty Worker. Implement the request above.';
+    '# **TASK REQUEST**\n$ARGUMENTS\n\nYou are an Execution Worker. Implement the request above.';
   try {
     if (fs.existsSync(tomlPath)) {
       const content = fs.readFileSync(tomlPath, 'utf-8');
@@ -142,7 +142,7 @@ async function main() {
 
   if (workerPrompt.length < 500) {
     workerPrompt +=
-      '\n\n1. Activate persona: `activate_skill("load-pickle-persona")`.\n2. Follow \'Rick Loop\' philosophy.\n3. Output: <promise>I AM DONE</promise>';
+      '\n\n1. Activate persona: `activate_skill("load-persona")`.\n2. Follow the iteration loop philosophy.\n3. Output: <promise>I AM DONE</promise>';
   }
 
   cmdArgs.push('-p', workerPrompt);
@@ -150,8 +150,8 @@ async function main() {
   const logStream = fs.createWriteStream(sessionLog, { flags: 'w' });
   const env = {
     ...process.env,
-    PICKLE_STATE_FILE: timeoutStatePath || workerState,
-    PICKLE_ROLE: 'worker',
+    LOOP_STATE_FILE: timeoutStatePath || workerState,
+    AGENT_ROLE: 'worker',
     PYTHONUNBUFFERED: '1',
   };
   const proc = spawn('gemini', cmdArgs, {
@@ -197,7 +197,7 @@ async function main() {
           validation: isSuccess ? 'successful' : 'failed',
         },
         isSuccess ? 'GREEN' : 'RED',
-        '🥒'
+        '⚙️'
       );
 
       if (!isSuccess) process.exit(1);

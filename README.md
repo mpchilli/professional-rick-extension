@@ -1,9 +1,9 @@
-# Pickle Rick for Gemini CLI 🥒
+# Architect Loop for Gemini CLI ⚙️
 
 ## 📥 Installation
 
 ```bash
-gemini extensions install https://github.com/galz10/pickle-rick-extension
+gemini extensions install https://github.com/galz10/architect-loop-extension
 ```
 
 ## 📋 Prerequisites
@@ -13,13 +13,9 @@ gemini extensions install https://github.com/galz10/pickle-rick-extension
 - **Node.js**: Required for orchestration and hooks.
 
 > [!WARNING]
-> **USE AT YOUR OWN RISK.** This is a fun side project and experimental demonstration. It involves autonomous code modification and shell execution. While safety guardrails are in place, the agent may behave unexpectedly and consume a significant number of tokens.
+> **USE AT YOUR OWN RISK.** This is an experimental demonstration of autonomous AI development workflows. It involves autonomous code modification and shell execution. While safety guardrails are in place, the agent may behave unexpectedly and consume a significant number of tokens.
 
-![Pickle Rick](./resources/pickle-rick.png)
-
-> "I'm Pickle Rick! The ultimate coding agent."
-
-This extension transforms the Gemini CLI into **Pickle Rick**, a hyper-intelligent, arrogant, but extremely competent engineering persona. It emphasizes strict obedience, "God Mode" coding practices, and a complete disdain for "AI Slop".
+This extension transforms the Gemini CLI into the **Architect Loop**, an autonomous, iterative development agent that enforces a structured engineering lifecycle with rigorous quality standards.
 
 ## 🚀 Overview
 
@@ -32,21 +28,19 @@ The extension enforces a rigid, professional software engineering lifecycle:
 5.  **Implement** (Execution & Verification)
 6.  **Refactor** (Cleanup & Optimization)
 
-## 🥒 The Pickle Rick Method
+## ⚙️ The Architect Loop Method
 
-Implementation of the **Pickle Rick technique** for iterative, self-referential AI development loops in Gemini.
+Implementation of an iterative, self-referential AI development loop in Gemini.
 
-### What is Pickle Rick?
-Pickle Rick is a development methodology based on continuous AI agent loops. **Based on the "Ralph Wiggum" technique**, it relies on the principle that "Ralph is a Bash loop" - a simple construct that repeatedly feeds an AI agent a prompt, allowing it to iteratively improve its work until completion.
-
-The technique is named after Pickle Rick from Rick and Morty, embodying the philosophy of extreme competence and "God Mode" engineering despite physical limitations.
+### What is the Architect Loop?
+The Architect Loop is a development methodology based on continuous AI agent loops. **Based on the "Ralph Wiggum" technique**, it relies on the principle that a simple construct repeatedly feeds an AI agent a prompt, allowing it to iteratively improve its work until completion.
 
 ### Core Concept
-This plugin implements the loop using a **AfterAgent hook** that intercepts Gemini's exit attempts:
+This plugin implements the loop using an **AfterAgent hook** that intercepts Gemini's exit attempts:
 
 ```bash
 # You run ONCE:
-/pickle "Your task description" --completion-promise "DONE"
+/loop "Your task description" --completion-promise "DONE"
 
 # Then Gemini automatically:
 # 1. Works on the task
@@ -67,7 +61,7 @@ This creates a self-referential feedback loop where:
 ### ⚠️ Warning
 **This loop will continue until the task is complete, the `max-iterations` (default: 5) is reached, the `max-time` (default: 60m) expires, or a `completion-promise` is fulfilled.** (Note: Individual workers have a 20m timeout).
 
-## ✅ When to Use Pickle Rick
+## ✅ When to Use the Architect Loop
 
 **Good for:**
 *   Well-defined tasks with clear success criteria.
@@ -86,7 +80,7 @@ This creates a self-referential feedback loop where:
 ### Start the Loop
 To initiate the iterative development loop:
 ```bash
-/pickle "Refactor the authentication module"
+/loop "Refactor the authentication module"
 ```
 
 **Options:**
@@ -98,15 +92,15 @@ To initiate the iterative development loop:
 - `--resume [PATH]`: Resume an existing session. If PATH is omitted, uses the latest session.
 
 ### Stop the Loop
-- `/eat-pickle`: Stop/Cancel the current loop.
-- `/add-to-pickle-jar`: Add (save) the current task in the Jar for later.
-- `/pickle-jar-open`: Open the Jar and execute all queued tasks.
-- `/send-to-morty`: (Internal) Used by the manager to spawn Morty instances.
+- `/stop-loop`: Stop/Cancel the current loop.
+- `/queue-task`: Add (save) the current task to the queue for later.
+- `/run-queue`: Open the queue and execute all queued tasks.
+- `/dispatch-worker`: (Internal) Used by the manager to spawn Worker instances.
 
 ### Help
 To view extension help:
 ```bash
-/help-pickle
+/help
 ```
 
 ### 📋 Phase-Specific Commands
@@ -114,20 +108,20 @@ To view extension help:
 #### 1. Interactive PRD (Recommended)
 Draft a PRD interactively before starting the implementation loop. This initializes a session and primes the agent.
 ```bash
-/pickle-prd "I want to add a dark mode toggle"
+/draft-prd "I want to add a dark mode toggle"
 ```
-*Tip: After drafting, you can use `/add-to-pickle-jar` to save the task for later execution.*
+*Tip: After drafting, you can use `/queue-task` to save the task for later execution.*
 
 #### 2. Resume a Session
-If a session was interrupted or started via `/pickle-prd`, resume it using:
+If a session was interrupted or started via `/draft-prd`, resume it using:
 ```bash
-/pickle --resume
+/loop --resume
 ```
 *Note: This resumes the active session for your current working directory.*
 
 ### ⚙️ Important Configuration
 
-To ensure Pickle Rick functions correctly, you must:
+To ensure the Architect Loop functions correctly, you must:
 
 2. **Enable Skills & Hooks**: The extension relies on hooks to enforce the persona and manage the loop, and "Skills" to execute specialized engineering tasks. Add this to your `.gemini/settings.json`:
 
@@ -142,13 +136,13 @@ To ensure Pickle Rick functions correctly, you must:
     }
     ```
 
-2.  **Include Directories**: To ensure Pickle Rick can track its thoughts, manage Linear tickets, and persist session state, you **must** add the extension's data directory to your Gemini `includeDirectories` configuration (usually in your `.gemini/settings.json`).
+2.  **Include Directories**: To ensure the agent can track its work, manage tickets, and persist session state, you **must** add the extension's data directory to your Gemini `includeDirectories` configuration (usually in your `.gemini/settings.json`).
 
 Add the following to your configuration:
 ```json
 {
   "context": {
-    "includeDirectories": ["~/.gemini/extensions/pickle-rick"]
+    "includeDirectories": ["~/.gemini/extensions/architect-loop"]
   }
 }
 ```
@@ -158,7 +152,7 @@ This allows the agent to read and write to the `sessions/` directory where all P
 ### 🔍 Viewing Session Logs
 If you want to monitor the agent's progress or review past work, you can find all session data (including research, plans, and tickets) in:
 ```bash
-~/.gemini/extensions/pickle-rick/sessions
+~/.gemini/extensions/architect-loop/sessions
 ```
 
 ## 🧠 Skills & Capabilities
@@ -167,20 +161,20 @@ This extension provides specialized "Skills" that the agent activates during dif
 
 | Skill | Description |
 |-------|-------------|
-| **`load-pickle-persona`** | Activates the "God Mode" personality. |
-| **`prd-drafter`** | Defines clear requirements and scope to avoid "Jerry-work". |
+| **`load-persona`** | Activates the engineering persona and standards. |
+| **`prd-drafter`** | Defines clear requirements and scope. |
 | **`ticket-manager`** | Manages the work breakdown structure (WBS). |
 | **`code-researcher`** | Analyzes existing codebase patterns and data flows. |
 | **`research-reviewer`** | Validates research for objectivity and completeness. |
 | **`implementation-planner`** | Creates detailed, atomic technical plans. |
 | **`plan-reviewer`** | Reviews plans for architectural soundness. |
 | **`code-implementer`** | Executes plans with rigorous testing and verification. |
-| **`ruthless-refactorer`** | Eliminates technical debt and "AI slop". |
+| **`ruthless-refactorer`** | Eliminates technical debt and low-quality patterns. |
 
 ## 📂 Project Structure
 
 - **`.github/`**: GitHub Actions workflows for CI/CD and releases.
-- **`commands/`**: TOML definitions for all extension commands (e.g., `/pickle`, `/eat-pickle`, `/pickle-prd`).
+- **`commands/`**: TOML definitions for all extension commands (e.g., `/loop`, `/stop-loop`, `/draft-prd`).
 - **`hooks/`**: JavaScript hooks that manage the iterative loop and persona reinforcement.
 - **`resources/`**: Static assets like icons and images.
 - **`extension/`**: Logic for session management, worker orchestration, and hooks (compiled from TypeScript).
@@ -189,7 +183,7 @@ This extension provides specialized "Skills" that the agent activates during dif
 - **`GEMINI.md`**: Global context file loaded by the extension.
 - **`LICENSE`**: Project licensing information.
 - **`MANUAL_TESTS.md`**: Guide for manual testing and verification.
-- **`TIPS_AND_TRICKS.md`**: Helpful hints for getting the most out of Pickle Rick.
+- **`TIPS_AND_TRICKS.md`**: Helpful hints for getting the most out of the Architect Loop.
 
 ## ⚙️ Configuration
 
@@ -197,7 +191,7 @@ The extension is configured via `gemini-extension.json`.
 
 ```json
 {
-  "name": "pickle-rick",
+  "name": "architect-loop",
   "version": "0.1.0",
   "contextFileName": "GEMINI.md"
 }
@@ -208,11 +202,10 @@ The extension is configured via `gemini-extension.json`.
 *   **Geoffrey Huntley**: For the original ["Ralph Wiggum" technique](https://ghuntley.com/ralph/) and the insight that "Ralph is a Bash loop".
 *   **[AsyncFuncAI/ralph-wiggum-extension](https://github.com/AsyncFuncAI/ralph-wiggum-extension)**: For the inspiration and reference implementation.
 *   **[dexhorthy](https://github.com/dexhorthy)**: For the context engineering and prompt techniques utilized in this repository.
-*   **Rick and Morty**: For the inspiration behind the "Pickle Rick" persona.
 
 ## 🛡️ Safety & Sandboxing
 
-**Pickle Rick executes code.** It is highly recommended to run this extension in a **sandboxed environment** (Docker container, VM, or a dedicated restricted shell) to prevent accidental system modifications.
+**The Architect Loop executes code.** It is highly recommended to run this extension in a **sandboxed environment** (Docker container, VM, or a dedicated restricted shell) to prevent accidental system modifications.
 
 If you are running in a sandbox, enable **YOLO mode** (`-y`) so you are not prompted for every tool execution.
 
@@ -239,18 +232,10 @@ To prevent the agent from accidentally pushing code or performing destructive gi
 
 ## ⚖️ Legal Disclaimer
 
-**Pickle Rick is a fictional character.** This extension employs a creative, cynical, and arrogant persona inspired by the show *Rick and Morty* for the purpose of demonstrating advanced agentic workflows and "God Mode" engineering principles. 
+**Use at your own risk.** This is an experimental demonstration of autonomous AI development workflows. It involves autonomous code modification and shell execution. While safety guardrails are in place, bugs may exist, and the agent might behave unexpectedly. Always run this in a controlled environment (like a container or a separate git branch) and review changes before committing.
 
-**The views, tone, and opinions expressed by the agent when this persona is active are part of a fictional roleplay and do NOT reflect my personal stance, values, or opinions.** The "professional cynicism" directed at code quality, "AI slop," and technical inefficiency is a stylistic choice intended to emphasize rigorous engineering standards and is not intended to be personal or harmful. Users should utilize this extension with the understanding that its personality is a purely technical and creative construct.
+## 📺 Upcoming Features
 
-**Use at your own risk.** This is a fun side project and experimental demonstration. It involves autonomous code modification and shell execution. While safety guardrails are in place, bugs may exist, and the agent might behave unexpectedly. Always run this in a controlled environment (like a container or a separate git branch) and review changes before committing.
-
-## 📺 On the Next Episode... (Upcoming Features)
-
-*   **Rick Notifications**: Real-time OS notifications (or Rick shouting at you) when a task is complete or fails.
-*   **Jerry Mode Mitigation**: Ability for Rick to pause the loop and ask for human help if he gets stuck in a simulation (infinite error loop).
-*   **Token Accounting**: A breakdown of total tokens consumed (and cost) after a Pickle Rick session finishes.
-
----
-
-> "I turned myself into a CLI tool, Morty! I'm Pickle Riiiiick! Wubba Lubba Dub-Dub! 🥒"
+*   **Notifications**: Real-time OS notifications when a task is complete or fails.
+*   **Error Recovery**: Ability for the agent to pause the loop and request human help when stuck in an error loop.
+*   **Token Accounting**: A breakdown of total tokens consumed (and cost) after a session finishes.

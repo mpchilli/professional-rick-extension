@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as os from 'node:os';
-const EXTENSION_DIR = join(os.homedir(), '.gemini/extensions/pickle-rick');
+const EXTENSION_DIR = join(os.homedir(), '.gemini/extensions/architect-loop');
 const HANDLERS_DIR = join(EXTENSION_DIR, 'extension', 'hooks', 'handlers');
 const LOG_PATH = join(EXTENSION_DIR, 'debug.log');
 // Prevent EPIPE errors from crashing the dispatcher when Gemini closes the pipe

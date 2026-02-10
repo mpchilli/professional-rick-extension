@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
 import * as path from 'path';
-import { printMinimalPanel, Style, formatTime, getExtensionRoot, } from '../services/pickle-utils.js';
+import { printMinimalPanel, Style, formatTime, getExtensionRoot, } from '../services/core-utils.js';
 import { spawn } from 'child_process';
 async function main() {
     const args = process.argv.slice(2);
@@ -67,13 +67,13 @@ async function main() {
             // Ignore
         }
     }
-    printMinimalPanel('Spawning Morty Worker', {
+    printMinimalPanel('Spawning Worker', {
         Request: task,
         Ticket: ticketId,
         Format: outputFormat,
         Timeout: `${effectiveTimeout}s (Req: ${timeout}s)`,
         PID: process.pid,
-    }, 'CYAN', '🥒');
+    }, 'CYAN', '⚙️');
     const extensionRoot = getExtensionRoot();
     const includes = [extensionRoot, path.join(extensionRoot, 'skills'), ticketPath];
     const cmdArgs = ['-s', '-y'];
@@ -86,8 +86,8 @@ async function main() {
         cmdArgs.push('-o', outputFormat);
     }
     // Prompt Construction
-    const tomlPath = path.join(extensionRoot, 'commands/send-to-morty.toml');
-    let basePrompt = '# **TASK REQUEST**\n$ARGUMENTS\n\nYou are a Morty Worker. Implement the request above.';
+    const tomlPath = path.join(extensionRoot, 'commands/dispatch-worker.toml');
+    let basePrompt = '# **TASK REQUEST**\n$ARGUMENTS\n\nYou are an Execution Worker. Implement the request above.';
     try {
         if (fs.existsSync(tomlPath)) {
             const content = fs.readFileSync(tomlPath, 'utf-8');
@@ -109,14 +109,14 @@ async function main() {
         '\n\n**IMPORTANT**: You are a localized worker. You are FORBIDDEN from working on ANY other tickets. Once you output `<promise>I AM DONE</promise>`, you MUST STOP and let the manager take over.';
     if (workerPrompt.length < 500) {
         workerPrompt +=
-            '\n\n1. Activate persona: `activate_skill("load-pickle-persona")`.\n2. Follow \'Rick Loop\' philosophy.\n3. Output: <promise>I AM DONE</promise>';
+            '\n\n1. Activate persona: `activate_skill("load-persona")`.\n2. Follow the iteration loop philosophy.\n3. Output: <promise>I AM DONE</promise>';
     }
     cmdArgs.push('-p', workerPrompt);
     const logStream = fs.createWriteStream(sessionLog, { flags: 'w' });
     const env = {
         ...process.env,
-        PICKLE_STATE_FILE: timeoutStatePath || workerState,
-        PICKLE_ROLE: 'worker',
+        LOOP_STATE_FILE: timeoutStatePath || workerState,
+        AGENT_ROLE: 'worker',
         PYTHONUNBUFFERED: '1',
     };
     const proc = spawn('gemini', cmdArgs, {
@@ -149,7 +149,7 @@ async function main() {
             printMinimalPanel('Worker Report', {
                 status: `exit:${code}`,
                 validation: isSuccess ? 'successful' : 'failed',
-            }, isSuccess ? 'GREEN' : 'RED', '🥒');
+            }, isSuccess ? 'GREEN' : 'RED', '⚙️');
             if (!isSuccess)
                 process.exit(1);
             resolve();

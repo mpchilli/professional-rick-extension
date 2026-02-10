@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { getExtensionRoot } from '../services/pickle-utils.js';
+import { getExtensionRoot } from '../services/core-utils.js';
 
 export function getSessionPath(cwd: string): string | null {
   const SESSIONS_MAP = path.join(getExtensionRoot(), 'current_sessions.json');

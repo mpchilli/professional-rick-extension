@@ -1,7 +1,7 @@
 {
-  "name": "pickle-rick-extension",
+  "name": "architect-loop-extension",
   "version": "1.0.0",
-  "description": "```bash gemini extensions install https://github.com/galz10/pickle-rick-extension ```",
+  "description": "An autonomous, iterative development loop extension for Gemini CLI.",
   "main": "index.js",
   "devDependencies": {
     "husky": "^9.1.7",
@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/galz10/pickle-rick-extension.git"
+    "url": "git+https://github.com/galz10/architect-loop-extension.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/galz10/pickle-rick-extension/issues"
+    "url": "https://github.com/galz10/architect-loop-extension/issues"
   },
-  "homepage": "https://github.com/galz10/pickle-rick-extension#readme"
+  "homepage": "https://github.com/galz10/architect-loop-extension#readme"
 }

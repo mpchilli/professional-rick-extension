@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { wrapText, formatTime } from './pickle-utils.js';
+import { wrapText, formatTime } from './core-utils.js';
 
-describe('pickle_utils', () => {
+describe('core_utils', () => {
   describe('wrapText', () => {
     it('should wrap text at a given width', () => {
       const text = 'This is a long text that needs to be wrapped';

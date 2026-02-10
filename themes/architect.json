@@ -1,5 +1,5 @@
 {
-  "name": "Shades of the Pickle",
+  "name": "Architect",
   "type": "custom",
   "Background": "#050f05",
   "Foreground": "#ccff90",
@@ -21,3 +21,4 @@
     "accent": "#76ff03"
   }
 }
+

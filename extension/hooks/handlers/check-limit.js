@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 async function main() {
-    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/pickle-rick');
+    const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
     const globalDebugLog = path.join(extensionDir, 'debug.log');
     let sessionHooksLog = null;
     const log = (msg) => {
@@ -24,7 +24,7 @@ async function main() {
         }
     };
     // 1. Determine State File
-    let stateFile = process.env.PICKLE_STATE_FILE;
+    let stateFile = process.env.LOOP_STATE_FILE;
     if (!stateFile) {
         const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
         if (fs.existsSync(sessionsMapPath)) {
@@ -54,8 +54,8 @@ async function main() {
     const elapsedSeconds = now - state.start_time_epoch;
     const maxTimeSeconds = state.max_time_minutes * 60;
     if (state.jar_complete) {
-        log('Jar complete');
-        console.log(JSON.stringify({ decision: 'deny', continue: false, reason: 'Jar processing complete' }));
+        log('Queue complete');
+        console.log(JSON.stringify({ decision: 'deny', continue: false, reason: 'Queue processing complete' }));
         return;
     }
     if (state.max_time_minutes > 0 && elapsedSeconds >= maxTimeSeconds) {

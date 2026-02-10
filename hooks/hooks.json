@@ -11,7 +11,7 @@
             "description": "Increments the iteration"
           },
           {
-            "name": "reinforce-pickle-persona",
+            "name": "reinforce-persona",
             "type": "command",
             "command": "node ${extensionPath}/extension/hooks/dispatch.js reinforce-persona",
             "description": "Injects persona directives to ensure the agent explains its steps"
@@ -37,10 +37,10 @@
         "matcher": "*",
         "hooks": [
           {
-            "name": "pickle-rick-loop",
+            "name": "iteration-loop",
             "type": "command",
             "command": "node ${extensionPath}/extension/hooks/dispatch.js stop-hook",
-            "description": "The Pickle Rick infinite loop mechanism"
+            "description": "The iteration loop continuation mechanism"
           }
         ]
       }

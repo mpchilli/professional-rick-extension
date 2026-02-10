@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import { getSessionPath } from './get-session.js';
 
 vi.mock('node:fs');
-vi.mock('../services/pickle-utils.js', () => ({
+vi.mock('../services/core-utils.js', () => ({
   getExtensionRoot: vi.fn(() => '/test-root'),
 }));
 
