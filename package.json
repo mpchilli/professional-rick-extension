@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/galz10/pickle-rick-extension.git"
+    "url": "git+https://github.com/mpchilli/professional-rick-extension.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/galz10/pickle-rick-extension/issues"
+    "url": "https://github.com/mpchilli/professional-rick-extension/issues"
   },
-  "homepage": "https://github.com/galz10/pickle-rick-extension#readme"
+  "homepage": "https://github.com/mpchilli/professional-rick-extension#readme"
 }
