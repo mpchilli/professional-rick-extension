@@ -7,7 +7,7 @@
 ### From npm
 
 ```bash
-npm install -g architect-loop
+npm install -g pro-rick-opus46
 ```
 
 ### From Source
@@ -148,7 +148,7 @@ Settings are stored at `~/.architect/settings.json`:
 Sessions are stored in:
 - **Local**: `.architect/sessions/<date-hash>/` in your project
 - **Worktrees**: `.architect/worktrees/session-<name>/` for isolated execution
-- **Global**: `~/.gemini/extensions/architect-loop/sessions/`
+- **Global**: `~/.gemini/extensions/Pro-Rick-Opus46/sessions/`
 
 ### Resuming Sessions
 

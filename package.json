@@ -1,5 +1,5 @@
 {
-  "name": "architect-loop-extension",
+  "name": "pro-rick-opus46-extension",
   "version": "1.0.0",
   "description": "An autonomous, iterative development loop extension for Gemini CLI.",
   "main": "index.js",
@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/galz10/architect-loop-extension.git"
+    "url": "git+https://github.com/galz10/pro-rick-opus46-extension.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/galz10/architect-loop-extension/issues"
+    "url": "https://github.com/galz10/pro-rick-opus46-extension/issues"
   },
-  "homepage": "https://github.com/galz10/architect-loop-extension#readme"
+  "homepage": "https://github.com/galz10/pro-rick-opus46-extension#readme"
 }

@@ -23,7 +23,7 @@ describe("resources.ts", () => {
             const path = resources.resolveResource("skills/test.md");
 
             // Should fallback to home path
-            const expectedHomeBase = join(homedir(), ".gemini/extensions/architect-loop");
+            const expectedHomeBase = join(homedir(), ".gemini/extensions/Pro-Rick-Opus46");
             expect(path).toBe(join(expectedHomeBase, "skills/test.md"));
         });
     });
@@ -42,7 +42,7 @@ describe("resources.ts", () => {
             // Use a non-existent execPath so bundled check fails
             Object.defineProperty(process, 'execPath', { value: "/nonexistent/bin/architect", configurable: true });
 
-            const expectedHomeBase = join(homedir(), ".gemini/extensions/architect-loop");
+            const expectedHomeBase = join(homedir(), ".gemini/extensions/Pro-Rick-Opus46");
             expect(resources.getExtensionRoot()).toBe(expectedHomeBase);
         });
     });

@@ -40,7 +40,7 @@ Architect Loop CLI is an autonomous coding agent orchestrator with a TUI (Termin
 2. **Session & Settings Management** (`src/config/`):
    - Sessions stored in `.architect/sessions/<date-hash>/`
    - State persisted as `state.json` with Zod validation
-   - Global sessions also at `~/.gemini/extensions/architect-loop/sessions/`
+   - Global sessions also at `~/.gemini/extensions/Pro-Rick-Opus46/sessions/`
    - User settings at `~/.architect/settings.json` (provider/model configuration)
 
 3. **Execution Pipeline** (`src/execution/`):

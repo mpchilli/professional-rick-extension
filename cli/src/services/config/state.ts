@@ -6,7 +6,7 @@ import { SessionStateSchema, type SessionState } from "./types.js";
 import { findProjectRoot } from "../../utils/project-root.js";
 import { loadSettings } from "./settings.js";
 
-export const GLOBAL_SESSIONS_DIR = join(homedir(), ".gemini", "extensions", "architect-loop", "sessions");
+export const GLOBAL_SESSIONS_DIR = join(homedir(), ".gemini", "extensions", "Pro-Rick-Opus46", "sessions");
 
 export interface SessionSummary {
     original_prompt: string;
@@ -23,7 +23,7 @@ export function getSessionPath(cwd: string, sessionId: string): string {
 export async function loadState(sessionDir: string): Promise<SessionState | null> {
     const path = join(sessionDir, "state.json");
     if (!existsSync(path)) return null;
-    
+
     try {
         const content = await readFile(path, "utf-8");
         const json = JSON.parse(content);
@@ -45,13 +45,13 @@ export async function createSession(cwd: string, prompt: string, is_prd_mode: bo
     const hash = Math.random().toString(36).substring(2, 10);
     const sessionId = `${today}-${hash}`;
     const sessionDir = getSessionPath(root, sessionId);
-    
+
     await mkdir(sessionDir, { recursive: true });
-    
+
     // Load settings from ~/.architect/settings.json to get max_iterations
     const settings = await loadSettings();
     const maxIterations = settings.max_iterations ?? 10;
-    
+
     const state: SessionState = {
         active: true,
         working_dir: root,
@@ -69,7 +69,7 @@ export async function createSession(cwd: string, prompt: string, is_prd_mode: bo
         started_at: new Date().toISOString(),
         session_dir: sessionDir
     };
-    
+
     await saveState(sessionDir, state);
     return state;
 }
@@ -86,7 +86,7 @@ export async function listSessions(cwd?: string): Promise<SessionSummary[]> {
                     sessionDirs.add(join(GLOBAL_SESSIONS_DIR, entry.name));
                 }
             }
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // 2. Check Local Sessions (if CWD provided)
@@ -111,12 +111,12 @@ export async function listSessions(cwd?: string): Promise<SessionSummary[]> {
 
     for (const sessionDir of sessionDirs) {
         const state = await loadState(sessionDir);
-        
+
         if (state) {
             const status = state.active && state.step !== "done"
-                ? `${state.step.toUpperCase()} (Iteration ${state.iteration})` 
+                ? `${state.step.toUpperCase()} (Iteration ${state.iteration})`
                 : "Done";
-            
+
             sessions.push({
                 original_prompt: state.original_prompt,
                 status,

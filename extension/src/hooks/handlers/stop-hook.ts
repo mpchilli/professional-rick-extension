@@ -6,7 +6,7 @@ import { State, HookInput } from '../../types/index.js';
 
 async function main() {
   const extensionDir =
-    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
+    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-Opus46');
 
   const globalDebugLog = path.join(extensionDir, 'debug.log');
 
@@ -190,7 +190,7 @@ async function main() {
 main().catch((err) => {
   try {
     const extensionDir =
-      process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
+      process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-Opus46');
     const debugLog = path.join(extensionDir, 'debug.log');
     fs.appendFileSync(debugLog, `[FATAL] ${err.stack}\n`);
   } catch {

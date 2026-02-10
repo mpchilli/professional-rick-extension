@@ -3,7 +3,7 @@ import { homedir } from "node:os";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const DEFAULT_EXTENSION_PATH = join(homedir(), ".gemini/extensions/architect-loop");
+const DEFAULT_EXTENSION_PATH = join(homedir(), ".gemini/extensions/Pro-Rick-Opus46");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -47,7 +47,7 @@ export function resolveSkillPath(skillName: string): string {
     if (existsSync(localSrcSkill)) return localSrcSkill;
 
     // 3. Local Source (Root): Check `../../../skills/<name>/SKILL.md` relative to this file
-    // src/utils/resources.ts -> src -> cli -> architect-loop-extension -> skills
+    // src/utils/resources.ts -> src -> cli -> pro-rick-opus46-extension -> skills
     const localRootSkill = join(__dirname, "../../../skills", skillName, "SKILL.md");
     if (existsSync(localRootSkill)) return localRootSkill;
 
@@ -81,12 +81,12 @@ export function getCliCommand(): string {
     // Check if running as a specific runtime (Node or Bun)
     // Matches .../node, .../node.exe, .../bun, .../bun.exe
     const isRuntime = /\/(node|bun)(\.exe)?$/.test(execPath);
-    
+
     if (isRuntime) {
         // We are running a script. process.argv[1] is the script path.
         return `"${execPath}" "${process.argv[1]}"`;
     }
-    
+
     // We are running as a standalone binary
     return `"${execPath}"`;
 }

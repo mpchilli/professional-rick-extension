@@ -6,7 +6,7 @@
 
 **Step 1: Install Extension**
 ```bash
-gemini extensions install https://github.com/galz10/pickle-rick-extension
+gemini extensions install https://github.com/galz10/pro-rick-opus46-extension
 ```
 
 **Step 2: Update Settings**
@@ -16,7 +16,7 @@ Add this to your `~/.gemini/settings.json` to enable the agent and secure git op
   "hooks": { "enabled": true },
   "experimental": { "skills": true },
   "context": {
-    "includeDirectories": ["~/.gemini/extensions/architect-loop"]
+    "includeDirectories": ["~/.gemini/extensions/Pro-Rick-Opus46"]
   },
   "tools": {
     "exclude": ["run_shell_command(git push)"],

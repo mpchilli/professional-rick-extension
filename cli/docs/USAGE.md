@@ -97,7 +97,7 @@ architect validate-settings --fix
 
 Sessions are stored in:
 - **Local**: `.architect/sessions/<date-hash>/` in your project directory
-- **Global**: `~/.gemini/extensions/architect-loop/sessions/`
+- **Global**: `~/.gemini/extensions/Pro-Rick-Opus46/sessions/`
 
 Each session directory contains:
 - `state.json` - Session state and progress

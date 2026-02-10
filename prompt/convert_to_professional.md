@@ -99,3 +99,44 @@ TypeScript compilation (`npm run build`) is the best validator — if it passes,
 
 ### 7. Build Before Tests
 Run `npm run build` before `npm test` to ensure compiled JS matches the TS source. Tests run against compiled JS, so stale builds will produce false failures.
+
+## Extension Name Locations (Reference)
+
+When renaming the extension (e.g., from `architect-loop` to `Pro-Rick-Opus46`), ensure you update the following locations:
+
+### 1. Configuration & Manifests
+- **`gemini-extension.json`**:
+  - `name`: The internal extension ID (e.g., `"Pro-Rick-Opus46"`).
+- **`package.json`**:
+  - `name`: The npm package name (e.g., `"pro-rick-opus46-extension"`).
+  - `repository`: Utilities for `git+https` URLs.
+
+### 2. Extension Source Code
+- **`extension/src/services/core-utils.ts`**:
+  - `DEFAULT_EXTENSION_ROOT`: Path constant (e.g., `.gemini/extensions/Pro-Rick-Opus46`).
+- **`extension/src/hooks/dispatch.ts`**:
+  - `DEFAULT_EXTENSION_DIR`: Path constant.
+- **`extension/src/services/git-utils.ts`**:
+  - `FALLBACK_GITHUB_USER`: Default user for attribution (e.g., `"Pro-Rick-Opus46"`).
+
+### 3. Hook Handlers (`extension/src/hooks/handlers/*.ts`)
+These files often contain fallback paths if `process.env.EXTENSION_DIR` is missing:
+- **`reinforce-persona.ts`**: `path.join(os.homedir(), '.gemini/extensions/NAME')`
+- **`increment-iteration.ts`**
+- **`check-limit.ts`**
+- **`stop-hook.ts`** (Check multiple occurrences)
+
+### 4. CLI Source Code (`cli/src/**/*.ts`)
+- **`cli/package.json`**: `name` (e.g., `"pro-rick-opus46"`).
+- **`cli/src/utils/resources.ts`**:
+  - `DEFAULT_EXTENSION_PATH`: The default global path.
+- **`cli/src/services/providers/gemini.ts`**:
+  - Extension name in `exec` commands (e.g., `gemini extensions disable NAME`).
+- **`cli/src/services/config/state.ts`**:
+  - Global sessions path.
+- **`cli/src/services/git/pr.ts`**:
+  - Attribution text and URLs.
+
+### 5. Documentation
+- **Root**: `README.md`, `GEMINI.md`, `STEP_BY_STEP_GUIDE.md` (Install commands, paths, config snippets).
+- **CLI**: `cli/README.md`, `cli/CLAUDE.md`, `cli/docs/*.md` (Global paths, install commands).

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { State } from '../../types/index.js';
 async function main() {
   const extensionDir =
-    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/architect-loop');
+    process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-Opus46');
   const globalDebugLog = path.join(extensionDir, 'debug.log');
 
   let sessionHooksLog: string | null = null;

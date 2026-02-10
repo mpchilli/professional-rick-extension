@@ -3,7 +3,7 @@
 ## 📥 Installation
 
 ```bash
-gemini extensions install https://github.com/galz10/architect-loop-extension
+gemini extensions install https://github.com/galz10/pro-rick-opus46-extension
 ```
 
 ## 📋 Prerequisites
@@ -142,7 +142,7 @@ Add the following to your configuration:
 ```json
 {
   "context": {
-    "includeDirectories": ["~/.gemini/extensions/architect-loop"]
+    "includeDirectories": ["~/.gemini/extensions/Pro-Rick-Opus46"]
   }
 }
 ```
@@ -152,7 +152,7 @@ This allows the agent to read and write to the `sessions/` directory where all P
 ### 🔍 Viewing Session Logs
 If you want to monitor the agent's progress or review past work, you can find all session data (including research, plans, and tickets) in:
 ```bash
-~/.gemini/extensions/architect-loop/sessions
+~/.gemini/extensions/Pro-Rick-Opus46/sessions
 ```
 
 ## 🧠 Skills & Capabilities
@@ -191,7 +191,7 @@ The extension is configured via `gemini-extension.json`.
 
 ```json
 {
-  "name": "architect-loop",
+  "name": "Pro-Rick-Opus46",
   "version": "0.1.0",
   "contextFileName": "GEMINI.md"
 }

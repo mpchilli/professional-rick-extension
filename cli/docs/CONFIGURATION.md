@@ -116,4 +116,4 @@ Add these to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.) for persistence.
 | `.architect/sessions/` | Project-local sessions |
 | `.architect/worktrees/` | Isolated git worktrees |
 | `~/.architect/settings.json` | Global settings |
-| `~/.gemini/extensions/architect-loop/sessions/` | Global session archive |
+| `~/.gemini/extensions/Pro-Rick-Opus46/sessions/` | Global session archive |

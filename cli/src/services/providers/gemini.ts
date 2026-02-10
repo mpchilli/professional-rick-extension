@@ -31,7 +31,7 @@ export class GeminiProvider extends BaseProvider {
     workDir: string,
     options?: ProviderOptions,
   ): Promise<AIResult> {
-    return this.executeStreaming(prompt, workDir, () => {}, options);
+    return this.executeStreaming(prompt, workDir, () => { }, options);
   }
 
   async executeStreaming(
@@ -40,14 +40,14 @@ export class GeminiProvider extends BaseProvider {
     onProgress: (step: string, content?: string) => void,
     options?: ProviderOptions,
   ): Promise<AIResult> {
-    // Disable the architect-loop extension to prevent recursion or interference
+    // Disable the Pro-Rick-Opus46 extension to prevent recursion or interference
     try {
-      await execCommand(this.cliCommand, ["extensions", "disable", "architect-loop"], workDir);
+      await execCommand(this.cliCommand, ["extensions", "disable", "Pro-Rick-Opus46"], workDir);
     } catch (e) {
       // Silently ignore if it fails (might not be installed)
     }
 
-    const extensionPath = join(homedir(), ".gemini/extensions/architect-loop");
+    const extensionPath = join(homedir(), ".gemini/extensions/Pro-Rick-Opus46");
     const promptFile = join(workDir, ".gemini-prompt.txt");
     await writeFile(promptFile, prompt, "utf-8");
 
@@ -115,7 +115,7 @@ export class GeminiProvider extends BaseProvider {
             if (step) {
               onProgress(step);
             }
-          } catch {} // Ignore JSON parsing errors
+          } catch { } // Ignore JSON parsing errors
         },
       );
 
@@ -158,12 +158,12 @@ export class GeminiProvider extends BaseProvider {
     } finally {
       try {
         await unlink(promptFile);
-      } catch (e) {} // Ignore errors during cleanup
+      } catch (e) { } // Ignore errors during cleanup
 
       // Re-enable the extension
       try {
-        await execCommand(this.cliCommand, ["extensions", "enable", "architect-loop"], workDir);
-      } catch (e) {} // Ignore errors during cleanup
+        await execCommand(this.cliCommand, ["extensions", "enable", "Pro-Rick-Opus46"], workDir);
+      } catch (e) { } // Ignore errors during cleanup
     }
   }
 }

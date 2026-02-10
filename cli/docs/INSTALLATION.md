@@ -27,7 +27,7 @@
 ### From npm (Recommended)
 
 ```bash
-npm install -g architect-loop
+npm install -g pro-rick-opus46
 ```
 
 After installation, the `architect` command will be available globally.
