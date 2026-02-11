@@ -103,43 +103,37 @@ async function main() {
     console.log(`${Style.BOLD}AI Architect Sessions${Style.RESET}`);
     console.log(`${Style.DIM}Workspace: ${WORKSPACE_ROOT}${Style.RESET}\n`);
 
-    // Header
-    const colId = 20;
-    const colStatus = 15;
-    const colTime = 20;
-
-    console.log(
-        `${Style.BOLD}ID`.padEnd(colId) +
-        `Status`.padEnd(colStatus) +
-        `Started`.padEnd(colTime) +
-        `Task${Style.RESET}`
-    );
-    console.log(`${Style.DIM}${'-'.repeat(100)}${Style.RESET}`);
-
     sessions.forEach(s => {
         let statusColor = s.active ? Style.GREEN : Style.DIM;
-        let statusMarker = s.active ? '[+]' : '[ ]';
+        let statusMarker = s.active ? '●' : '○';
+        let statusText = s.status.substring(0, 15);
 
-        // Format date nicely if possible
+        // Date formatting
         let timeDisplay = s.started_at;
         try {
             const date = new Date(s.started_at);
             if (!isNaN(date.getTime())) {
                 timeDisplay = date.toLocaleString(undefined, {
-                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
             }
         } catch (e) { /* ignore */ }
 
-        console.log(
-            `${Style.CYAN}${s.id.padEnd(colId)}${Style.RESET}` +
-            `${statusColor}${statusMarker} ${s.status.substring(0, 12).padEnd(colStatus - 5)}${Style.RESET} ` +
-            `${(timeDisplay || 'Unknown').padEnd(colTime)} ` +
-            `${s.title}`
-        );
+        // Line 1: ID and Status
+        console.log(`${Style.CYAN}${Style.BOLD}${s.id}${Style.RESET}  ${statusColor}${statusMarker} ${statusText}${Style.RESET}`);
+
+        // Line 2: Started At (Subtle)
+        console.log(`${Style.DIM}   Started: ${timeDisplay || 'Unknown'}${Style.RESET}`);
+
+        // Line 3: Task Title (White/Bold)
+        console.log(`   ${Style.BOLD}${s.title}${Style.RESET}`);
+
+        // Gap
+        console.log('');
     });
-    console.log(`${Style.DIM}${'-'.repeat(100)}${Style.RESET}`);
-    console.log(`\nTo resume a session run: ${Style.BOLD}/rick-architect --resume <ID>${Style.RESET}`);
+
+    console.log(`${Style.DIM}${'-'.repeat(80)}${Style.RESET}`);
+    console.log(`To resume: ${Style.BOLD}/rick-architect --resume <ID>${Style.RESET}`);
 }
 
 main().catch(err => die(err.message));
