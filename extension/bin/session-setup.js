@@ -10,18 +10,79 @@ function die(message) {
 }
 async function main() {
     const ROOT_DIR = getExtensionRoot();
+    const LOG_PATH = path.join(ROOT_DIR, 'debug.log');
+    fs.appendFileSync(LOG_PATH, `[session-setup] ENV: ${JSON.stringify(process.env, null, 2)}\n`);
+    // --- ARGUMENT PARSER (Early for --workspace) ---
+    const args = process.argv.slice(2);
+    let loopLimit = 5;
+    let timeLimit = 60;
+    let workerTimeout = 1200;
+    let promiseToken = null;
+    let resumeMode = false;
+    let resumePath = null;
+    let resetMode = false;
+    let pausedMode = false;
+    const taskArgs = [];
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+        if (arg === '--workspace' || arg === '--wd') {
+            process.env.ANTIGRAVITY_WORKSPACE_ROOT = args[++i];
+        }
+        else if (arg === '--max-iterations') {
+            loopLimit = parseInt(args[++i]);
+        }
+        else if (arg === '--max-time') {
+            timeLimit = parseInt(args[++i]);
+        }
+        else if (arg === '--worker-timeout') {
+            workerTimeout = parseInt(args[++i]);
+        }
+        else if (arg === '--completion-promise') {
+            promiseToken = args[++i];
+        }
+        else if (arg === '--resume') {
+            resumeMode = true;
+            if (args[i + 1] && !args[i + 1].startsWith('--')) {
+                resumePath = args[++i];
+            }
+        }
+        else if (arg === '--reset') {
+            resetMode = true;
+        }
+        else if (arg === '--paused') {
+            pausedMode = true;
+        }
+        else if (arg === '-s' || arg === '--session-id') {
+            if (args[i + 1] && !args[i + 1].startsWith('-')) {
+                i++;
+            }
+        }
+        else {
+            taskArgs.push(arg);
+        }
+    }
     // Robust workspace discovery (handles sandboxed agents)
     const findWorkspaceRoot = (startPath) => {
-        if (process.env.ANTIGRAVITY_WORKSPACE_ROOT)
-            return process.env.ANTIGRAVITY_WORKSPACE_ROOT;
+        if (process.env.ANTIGRAVITY_WORKSPACE_ROOT) {
+            const envRoot = path.resolve(process.env.ANTIGRAVITY_WORKSPACE_ROOT);
+            if (fs.existsSync(envRoot))
+                return envRoot;
+        }
         const globalGemini = path.join(os.homedir(), '.gemini');
         let curr = startPath;
-        while (curr !== path.dirname(curr)) {
+        while (curr && curr !== path.dirname(curr)) {
             const potential = path.join(curr, '.gemini');
             const isTmp = curr.toLowerCase().includes('tmp') || curr.toLowerCase().includes('temp');
             if (fs.existsSync(potential) && potential.toLowerCase() !== globalGemini.toLowerCase() && !isTmp)
                 return curr;
             curr = path.dirname(curr);
+        }
+        // Fallback: Registry bridge for sandboxes
+        const registryPath = path.join(ROOT_DIR, 'last_workspace.txt');
+        if (fs.existsSync(registryPath)) {
+            const registered = fs.readFileSync(registryPath, 'utf-8').trim();
+            if (fs.existsSync(registered))
+                return registered;
         }
         return startPath;
     };
@@ -49,16 +110,6 @@ async function main() {
         if (!fs.existsSync(dir))
             fs.mkdirSync(dir, { recursive: true });
     });
-    // Defaults
-    let loopLimit = 5;
-    let timeLimit = 60;
-    let workerTimeout = 1200;
-    let promiseToken = null;
-    let resumeMode = false;
-    let resumePath = null;
-    let resetMode = false;
-    let pausedMode = false;
-    const taskArgs = [];
     const startEpoch = Math.floor(Date.now() / 1000);
     // Load Settings
     const settingsFile = path.join(ROOT_DIR, 'architect_settings.json');
@@ -74,44 +125,6 @@ async function main() {
         }
         catch {
             /* ignore */
-        }
-    }
-    // Argument Parser
-    const args = process.argv.slice(2);
-    for (let i = 0; i < args.length; i++) {
-        const arg = args[i];
-        if (arg === '--max-iterations') {
-            loopLimit = parseInt(args[++i]);
-        }
-        else if (arg === '--max-time') {
-            timeLimit = parseInt(args[++i]);
-        }
-        else if (arg === '--worker-timeout') {
-            workerTimeout = parseInt(args[++i]);
-        }
-        else if (arg === '--completion-promise') {
-            promiseToken = args[++i];
-        }
-        else if (arg === '--resume') {
-            resumeMode = true;
-            if (args[i + 1] && !args[i + 1].startsWith('--')) {
-                resumePath = args[++i];
-            }
-        }
-        else if (arg === '--reset') {
-            resetMode = true;
-        }
-        else if (arg === '--paused') {
-            pausedMode = true;
-        }
-        else if (arg === '-s' || arg === '--session-id') {
-            // Ignore session-id flag if passed by gemini, but consume the next arg if it's not a flag
-            if (args[i + 1] && !args[i + 1].startsWith('-')) {
-                i++;
-            }
-        }
-        else {
-            taskArgs.push(arg);
         }
     }
     const taskStr = taskArgs.join(' ').trim();

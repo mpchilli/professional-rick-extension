@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { spawn_cmd, printBanner, Style, getExtensionRoot } from '../services/core-utils.js';
 async function main() {
     const ROOT_DIR = getExtensionRoot();
@@ -30,7 +30,7 @@ async function main() {
                         state.active = true;
                         fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
                         // Execute loop
-                        const cmd = ['gemini', '/architect', '--resume', sessionDir];
+                        const cmd = ['gemini', '/rick-architect', '--resume', sessionDir];
                         await spawn_cmd(cmd, { cwd: meta.repo_path });
                         // Update status
                         meta.status = 'consumed';

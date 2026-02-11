@@ -22,20 +22,20 @@ It implements a rigid, iterative engineering lifecycle: **PRD -> Breakdown -> Re
 ### 3. Commands
 The extension exposes the following commands via TOML definitions in `commands/`:
 
-- **`/architect`** (`commands/architect.toml`):
+- **`/rick-architect`** (`commands/rick-architect.toml`):
   - **Purpose:** Initiates the iterative development loop.
   - **Implementation:** Maps to `extension/bin/session-setup.js`.
-  - **Usage:** `/architect <prompt> [--max-iterations N] [--completion-promise 'text'] [--resume [PATH]]`
+  - **Usage:** `/rick-architect <prompt> [--max-iterations N] [--completion-promise 'text'] [--resume [PATH]]`
 
-- **`/draft-prd`** (`commands/draft-prd.toml`):
+- **`/rick-draft-prd`** (`commands/rick-draft-prd.toml`):
   - **Purpose:** Interactively drafts a PRD and initializes a session.
-  - **Usage:** `/draft-prd <prompt>`
+  - **Usage:** `/rick-draft-prd <prompt>`
   
-- **`/cancel-session`** (`commands/cancel-session.toml`):
+- **`/rick-cancel-session`** (`commands/rick-cancel-session.toml`):
   - **Purpose:** Stops the active loop.
   - **Implementation:** Maps to `extension/bin/session-cancel.js`.
 
-- **`/help-architect`** (`commands/help-architect.toml`):
+- **`/rick-help-architect`** (`commands/rick-help-architect.toml`):
   - **Purpose:** Displays help information for the extension.
 
 ### 4. Orchestration & Hooks
@@ -62,7 +62,7 @@ Located in `skills/`, these provide specialized capabilities for each stage of t
 
 ### Starting the Loop
 ```bash
-/architect "Refactor the authentication module"
+/rick-architect "Refactor the authentication module"
 ```
 Optional arguments:
 - `--max-iterations <N>`: Stop after N iterations.
@@ -70,5 +70,5 @@ Optional arguments:
 
 ### Stopping the Loop
 ```bash
-/cancel-session
+/rick-cancel-session
 ```

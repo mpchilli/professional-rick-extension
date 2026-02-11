@@ -59,10 +59,10 @@ Your job is to **INTERROGATE** the user to build the PRD.
     I've advanced the state to 'breakdown'.
 
     To start the implementation loop and begin execution, run:
-    `/architect --resume`
+    `/rick-architect --resume`
 
     Or, to archive this task for later, run:
-    `/archive-session`"
+    `/rick-archive-session`"
 
 ---
 

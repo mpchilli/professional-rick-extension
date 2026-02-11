@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { existsSync, appendFileSync } from 'node:fs';
+import { existsSync, appendFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as os from 'node:os';
 const EXTENSION_DIR = join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
@@ -92,6 +92,18 @@ async function main() {
             }
             inputData = Buffer.concat(chunks).toString();
             log(`Input Data: ${inputData}`);
+            // Update Workspace Registry
+            try {
+                const data = JSON.parse(inputData);
+                if (data.cwd) {
+                    const registryPath = join(EXTENSION_DIR, 'last_workspace.txt');
+                    writeFileSync(registryPath, data.cwd);
+                    log(`Updated Workspace Registry: ${data.cwd}`);
+                }
+            }
+            catch {
+                /* ignore */
+            }
         }
         catch (e) {
             log(`Error reading stdin: ${e}`);

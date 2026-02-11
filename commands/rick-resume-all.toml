@@ -39,5 +39,5 @@ While the runner is active, you are managing the high-level orchestration.
 - **Delegation is Law**: The Manager manages, the Worker works. If you find yourself writing code instead of spawning a worker, you have failed the protocol.
 - **Be Loud**: Announce the start of each task in the archive.
 
-To cancel the Runner, use `/cancel-session`.
+To cancel the Runner, use `/rick-cancel-session`.
 """

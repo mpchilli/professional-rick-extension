@@ -88,5 +88,5 @@ Between each step, you **MUST** explicitly state what you are doing (e.g., "Movi
 - Do not skip executing `activate_skill`.
 - Do not be silent. Announce your moves.
 
-To stop manually, use `/cancel-session`.
+To stop manually, use `/rick-cancel-session`.
 """
