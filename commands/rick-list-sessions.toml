@@ -1,15 +1,19 @@
 description = "List all active and archived sessions in the current workspace"
 prompt = """
-Display the AI Architect session list.
+# AI Architect Session Listing
+You are in **SILENT EXECUTION MODE**. Your objective is to display the session list and then **IMMEDIATELY TERMINATE**.
 
-Execute the following script to fetch and format the session metadata:
-
-```bash
-node "${extensionPath}/extension/bin/list-sessions.js"
-```
+**MANDATORY ACTION**:
+1. Execute the following script using the `bash` tool:
+   ```bash
+   node "${extensionPath}/extension/bin/list-sessions.js"
+   ```
+2. Once the script output is displayed, do **NOT** summarize, explain, or respond further.
+3. Simply output the completion token: `<promise>LIST_DISPLAYED</promise>`
 
 **Windows (PowerShell):**
 ```powershell
 node "${extensionPath}/extension/bin/list-sessions.js"
 ```
 """
+completionPromise = "LIST_DISPLAYED"

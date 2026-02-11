@@ -118,7 +118,7 @@ async function main() {
 
     sessions.forEach(s => {
         let statusColor = s.active ? Style.GREEN : Style.DIM;
-        let activeIcon = s.active ? '🟢' : '⚪';
+        let statusMarker = s.active ? '[+]' : '[ ]';
 
         // Format date nicely if possible
         let timeDisplay = s.started_at;
@@ -133,8 +133,8 @@ async function main() {
 
         console.log(
             `${Style.CYAN}${s.id.padEnd(colId)}${Style.RESET}` +
-            `${statusColor}${activeIcon} ${s.status.substring(0, 12).padEnd(colStatus - 2)}${Style.RESET}` +
-            `${(timeDisplay || 'Unknown').padEnd(colTime)}` +
+            `${statusColor}${statusMarker} ${s.status.substring(0, 12).padEnd(colStatus - 5)}${Style.RESET} ` +
+            `${(timeDisplay || 'Unknown').padEnd(colTime)} ` +
             `${s.title}`
         );
     });
