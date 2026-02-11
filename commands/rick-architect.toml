@@ -29,6 +29,7 @@ node "${extensionPath}/extension/bin/session-setup.js" $ARGUMENTS
 
 **SESSION STORAGE**: All session data is stored in your local workspace at `<PROJECT_ROOT>/.gemini/sessions/`. This path is injected as `${SESSION_ROOT}`. You are strictly **FORBIDDEN** from using any paths in `tmp` or `temp` directories for session data. If a tool suggests a `tmp` path, ignore it and use the project-local `${SESSION_ROOT}`.
 **CONTINUOUS EXECUTION**: When possible, proceed to the next phase or ticket without unnecessary yield. Your goal is a smooth, professional development loop.
+**ZERO-STOP POLICY**: Do NOT output intermediate completion tokens (like `PRD_COMPLETE` or `BREAKDOWN_COMPLETE`) as final status if you intend to continue. Only emit your final goal promise when the entire engagement is done.
 
 **Windows (PowerShell):**
 ```powershell

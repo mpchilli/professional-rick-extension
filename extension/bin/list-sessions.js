@@ -88,6 +88,7 @@ async function main() {
             active: state.active,
             iteration: state.iteration,
             started_at: state.started_at,
+            step: state.step || 'Unknown',
             working_dir: state.working_dir || 'Unknown'
         };
     }).sort((a, b) => {
@@ -100,13 +101,33 @@ async function main() {
         return;
     }
 
+    const PHASES = ['PRD', 'Breakdown', 'Research', 'Plan', 'Implement', 'Refactor', 'Finished'];
+
+    const renderLifecycle = (currentStep) => {
+        const step = (currentStep || '').toLowerCase();
+        let activeIdx = -1;
+
+        if (step.includes('prd')) activeIdx = 0;
+        else if (step.includes('breakdown')) activeIdx = 1;
+        else if (step.includes('research')) activeIdx = 2;
+        else if (step.includes('plan')) activeIdx = 3;
+        else if (step.includes('implement')) activeIdx = 4;
+        else if (step.includes('refactor')) activeIdx = 5;
+        else if (step.includes('done') || step.includes('finish') || step.includes('complete')) activeIdx = 6;
+
+        return PHASES.map((p, i) => {
+            if (i === activeIdx) return `${Style.BOLD}${Style.CYAN}[${p}]${Style.RESET}`;
+            if (i < activeIdx) return `${Style.DIM}${p}${Style.RESET}`;
+            return `${Style.DIM}${p}${Style.RESET}`;
+        }).join(' → ');
+    };
+
     console.log(`${Style.BOLD}AI Architect Sessions${Style.RESET}`);
     console.log(`${Style.DIM}Workspace: ${WORKSPACE_ROOT}${Style.RESET}\n`);
 
     sessions.forEach(s => {
         let statusColor = s.active ? Style.GREEN : Style.DIM;
         let statusMarker = s.active ? '●' : '○';
-        let statusText = s.status.substring(0, 15);
 
         // Date formatting
         let timeDisplay = s.started_at;
@@ -119,13 +140,13 @@ async function main() {
             }
         } catch (e) { /* ignore */ }
 
-        // Line 1: ID and Status
-        console.log(`${Style.CYAN}${Style.BOLD}${s.id}${Style.RESET}  ${statusColor}${statusMarker} ${statusText}${Style.RESET}`);
+        // Line 1: ID and Start Time
+        console.log(`${Style.CYAN}${Style.BOLD}${s.id}${Style.RESET}  ${Style.DIM}Started: ${timeDisplay || 'Unknown'}${Style.RESET}`);
 
-        // Line 2: Started At (Subtle)
-        console.log(`${Style.DIM}   Started: ${timeDisplay || 'Unknown'}${Style.RESET}`);
+        // Line 2: Lifecycle Bar
+        console.log(`   ${statusColor}${statusMarker}${Style.RESET} ${renderLifecycle(s.step)}`);
 
-        // Line 3: Task Title (White/Bold)
+        // Line 3: Task Title
         console.log(`   ${Style.BOLD}${s.title}${Style.RESET}`);
 
         // Gap

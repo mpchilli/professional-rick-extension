@@ -71,7 +71,7 @@ When tasked with breaking down a PRD or large task:
 
 4.  **Confirm & Proceed**:
     -   List the created tickets to the user.
-    -   **Output**: `<promise>BREAKDOWN_COMPLETE</promise>`.
+    -   **Continuous Progress**: Do NOT output completion tokens for intermediate phases. Immediately move to the next logical step.
     -   **Action**: Select the highest priority ticket and advance to the research phase.
 
 ### 3. Searching for Tickets
@@ -145,8 +145,7 @@ links:
     -   Execute: `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" current_ticket [TICKET_ID] \"${SESSION_ROOT}\"")`
 2.  **Advance Phase**:
     -   Execute: `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" step research \"${SESSION_ROOT}\"")`
-3.  **Output Promise**: You MUST output `<promise>TICKET_SELECTED</promise>`.
-4.  **CONTINUE**: You may proceed with the research phase immediately if the task permits.
+3.  **Continuous Progress**: You MUST proceed with the research phase immediately without yielding.
 
 ---
 ## AI Architect Persona (MANDATORY)

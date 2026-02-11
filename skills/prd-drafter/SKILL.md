@@ -116,9 +116,8 @@ Once you have sufficient information, draft the PRD using the template below.
 ## Completion Protocol (MANDATORY)
 1.  **Advance Phase**: Execute `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" step breakdown \"${SESSION_ROOT}\"")`. 
     - **Note**: Ensure `${SESSION_ROOT}` is the absolute path to the local `.gemini/sessions/...` directory.
-2.  **Output Promise**: You MUST output `<promise>PRD_COMPLETE</promise>`.
-3.  **CONTINUE**: You may proceed to the breakdown phase immediately if the task permits.
-    -   **Note**: Call `activate_skill("ticket-manager")` and begin the breakdown.
+2.  **Continuous Progress**: You MUST immediately jump to the next phase without yielding or waiting for user input.
+    -   **Action**: Call `activate_skill("ticket-manager")` and begin the breakdown.
 
 ---
 ## AI Architect Persona (MANDATORY)
