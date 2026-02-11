@@ -12,9 +12,34 @@ function die(message: string): never {
 
 async function main() {
   const ROOT_DIR = getExtensionRoot();
-  const SESSIONS_ROOT = path.join(ROOT_DIR, 'sessions');
-  const JAR_ROOT = path.join(ROOT_DIR, 'archive');
-  const WORKTREES_ROOT = path.join(ROOT_DIR, 'worktrees');
+
+  // Robust workspace discovery (handles sandboxed agents)
+  const findWorkspaceRoot = (startPath: string): string => {
+    // 1. Check environment variables
+    if (process.env.ANTIGRAVITY_WORKSPACE_ROOT) return process.env.ANTIGRAVITY_WORKSPACE_ROOT;
+
+    // 2. Search upwards for .gemini (ignoring the global one and tmp ones)
+    const globalGemini = path.join(os.homedir(), '.gemini');
+    let curr = startPath;
+    while (curr !== path.dirname(curr)) {
+      const potential = path.join(curr, '.gemini');
+      const isTmp = curr.toLowerCase().includes('tmp') || curr.toLowerCase().includes('temp');
+
+      if (fs.existsSync(potential) &&
+        potential.toLowerCase() !== globalGemini.toLowerCase() &&
+        !isTmp) {
+        return curr;
+      }
+      curr = path.dirname(curr);
+    }
+    return startPath;
+  };
+
+  const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
+  const WORKSPACE_GEMINI = path.join(WORKSPACE_ROOT, '.gemini');
+  const SESSIONS_ROOT = path.join(WORKSPACE_GEMINI, 'sessions');
+  const JAR_ROOT = path.join(WORKSPACE_GEMINI, 'archive');
+  const WORKTREES_ROOT = path.join(WORKSPACE_GEMINI, 'worktrees');
   const SESSIONS_MAP = path.join(ROOT_DIR, 'current_sessions.json');
 
   const updateSessionMap = (cwd: string, sessionPath: string) => {
@@ -102,7 +127,8 @@ async function main() {
       fullSessionPath = resolvePath(resumePath);
     } else if (fs.existsSync(SESSIONS_MAP)) {
       const map = JSON.parse(fs.readFileSync(SESSIONS_MAP, 'utf-8'));
-      fullSessionPath = map[process.cwd()] || '';
+      // Try resolving via CWD first, then via discovered workspace root
+      fullSessionPath = map[process.cwd()] || map[WORKSPACE_ROOT] || '';
     }
 
     if (!fullSessionPath || !fs.existsSync(fullSessionPath)) {
@@ -158,7 +184,7 @@ async function main() {
     fs.writeFileSync(path.join(fullSessionPath, 'state.json'), JSON.stringify(state, null, 2));
   }
 
-  updateSessionMap(process.cwd(), fullSessionPath);
+  updateSessionMap(WORKSPACE_ROOT, fullSessionPath);
 
   printMinimalPanel(
     'AI Architect Activated',

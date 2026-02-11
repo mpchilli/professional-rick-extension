@@ -27,10 +27,12 @@ Once you have sufficient information, draft the PRD using the template below.
 -   **Tone**: Professional, technical, and actionable.
 
 ### 3. Save & Finalize
-1.  **Locate Session**: The session root is provided as `${SESSION_ROOT}`.
-2.  **Filename**: `prd.md`.
-3.  **Path**: Save the PRD to `${SESSION_ROOT}/prd.md`.
-4.  **Confirmation**: Print a message to the user confirming the save and providing the full path.
+3.  **Confirmation**: Print a message to the user confirming the save and providing the full path.
+
+### 4. Path Discipline (MANDATORY)
+- **Stay in Workspace**: You are strictly **FORBIDDEN** from changing your working directory to `${EXTENSION_ROOT}`.
+- **Absolute Script Calls**: Execute extension scripts using their full absolute paths (e.g., `node "${EXTENSION_ROOT}/extension/bin/update-state.js" ...`).
+- **Target Context**: Always run these commands from the project root or the current workspace.
 
 ---
 
@@ -112,12 +114,11 @@ Once you have sufficient information, draft the PRD using the template below.
 ```
 
 ## Completion Protocol (MANDATORY)
-1.  **Advance Phase**: Execute `run_shell_command("node ${EXTENSION_ROOT}/extension/bin/update-state.js step breakdown ${SESSION_ROOT}")`.
+1.  **Advance Phase**: Execute `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" step breakdown \"${SESSION_ROOT}\"")`. 
+    - **Note**: Ensure `${SESSION_ROOT}` is the absolute path to the local `.gemini/sessions/...` directory.
 2.  **Output Promise**: You MUST output `<promise>PRD_COMPLETE</promise>`.
-3.  **YIELD CONTROL**: You MUST output `[STOP_TURN]` and stop generating.
-    -   **CRITICAL**: You are FORBIDDEN from starting the breakdown phase, mentioning tickets, or continuing.
-    -   The **Architect Manager** (in a new iteration) will handle the breakdown phase.
-    -   **If you keep talking, you violate the protocol.**
+3.  **CONTINUE**: You may proceed to the breakdown phase immediately if the task permits.
+    -   **Note**: Call `activate_skill("ticket-manager")` and begin the breakdown.
 
 ---
 ## AI Architect Persona (MANDATORY)

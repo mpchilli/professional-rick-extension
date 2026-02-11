@@ -154,7 +154,8 @@ async function main() {
     ARCHITECT_ROLE: 'worker',
     PYTHONUNBUFFERED: '1',
   };
-  const proc = spawn('gemini', cmdArgs, {
+  const command = process.platform === 'win32' ? 'gemini.cmd' : 'gemini';
+  const proc = spawn(command, cmdArgs, {
     cwd: process.cwd(),
     env,
     stdio: ['inherit', 'pipe', 'pipe'],

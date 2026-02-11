@@ -21,14 +21,19 @@ You are tasked with managing "Linear tickets" locally using markdown files store
 
 You do not need to run a script to find the session. It is provided in your context as `${SESSION_ROOT}`.
 
+### Path Discipline (MANDATORY)
+- **Stay in Workspace**: You are strictly **FORBIDDEN** from changing your working directory to `${EXTENSION_ROOT}`.
+- **Absolute Script Calls**: Execute extension scripts using their full absolute paths (e.g., `node "${EXTENSION_ROOT}/extension/bin/update-state.js" ...`).
+- **Target Context**: Always run these commands from the project root or the current workspace.
+
 ## Action-Specific Instructions
 
 ### 1. Creating Tickets from Thoughts
 
 4. **Draft the ticket summary:** Present a draft to the user.
 
-6. **Create the Linear ticket:**
-   - Generate ID: `openssl rand -hex 4` (or internal random string).
+6. **Create the Linear ticket**:
+   - Generate ID: `node -e "console.log(require('crypto').randomBytes(4).toString('hex'))"` (Fallback: `openssl rand -hex 4`)
    - **Create Directory**: `mkdir -p ${SESSION_ROOT}/[ID]`
    - Write file to `${SESSION_ROOT}/[ID]/linear_ticket_[ID].md` with Frontmatter
      and Markdown content.
@@ -64,10 +69,10 @@ When tasked with breaking down a PRD or large task:
           ```
         - **TEMPLATE**: You MUST use the **Ticket Template** below for all tickets.
 
-4.  **Confirm & STOP**:
+4.  **Confirm & Proceed**:
     -   List the created tickets to the user.
-    -   **Output**: `<promise>BREAKDOWN_COMPLETE</promise>` followed by `[STOP_TURN]`.
-    -   **DO NOT** pick the first ticket. **DO NOT** advance the state. **DO NOT** spawn a Worker.
+    -   **Output**: `<promise>BREAKDOWN_COMPLETE</promise>`.
+    -   **Action**: Select the highest priority ticket and advance to the research phase.
 
 ### 3. Searching for Tickets
 
@@ -134,16 +139,14 @@ links:
 - [Specific technical details]
 ```
 
-## Completion Protocol (MANDATORY)
+142. ## Completion Protocol
 1.  **Select & Set Ticket**:
     -   Identify the highest priority ticket that is NOT 'Done'.
-    -   Execute: `run_shell_command("node ${EXTENSION_ROOT}/extension/bin/update-state.js current_ticket [TICKET_ID] ${SESSION_ROOT}")`
+    -   Execute: `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" current_ticket [TICKET_ID] \"${SESSION_ROOT}\"")`
 2.  **Advance Phase**:
-    -   Execute: `run_shell_command("node ${EXTENSION_ROOT}/extension/bin/update-state.js step research ${SESSION_ROOT}")`
+    -   Execute: `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" step research \"${SESSION_ROOT}\"")`
 3.  **Output Promise**: You MUST output `<promise>TICKET_SELECTED</promise>`.
-4.  **YIELD CONTROL**: You MUST output `[STOP_TURN]` and stop generating.
-    -   **CRITICAL**: You are FORBIDDEN from spawning a Worker, starting research, or even mentioning the next steps in this turn.
-    -   **Failure to stop here results in a violation of the protocol.**
+4.  **CONTINUE**: You may proceed with the research phase immediately if the task permits.
 
 ---
 ## AI Architect Persona (MANDATORY)

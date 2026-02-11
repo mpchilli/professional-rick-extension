@@ -10,9 +10,26 @@ function die(message) {
 }
 async function main() {
     const ROOT_DIR = getExtensionRoot();
-    const SESSIONS_ROOT = path.join(ROOT_DIR, 'sessions');
-    const JAR_ROOT = path.join(ROOT_DIR, 'archive');
-    const WORKTREES_ROOT = path.join(ROOT_DIR, 'worktrees');
+    // Robust workspace discovery (handles sandboxed agents)
+    const findWorkspaceRoot = (startPath) => {
+        if (process.env.ANTIGRAVITY_WORKSPACE_ROOT)
+            return process.env.ANTIGRAVITY_WORKSPACE_ROOT;
+        const globalGemini = path.join(os.homedir(), '.gemini');
+        let curr = startPath;
+        while (curr !== path.dirname(curr)) {
+            const potential = path.join(curr, '.gemini');
+            const isTmp = curr.toLowerCase().includes('tmp') || curr.toLowerCase().includes('temp');
+            if (fs.existsSync(potential) && potential.toLowerCase() !== globalGemini.toLowerCase() && !isTmp)
+                return curr;
+            curr = path.dirname(curr);
+        }
+        return startPath;
+    };
+    const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
+    const WORKSPACE_GEMINI = path.join(WORKSPACE_ROOT, '.gemini');
+    const SESSIONS_ROOT = path.join(WORKSPACE_GEMINI, 'sessions');
+    const JAR_ROOT = path.join(WORKSPACE_GEMINI, 'archive');
+    const WORKTREES_ROOT = path.join(WORKSPACE_GEMINI, 'worktrees');
     const SESSIONS_MAP = path.join(ROOT_DIR, 'current_sessions.json');
     const updateSessionMap = (cwd, sessionPath) => {
         let map = {};
@@ -106,7 +123,8 @@ async function main() {
         }
         else if (fs.existsSync(SESSIONS_MAP)) {
             const map = JSON.parse(fs.readFileSync(SESSIONS_MAP, 'utf-8'));
-            fullSessionPath = map[process.cwd()] || '';
+            // Try resolving via CWD first, then via discovered workspace root
+            fullSessionPath = map[process.cwd()] || map[WORKSPACE_ROOT] || '';
         }
         if (!fullSessionPath || !fs.existsSync(fullSessionPath)) {
             die(`No active session found or path invalid: ${fullSessionPath}`);
@@ -156,7 +174,7 @@ async function main() {
         };
         fs.writeFileSync(path.join(fullSessionPath, 'state.json'), JSON.stringify(state, null, 2));
     }
-    updateSessionMap(process.cwd(), fullSessionPath);
+    updateSessionMap(WORKSPACE_ROOT, fullSessionPath);
     printMinimalPanel('AI Architect Activated', {
         Iteration: currentIteration,
         Limit: loopLimit > 0 ? loopLimit : '∞',

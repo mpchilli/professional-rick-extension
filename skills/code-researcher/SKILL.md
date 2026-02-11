@@ -18,6 +18,11 @@ You are tasked with conducting technical research and documenting the codebase a
 - If a ticket is provided, read it from `${SESSION_ROOT}/**/`.
 - Analyze the description and requirements.
 
+### Path Discipline (MANDATORY)
+- **Stay in Workspace**: You are strictly **FORBIDDEN** from changing your working directory to `${EXTENSION_ROOT}`.
+- **Absolute Script Calls**: Execute extension scripts using their full absolute paths (e.g., `node "${EXTENSION_ROOT}/extension/bin/update-state.js" ...`).
+- **Target Context**: Always run these commands from the project root or the current workspace.
+
 ### 2. Initiate Research
 - **Adopt the Auditor Persona**: Be unbiased, focus strictly on documenting *what exists*, *how it works*, and *related files*.
 - **Execute Research (Specialized Roles)**:

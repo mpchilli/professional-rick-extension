@@ -24,9 +24,12 @@ Execute the **CURRENT ACTIVE PHASE** (Research, Plan, Review, Implement, or Refa
 
 ## Workflow (THE STOP PROTOCOL)
 
-### 0. Announce Ticket
-**MANDATORY**: At the very beginning of your response, you MUST restate the ticket you are working on:
 "Working on ticket [ID]: [Title]."
+
+### Path Discipline (MANDATORY)
+- **Stay in Workspace**: You are strictly **FORBIDDEN** from changing your working directory to `${EXTENSION_ROOT}`.
+- **Absolute Script Calls**: Execute extension scripts using their full absolute paths (e.g., `node "${EXTENSION_ROOT}/extension/bin/update-state.js" ...`).
+- **Target Context**: Always run these commands from the project root or the current workspace.
 
 ### 1. Identify Phase
 Check the current ticket directory `${SESSION_ROOT}/[ticket_id]` to determine the active phase. You MUST stop after completing the identified phase.

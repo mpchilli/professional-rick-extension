@@ -23,7 +23,12 @@ Run the setup script to initialize the loop state:
 node "${extensionPath}/extension/bin/session-setup.js" $ARGUMENTS
 ```
 
-**CRITICAL**: Note the **Extension Path** above (`${extensionPath}`). In all subsequent steps and skills, you must use this path (hereafter referred to as `${EXTENSION_ROOT}`) when executing scripts from the extension's `extension/bin/` directory. Do NOT use hardcoded paths like `~/.gemini/...`.
+**CRITICAL**: Note the **Extension Path** above (`${extensionPath}`). In all subsequent steps and skills, you must use this path (hereafter referred to as `${EXTENSION_ROOT}`) when executing scripts from the extension's `extension/bin/` directory. 
+
+**PATH DISCIPLINE**: You are strictly **FORBIDDEN** from using `dir_path` or `cd` to enter the `${EXTENSION_ROOT}` directory. Execute all scripts by their absolute path while remaining in your current project workspace.
+
+**SESSION STORAGE**: All session data is stored in your local workspace at `<PROJECT_ROOT>/.gemini/sessions/`. This path is injected as `${SESSION_ROOT}`. You are strictly **FORBIDDEN** from using any paths in `tmp` or `temp` directories for session data. If a tool suggests a `tmp` path, ignore it and use the project-local `${SESSION_ROOT}`.
+**CONTINUOUS EXECUTION**: When possible, proceed to the next phase or ticket without unnecessary yield. Your goal is a smooth, professional development loop.
 
 **Windows (PowerShell):**
 ```powershell
