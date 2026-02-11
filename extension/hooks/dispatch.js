@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { existsSync, appendFileSync } from 'node:fs';
+import { existsSync, appendFileSync, statSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as os from 'node:os';
 const EXTENSION_DIR = process.env.EXTENSION_DIR || join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
@@ -16,6 +16,18 @@ process.stderr.on('error', handleEpipe);
 function log(message) {
     try {
         const timestamp = new Date().toISOString();
+        // Log rotation: Check if file is too big (5MB)
+        try {
+            if (existsSync(LOG_PATH)) {
+                const stats = statSync(LOG_PATH);
+                if (stats.size > 5 * 1024 * 1024) {
+                    const content = readFileSync(LOG_PATH, 'utf8');
+                    const trimmed = content.slice(-1 * 1024 * 1024); // Keep last 1MB
+                    writeFileSync(LOG_PATH, `[TRUNCATED at ${timestamp}]\n${trimmed}`);
+                }
+            }
+        } catch (e) { /* ignore rotation errors */ }
+
         appendFileSync(LOG_PATH, `[${timestamp}] [dispatcher] ${message}${os.EOL}`);
     }
     catch {

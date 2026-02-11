@@ -10,7 +10,7 @@ The variable `${extensionPath}` should point to the extension root.
 **MANDATORY ACTION**:
 1. Execute the following script using the `bash` tool (or `powershell` on Windows):
    ```bash
-   node "${extensionPath}/extension/bin/list-sessions.js"
+   NO_COLOR=1 node "${extensionPath}/extension/bin/list-sessions.js"
    ```
 2. If `${extensionPath}` appears to resolve incorrectly (e.g., truncated to `C:\\`), try to locate the extension root via `process.env.EXTENSION_DIR` or by searching for `gemini-extension.json` in the current root.
 
@@ -19,8 +19,7 @@ The variable `${extensionPath}` should point to the extension root.
 
 **Windows (PowerShell) Robust Pattern:**
 ```powershell
-$ext = "${extensionPath}"
-node "$ext/extension/bin/list-sessions.js"
+$env:NO_COLOR="1"; node "${extensionPath}/extension/bin/list-sessions.js"
 ```
 """
 completionPromise = "LIST_DISPLAYED"

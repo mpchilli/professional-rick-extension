@@ -49,8 +49,8 @@ async function main() {
         const now = Date.now();
         const lastIncrement = state.last_increment_ts || 0;
 
-        // Debounce: Only increment if 2 seconds have passed since last increment
-        if (now - lastIncrement > 2000) {
+        // Debounce: Only increment if 0.5 seconds have passed since last increment
+        if (now - lastIncrement > 500) {
             sessionHooksLog = path.join(path.dirname(stateFile), 'hooks.log');
             state.iteration = (state.iteration || 0) + 1;
             state.last_increment_ts = now;
