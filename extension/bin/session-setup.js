@@ -10,31 +10,49 @@ function die(message) {
 }
 async function main() {
     const ROOT_DIR = getExtensionRoot();
-    // Robust workspace discovery (handles sandboxed agents)
+    // Robust workspace discovery (Anti-Sandbox & Anti-Home)
     const findWorkspaceRoot = (startPath) => {
         // 1. Check environment variables
         if (process.env.ANTIGRAVITY_WORKSPACE_ROOT)
             return process.env.ANTIGRAVITY_WORKSPACE_ROOT;
-        // 2. Search upwards for .gemini (ignoring the global one and tmp ones)
+
+        // 2. Check if CWD is already a valid workspace (has .gemini but NOT in tmp)
+        // This prioritizes the actual project root over any parent traversal
         const globalGemini = path.join(os.homedir(), '.gemini');
+        const isTmp = (p) => p.toLowerCase().includes('tmp') || p.toLowerCase().includes('temp');
+
+        if (fs.existsSync(path.join(startPath, '.gemini')) &&
+            startPath.toLowerCase() !== globalGemini.toLowerCase() &&
+            !isTmp(startPath)) {
+            return startPath;
+        }
+
+        // 3. Search upwards
         let curr = startPath;
         while (curr !== path.dirname(curr)) {
             const potential = path.join(curr, '.gemini');
-            const isTmp = curr.toLowerCase().includes('tmp') || curr.toLowerCase().includes('temp');
             if (fs.existsSync(potential) &&
                 potential.toLowerCase() !== globalGemini.toLowerCase() &&
-                !isTmp) {
+                !isTmp(curr)) {
                 return curr;
             }
             curr = path.dirname(curr);
         }
+        // Fallback: If we define "workspace" as where the user is running the command, use CWD
+        // But strictly avoid home dir unless it IS the project
         return startPath;
     };
+
     const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
+    // STRICT: Always force sessions to be local to the workspace .gemini folder
     const WORKSPACE_GEMINI = path.join(WORKSPACE_ROOT, '.gemini');
     const SESSIONS_ROOT = path.join(WORKSPACE_GEMINI, 'sessions');
     const JAR_ROOT = path.join(WORKSPACE_GEMINI, 'archive');
     const WORKTREES_ROOT = path.join(WORKSPACE_GEMINI, 'worktrees');
+
+    // Log the vital path for the agent to scrape
+    console.log(`\nDETECTED_SESSION_PATH: ${SESSIONS_ROOT}\n`);
+
     const SESSIONS_MAP = path.join(ROOT_DIR, 'current_sessions.json');
     const updateSessionMap = (cwd, sessionPath) => {
         let map = {};

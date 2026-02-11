@@ -113,6 +113,9 @@ async function main() {
             feedback += 'Ticket selected, starting research...';
         if (isTaskDone || isTicketDone)
             feedback += 'Ticket finished, moving to next...';
+
+        feedback += ` (Iteration ${state.iteration})`;
+
         if (isWorkerDone)
             feedback += 'Worker finished, Architect is validating...';
         console.log(JSON.stringify({

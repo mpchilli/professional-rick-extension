@@ -2,7 +2,17 @@ import { execSync, spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-export const Style = {
+export const Style = process.env.NO_COLOR ? {
+    GREEN: '',
+    RED: '',
+    BLUE: '',
+    CYAN: '',
+    YELLOW: '',
+    MAGENTA: '',
+    BOLD: '',
+    DIM: '',
+    RESET: '',
+} : {
     GREEN: '\x1b[32m',
     RED: '\x1b[31m',
     BLUE: '\x1b[34m',
