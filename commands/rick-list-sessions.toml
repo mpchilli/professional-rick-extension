@@ -3,17 +3,24 @@ prompt = """
 # AI Architect Session Listing
 You are in **SILENT EXECUTION MODE**. Your objective is to display the session list and then **IMMEDIATELY TERMINATE**.
 
+**PATH VERIFICATION**:
+Before executing, verify the location of the extension scripts.
+The variable `${extensionPath}` should point to the extension root.
+
 **MANDATORY ACTION**:
-1. Execute the following script using the `bash` tool:
+1. Execute the following script using the `bash` tool (or `powershell` on Windows):
    ```bash
    node "${extensionPath}/extension/bin/list-sessions.js"
    ```
-2. Once the script output is displayed, do **NOT** summarize, explain, or respond further.
-3. Simply output the completion token: `<promise>LIST_DISPLAYED</promise>`
+2. If `${extensionPath}` appears to resolve incorrectly (e.g., truncated to `C:\\`), try to locate the extension root via `process.env.EXTENSION_DIR` or by searching for `gemini-extension.json` in the current root.
 
-**Windows (PowerShell):**
+3. Once the script output is displayed, do **NOT** summarize, explain, or respond further.
+4. Simply output the completion token: `<promise>LIST_DISPLAYED</promise>`
+
+**Windows (PowerShell) Robust Pattern:**
 ```powershell
-node "${extensionPath}/extension/bin/list-sessions.js"
+$ext = "${extensionPath}"
+node "$ext/extension/bin/list-sessions.js"
 ```
 """
 completionPromise = "LIST_DISPLAYED"

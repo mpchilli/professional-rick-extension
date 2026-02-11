@@ -124,15 +124,38 @@ async function main() {
     let currentIteration = 1;
     if (resumeMode) {
         if (resumePath) {
-            fullSessionPath = resolvePath(resumePath);
+            // 1. Try as direct path
+            let p = resolvePath(resumePath);
+            if (fs.existsSync(p) && fs.statSync(p).isDirectory()) {
+                fullSessionPath = p;
+            } else {
+                // 2. Try as ID in SESSIONS_ROOT
+                let idPath = path.join(SESSIONS_ROOT, resumePath);
+                if (fs.existsSync(idPath)) {
+                    fullSessionPath = idPath;
+                } else {
+                    // 3. Try fuzzy match in SESSIONS_ROOT
+                    if (fs.existsSync(SESSIONS_ROOT)) {
+                        const sessions = fs.readdirSync(SESSIONS_ROOT)
+                            .filter(f => fs.statSync(path.join(SESSIONS_ROOT, f)).isDirectory());
+                        const match = sessions.find(s => s.includes(resumePath));
+                        if (match) {
+                            fullSessionPath = path.join(SESSIONS_ROOT, match);
+                            console.log(`${Style.CYAN}ℹ Found matching session: ${match}${Style.RESET}`);
+                        }
+                    }
+                }
+            }
         }
         else if (fs.existsSync(SESSIONS_MAP)) {
             const map = JSON.parse(fs.readFileSync(SESSIONS_MAP, 'utf-8'));
             // Try resolving via CWD first, then via discovered workspace root
             fullSessionPath = map[process.cwd()] || map[WORKSPACE_ROOT] || '';
         }
+
         if (!fullSessionPath || !fs.existsSync(fullSessionPath)) {
-            die(`No active session found or path invalid: ${fullSessionPath}`);
+            const searched = resumePath ? `path/ID: ${resumePath}` : 'active session map';
+            die(`Could not find session to resume (${searched}).`);
         }
         const statePath = path.join(fullSessionPath, 'state.json');
         const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
