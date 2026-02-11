@@ -1,0 +1,6 @@
+description = "List all active and archived sessions in the current workspace"
+prompt = "List all available AI Architect sessions."
+
+[executable]
+command = "node"
+args = ["${extensionPath}/extension/bin/list-sessions.js"]

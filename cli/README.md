@@ -148,15 +148,26 @@ Settings are stored at `~/.pickle/settings.json`:
 ### Session Storage
 
 Sessions are stored in:
-- **Local**: `.pickle/sessions/<date-hash>/` in your project
-- **Worktrees**: `.pickle/worktrees/session-<name>/` for isolated execution
-- **Global**: `~/.gemini/extensions/pickle-rick/sessions/`
+- **Local**: `.gemini/sessions/<date-hash>/` in your project
+- **Registry**: `~/.gemini/extensions/Pro-Rick-GPro/current_sessions.json`
+
+### Listing Sessions
+To see all active and archived sessions in your current workspace:
+```bash
+/rick-list-sessions
+```
 
 ### Resuming Sessions
 
 ```bash
-# Resume a specific session
-pickle -r .pickle/sessions/2024-01-15-abc123/
+# Resume the last active session
+/rick-architect --resume
+
+# Resume a specific session by ID (folder name)
+/rick-architect --resume 2024-01-15-abc123
+
+# Resume by full path
+/rick-architect --resume .gemini/sessions/2024-01-15-abc123
 ```
 
 The agent continues from where it left off with full context preserved.

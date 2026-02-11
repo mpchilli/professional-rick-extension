@@ -73,7 +73,7 @@ This creates a self-referential feedback loop where:
 ### Start the Loop
 To initiate the iterative development loop:
 ```bash
-/architect "Refactor the authentication module"
+/rick-architect "Refactor the authentication module"
 ```
 
 **Options:**
@@ -82,18 +82,18 @@ To initiate the iterative development loop:
 - `--worker-timeout <S>`: Timeout for individual workers in seconds (default: 1200).
 - `--name <SLUG>`: Custom name for the session directory.
 - `--completion-promise "TEXT"`: Only stop when the agent outputs `<promise>TEXT</promise>`.
-- `--resume [PATH]`: Resume an existing session. If PATH is omitted, uses the latest session.
+- `--resume [PATH|ID]`: Resume an existing session. If PATH is omitted, uses the latest session.
 
 ### Stop the Loop
-- `/cancel-session`: Stop/Cancel the current loop.
-- `/archive-session`: Save the current task for later.
-- `/resume-all`: Execute all queued tasks.
-- `/dispatch-worker`: (Internal) Used by the manager to spawn worker instances.
+- `/rick-cancel-session`: Stop/Cancel the current loop.
+- `/rick-list-sessions`: List all active and archived sessions.
+- `/rick-resume-all`: Execute all queued tasks.
+- `/rick-dispatch-worker`: (Internal) Used by the manager to spawn worker instances.
 
 ### Help
 To view extension help:
 ```bash
-/help-architect
+/rick-help-architect
 ```
 
 ### 📋 Phase-Specific Commands
@@ -101,15 +101,16 @@ To view extension help:
 #### 1. Interactive PRD (Recommended)
 Draft a PRD interactively before starting the implementation loop. This initializes a session and primes the agent.
 ```bash
-/draft-prd "I want to add a dark mode toggle"
+/rick-draft-prd "I want to add a dark mode toggle"
 ```
 
 #### 2. Resume a Session
 If a session was interrupted or started via `/draft-prd`, resume it using:
 ```bash
-/architect --resume
+/rick-architect --resume                # Resume last active session
+/rick-architect --resume <SESSION_ID>   # Resume specific session by ID
 ```
-*Note: This resumes the active session for your current working directory.*
+*Note: Use `/rick-list-sessions` to find available Session IDs.*
 
 ### ⚙️ Important Configuration
 
