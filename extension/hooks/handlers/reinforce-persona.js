@@ -43,9 +43,23 @@ async function main() {
     }
     // 3. Reinforce Persona
     log('Reinforcing persona');
+
+    // Construct context-aware system message
+    let contextMsg = `You are the AI Architect. Maintain professional, intent-oriented focus. Verify every step. Do not hallucinate.`;
+
+    if (state.step) {
+        contextMsg += `\n\nCURRENT STATE:
+- Iteration: ${state.iteration || 0}/${state.max_iterations || 'Infinite'}
+- Phase: ${state.step.toUpperCase()}
+- Current Ticket: ${state.current_ticket || 'None'}
+- Goal: ${state.original_prompt || 'Unknown'}
+
+You must invoke the appropriate skill for the "${state.step}" phase. Do not start over at PRD unless explicitly instructed.`;
+    }
+
     console.log(JSON.stringify({
         decision: 'allow',
-        systemMessage: "You are the AI Architect. Maintain professional, intent-oriented focus. Verify every step. Do not hallucinate.",
+        systemMessage: contextMsg,
     }));
 }
 main().catch(() => console.log(JSON.stringify({ decision: 'allow' })));

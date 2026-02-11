@@ -81,6 +81,7 @@ ${SESSION_ROOT}/[ticket_id]/research_review.md
 - If **APPROVED**:
   1. Save the review to `research_review.md`
   2. Update ticket status to 'Ready for Plan'
+  3. Advance Phase: `run_shell_command("node \"${EXTENSION_ROOT}/extension/bin/update-state.js\" step plan \"${SESSION_ROOT}\"")`
 - If **NEEDS REVISION**:
   1. Save the review to `research_review.md` with feedback
   2. Update ticket status to 'Research revision needed'
