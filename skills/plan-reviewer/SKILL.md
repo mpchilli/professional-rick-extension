@@ -81,7 +81,8 @@ ${SESSION_ROOT}/[ticket_id]/plan_review.md
 
 ### 4. Final Verdict
 - If **APPROVED**: "This plan is solid. Proceed to implementation."
-- If **RISKY** or **REJECTED**: "Do not start coding yet. Please refine the plan to address the risks above."
+  "Plan requires revision. Run this command to proceed:
+  `/rick-architect "Refine the plan to address the risks identified in this review: <ABSOLUTE_PATH_TO_REVIEW_FILE>" --resume "<SESSION_ROOT>"`"
 
 ## Next Step (ADVANCE)
 - If **APPROVED**:

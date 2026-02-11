@@ -74,7 +74,8 @@ ${SESSION_ROOT}/[ticket_id]/research_review.md
 
 ### 4. Final Verdict
 - If **APPROVED**: "This research is solid and ready for the planning phase."
-- If **NEEDS REVISION** or **REJECTED**: "Please address the feedback above."
+  "Research requires revision. Run this command to proceed:
+  `/rick-architect "Fix the research gaps identified in this review: <ABSOLUTE_PATH_TO_REVIEW_FILE>" --resume "<SESSION_ROOT>"`"
 
 ## Next Step (ADVANCE)
 - If **APPROVED**:

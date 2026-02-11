@@ -33,7 +33,7 @@ node "${extensionPath}/extension/bin/session-setup.js" $ARGUMENTS
 
 **Windows (PowerShell):**
 ```powershell
-node "${extensionPath}/extension/bin/session-setup.js" $ARGUMENTS
+node '${extensionPath}/extension/bin/session-setup.js' $ARGUMENTS
 ```
 **Supported Arguments for setup.sh:**
 - `--max-iterations <N>`: Maximum number of loop iterations.

@@ -103,19 +103,24 @@ async function main() {
             stdio: ['pipe', 'pipe', 'pipe'],
         });
         child.stdin?.on('error', (err) => {
-            if (err.code === 'EPIPE') {
-                // Ignore EPIPE on stdin
+            const msg = err.message || '';
+            if (err.code === 'EPIPE' || msg.includes('write EOF')) {
+                // Ignore EPIPE/EOF on stdin
                 return;
             }
             logError(`Child stdin error: ${err}`);
         });
         if (inputData) {
             try {
-                child.stdin?.write(inputData);
+                if (child.stdin && !child.stdin.destroyed) {
+                    child.stdin.write(inputData);
+                }
             }
             catch (err) {
-                if (err.code !== 'EPIPE')
+                const msg = err.message || '';
+                if (err.code !== 'EPIPE' && !msg.includes('write EOF')) {
                     throw err;
+                }
             }
         }
         child.stdin?.end();

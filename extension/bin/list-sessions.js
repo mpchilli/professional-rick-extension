@@ -81,6 +81,40 @@ async function main() {
             status = state.active ? 'In Progress' : 'Completed';
         }
 
+        // Telemetry: Ticket Counts
+        const ticketsDir = path.join(sessionDir, 'tickets');
+        let totalTickets = 0;
+        let doneTickets = 0;
+        if (fs.existsSync(ticketsDir)) {
+            try {
+                // Find all child ticket files (exclude parent)
+                // Recursive search pattern: tickets/HASH/linear_ticket_HASH.md
+                const ticketFiles = [];
+                const scan = (d) => {
+                    const entries = fs.readdirSync(d, { withFileTypes: true });
+                    for (const e of entries) {
+                        const full = path.join(d, e.name);
+                        if (e.isDirectory()) {
+                            scan(full);
+                        } else if (e.name.startsWith('linear_ticket_') && e.name !== 'linear_ticket_parent.md') {
+                            ticketFiles.push(full);
+                        }
+                    }
+                };
+                scan(ticketsDir);
+
+                totalTickets = ticketFiles.length;
+                for (const tf of ticketFiles) {
+                    try {
+                        const content = fs.readFileSync(tf, 'utf-8');
+                        if (content.match(/\*\*Status\*\*:\s*Done/i) || content.match(/status:\s*Done/i)) {
+                            doneTickets++;
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+            } catch (e) { /* ignore */ }
+        }
+
         return {
             id: dir,
             title,
@@ -89,7 +123,11 @@ async function main() {
             iteration: state.iteration,
             started_at: state.started_at,
             step: state.step || 'Unknown',
-            working_dir: state.working_dir || 'Unknown'
+            working_dir: state.working_dir || 'Unknown',
+            telemetry: {
+                totalTickets,
+                doneTickets
+            }
         };
     }).sort((a, b) => {
         // Sort by date descending (newest first)
@@ -140,11 +178,37 @@ async function main() {
             }
         } catch (e) { /* ignore */ }
 
+        // Duration Calculation
+        let duration = '';
+        if (s.started_at) {
+            try {
+                const start = new Date(s.started_at);
+                const now = new Date();
+                const diffMs = now - start;
+                const hours = Math.floor(diffMs / 3600000);
+                const minutes = Math.floor((diffMs % 3600000) / 60000);
+                if (hours > 0) duration = `${hours}h ${minutes}m`;
+                else duration = `${minutes}m`;
+            } catch (e) { /* ignore */ }
+        }
+
         // Line 1: ID and Start Time
         console.log(`${Style.CYAN}${Style.BOLD}${s.id}${Style.RESET}  ${Style.DIM}Started: ${timeDisplay || 'Unknown'}${Style.RESET}`);
 
         // Line 2: Lifecycle Bar
         console.log(`   ${statusColor}${statusMarker}${Style.RESET} ${renderLifecycle(s.step)}`);
+
+        // Line 3: Telemetry Stats
+        const telemetry = [];
+        if (s.telemetry && s.telemetry.totalTickets > 0) {
+            telemetry.push(`Tickets: ${s.telemetry.doneTickets}/${s.telemetry.totalTickets}`);
+        }
+        if (s.iteration > 0) telemetry.push(`Iter: ${s.iteration}`);
+        if (duration) telemetry.push(`Time: ${duration}`);
+
+        if (telemetry.length > 0) {
+            console.log(`      ${Style.DIM}${telemetry.join('   ')}${Style.RESET}`);
+        }
 
         // Line 3: Task Title
         console.log(`   ${Style.BOLD}${s.title}${Style.RESET}`);

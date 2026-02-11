@@ -5,12 +5,6 @@
         "matcher": "*",
         "hooks": [
           {
-            "name": "increment-iteration",
-            "type": "command",
-            "command": "node ${extensionPath}/extension/hooks/dispatch.js increment-iteration",
-            "description": "Increments the iteration"
-          },
-          {
             "name": "reinforce-pickle-persona",
             "type": "command",
             "command": "node ${extensionPath}/extension/hooks/dispatch.js reinforce-persona",
@@ -23,6 +17,12 @@
       {
         "matcher": "*",
         "hooks": [
+          {
+            "name": "increment-iteration",
+            "type": "command",
+            "command": "node ${extensionPath}/extension/hooks/dispatch.js increment-iteration",
+            "description": "Increments the iteration"
+          },
           {
             "name": "check-limit",
             "type": "command",

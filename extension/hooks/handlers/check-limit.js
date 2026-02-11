@@ -3,14 +3,14 @@ import * as path from 'node:path';
 import * as os from 'node:os';
 async function main() {
     const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
-    const globalDebugLog = path.join(extensionDir, 'debug.log');
+    const globalDebugLog = path.join(extensionDir, 'debug.md');
 
     // Check if we should ignore debug.log in searches (handled via .antigravityignore recommendation to user)
 
     let sessionHooksLog = null;
     const log = (msg) => {
         const ts = new Date().toISOString();
-        const formatted = `[${ts}] [CheckLimitJS] ${msg}${os.EOL}`;
+        const formatted = `\`\`\`${os.EOL}[${ts}] [CheckLimitJS] ${msg}${os.EOL}\`\`\`${os.EOL}`;
         try {
             fs.appendFileSync(globalDebugLog, formatted);
         }
