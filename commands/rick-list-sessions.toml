@@ -1,6 +1,15 @@
 description = "List all active and archived sessions in the current workspace"
-prompt = "List all available AI Architect sessions."
+prompt = """
+Display the AI Architect session list.
 
-[executable]
-command = "node"
-args = ["${extensionPath}/extension/bin/list-sessions.js"]
+Execute the following script to fetch and format the session metadata:
+
+```bash
+node "${extensionPath}/extension/bin/list-sessions.js"
+```
+
+**Windows (PowerShell):**
+```powershell
+node "${extensionPath}/extension/bin/list-sessions.js"
+```
+"""

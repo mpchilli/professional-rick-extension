@@ -46,16 +46,49 @@ async function main() {
     const sessions = fs.readdirSync(SESSIONS_ROOT).filter(dir => {
         return fs.statSync(path.join(SESSIONS_ROOT, dir)).isDirectory();
     }).map(dir => {
-        const statePath = path.join(SESSIONS_ROOT, dir, 'state.json');
-        let state = { active: false, original_prompt: 'Unknown', step: 'Unknown', iteration: 0, started_at: 'Unknown' };
+        const sessionDir = path.join(SESSIONS_ROOT, dir);
+        const statePath = path.join(sessionDir, 'state.json');
+        const ticketPath = path.join(sessionDir, 'tickets', 'linear_ticket_parent.md');
+
+        let state = { active: false, original_prompt: '', step: 'Unknown', iteration: 0, started_at: '', working_dir: '' };
+        let title = '';
+        let status = '';
+
         if (fs.existsSync(statePath)) {
             try {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
             } catch (e) { /* ignore */ }
         }
+
+        if (fs.existsSync(ticketPath)) {
+            try {
+                const ticketContent = fs.readFileSync(ticketPath, 'utf-8');
+                const titleMatch = ticketContent.match(/^#\s+(.+)$/m);
+                if (titleMatch) title = titleMatch[1].trim();
+
+                const statusMatch = ticketContent.match(/\*\*Status\*\*:\s*(.+)$/m);
+                if (statusMatch) status = statusMatch[1].trim();
+            } catch (e) { /* ignore */ }
+        }
+
+        // Fallbacks
+        if (!title) {
+            title = (state.original_prompt || 'No Prompt').replace(/\n/g, ' ').substring(0, 50);
+            if (state.original_prompt && state.original_prompt.length > 50) title += '...';
+        }
+        if (!status) {
+            status = state.active ? 'In Progress' : 'Completed';
+        }
+
         return {
             id: dir,
-            ...state
+            title,
+            status,
+            active: state.active,
+            iteration: state.iteration,
+            started_at: state.started_at,
+            working_dir: state.working_dir || 'Unknown'
         };
     }).sort((a, b) => {
         // Sort by date descending (newest first)
@@ -67,32 +100,46 @@ async function main() {
         return;
     }
 
-    console.log(`${Style.BOLD}Active Sessions in ${path.basename(WORKSPACE_ROOT)}${Style.RESET}`);
-    console.log(`${Style.DIM}${'='.repeat(60)}${Style.RESET}`);
+    console.log(`${Style.BOLD}AI Architect Sessions${Style.RESET}`);
+    console.log(`${Style.DIM}Workspace: ${WORKSPACE_ROOT}${Style.RESET}\n`);
 
     // Header
+    const colId = 20;
+    const colStatus = 15;
+    const colTime = 20;
+
     console.log(
-        `${Style.BOLD}ID`.padEnd(25) +
-        `Status`.padEnd(10) +
-        `Iter`.padEnd(6) +
+        `${Style.BOLD}ID`.padEnd(colId) +
+        `Status`.padEnd(colStatus) +
+        `Started`.padEnd(colTime) +
         `Task${Style.RESET}`
     );
-    console.log(`${Style.DIM}${'-'.repeat(60)}${Style.RESET}`);
+    console.log(`${Style.DIM}${'-'.repeat(100)}${Style.RESET}`);
 
     sessions.forEach(s => {
         let statusColor = s.active ? Style.GREEN : Style.DIM;
         let activeIcon = s.active ? '🟢' : '⚪';
-        let promptSnippet = (s.original_prompt || '').replace(/\n/g, ' ').substring(0, 40) + (s.original_prompt?.length > 40 ? '...' : '');
+
+        // Format date nicely if possible
+        let timeDisplay = s.started_at;
+        try {
+            const date = new Date(s.started_at);
+            if (!isNaN(date.getTime())) {
+                timeDisplay = date.toLocaleString(undefined, {
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+            }
+        } catch (e) { /* ignore */ }
 
         console.log(
-            `${Style.CYAN}${s.id.padEnd(20)}${Style.RESET}   ` +
-            `${statusColor}${activeIcon} ${s.active ? 'Active' : 'Done '}${Style.RESET}   ` +
-            `${s.iteration.toString().padEnd(4)}   ` +
-            `${promptSnippet}`
+            `${Style.CYAN}${s.id.padEnd(colId)}${Style.RESET}` +
+            `${statusColor}${activeIcon} ${s.status.substring(0, 12).padEnd(colStatus - 2)}${Style.RESET}` +
+            `${(timeDisplay || 'Unknown').padEnd(colTime)}` +
+            `${s.title}`
         );
     });
-    console.log(`${Style.DIM}${'='.repeat(60)}${Style.RESET}`);
-    console.log(`\nTo resume a session run: ${Style.BOLD}/architect --resume <ID>${Style.RESET}`);
+    console.log(`${Style.DIM}${'-'.repeat(100)}${Style.RESET}`);
+    console.log(`\nTo resume a session run: ${Style.BOLD}/rick-architect --resume <ID>${Style.RESET}`);
 }
 
 main().catch(err => die(err.message));
