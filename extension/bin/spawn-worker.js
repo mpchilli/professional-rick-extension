@@ -125,7 +125,10 @@ async function main() {
         workerPrompt +=
             '\n\n1. Activate persona: `activate_skill("load-architect-persona")`.\n2. Follow \'Architect Loop\' philosophy.\n3. Output: <promise>I AM DONE</promise>';
     }
-    cmdArgs.push('-p', workerPrompt);
+    const finalPrompt = (workerPrompt.includes(' ') || workerPrompt.includes('\n')) && process.platform === 'win32'
+        ? `"${workerPrompt.replace(/"/g, '""')}"`
+        : workerPrompt;
+    cmdArgs.push('-p', finalPrompt);
     const logStream = fs.createWriteStream(sessionLog, { flags: 'w' });
     const env = {
         ...process.env,

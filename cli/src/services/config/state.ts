@@ -22,13 +22,13 @@ export function getSessionPath(cwd: string, sessionId: string): string {
 
 export async function loadState(sessionDir: string): Promise<SessionState | null> {
     const path = join(sessionDir, "state.json");
-    if (!existsSync(path)) return null;
     
     try {
         const content = await readFile(path, "utf-8");
         const json = JSON.parse(content);
         return SessionStateSchema.parse(json);
-    } catch (e) {
+    } catch (e: any) {
+        if (e.code === "ENOENT") return null;
         console.error("Failed to load state:", e);
         return null;
     }

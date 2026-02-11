@@ -7,8 +7,7 @@ import type { SessionState } from "../config/types.js";
 
 describe("PickleTaskSource Sequencing", () => {
     
-    // TODO: Fix ENOENT race condition in test setup
-    test.skip("should sort tickets by order field", async () => {
+    test("should sort tickets by order field", async () => {
         const testDir = join(process.cwd(), `.tmp_test_session_${Date.now()}_${Math.random().toString(36).slice(2)}`);
         await mkdir(testDir, { recursive: true });
         
@@ -28,7 +27,7 @@ describe("PickleTaskSource Sequencing", () => {
             history: [],
             started_at: new Date().toISOString()
         };
-        writeFileSync(join(testDir, "state.json"), JSON.stringify(fullState));
+        await writeFile(join(testDir, "state.json"), JSON.stringify(fullState));
 
         // Create tickets in mixed order
         await writeFile(join(testDir, "ticket_3.md"), `---\nid: t3\ntitle: Third\nstatus: Triage\norder: 30\n---\nBody`);
@@ -51,8 +50,7 @@ describe("PickleTaskSource Sequencing", () => {
         await rm(testDir, { recursive: true });
     });
 
-    // TODO: Fix ENOENT race condition in test setup
-    test.skip("should fallback to birthtime if order is identical", async () => {
+    test("should fallback to birthtime if order is identical", async () => {
          const testDir = join(process.cwd(), `.tmp_test_session_${Date.now()}_${Math.random().toString(36).slice(2)}`);
          await mkdir(testDir, { recursive: true });
          
@@ -72,7 +70,7 @@ describe("PickleTaskSource Sequencing", () => {
             history: [],
             started_at: new Date().toISOString()
         };
-        writeFileSync(join(testDir, "state.json"), JSON.stringify(fullState));
+        await writeFile(join(testDir, "state.json"), JSON.stringify(fullState));
 
          await writeFile(join(testDir, "ticket_a.md"), `---\nid: ta\ntitle: A\nstatus: Triage\norder: 10\n---\nBody`);
          // Wait a bit to ensure different birthtime

@@ -144,19 +144,29 @@ export class PickleTaskSource implements TaskSource {
 
     private async findTicketFile(dir: string, id: string): Promise<string | null> {
         // Search recursively
-        const entries = await readdir(dir);
-        for (const entry of entries) {
-            const fullPath = join(dir, entry);
-            const entryStat = await stat(fullPath);
-            if (entryStat.isDirectory()) {
-                const found = await this.findTicketFile(fullPath, id);
-                if (found) return found;
-            } else if (entry.endsWith(".md")) {
-                const content = await readFile(fullPath, "utf-8");
-                if (content.includes(`id: ${id}`)) {
-                    return fullPath;
+        try {
+            const entries = await readdir(dir);
+            for (const entry of entries) {
+                const fullPath = join(dir, entry);
+                try {
+                    const entryStat = await stat(fullPath);
+                    if (entryStat.isDirectory()) {
+                        const found = await this.findTicketFile(fullPath, id);
+                        if (found) return found;
+                    } else if (entry.endsWith(".md")) {
+                        const content = await readFile(fullPath, "utf-8");
+                        if (content.includes(`id: ${id}`)) {
+                            return fullPath;
+                        }
+                    }
+                } catch (e: any) {
+                    if (e.code === "ENOENT") continue;
+                    throw e;
                 }
             }
+        } catch (e: any) {
+            if (e.code === "ENOENT") return null;
+            throw e;
         }
         return null;
     }
