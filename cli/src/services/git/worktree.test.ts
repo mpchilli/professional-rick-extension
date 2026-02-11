@@ -1,4 +1,6 @@
-import { mock, expect, test, describe, beforeEach } from "bun:test";
+import { mock, expect, test, describe, beforeEach, afterEach, spyOn } from "bun:test";
+import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
 
 const mockGit = {
   raw: mock(async () => []),
@@ -15,31 +17,34 @@ mock.module("simple-git", () => ({
   simpleGit: mock(() => mockGit),
 }));
 
-// More precise fs mocking
-const mockExistsSync = mock((p: string) => p.includes(".pickle") && !p.includes("session-test"));
-mock.module("node:fs", () => ({
-  existsSync: mockExistsSync,
-}));
-
-mock.module("node:fs/promises", () => ({
-  mkdir: mock(async () => {}),
-  readdir: mock(async () => []),
-  copyFile: mock(async () => {}),
-}));
-
 import * as worktreeService from "./worktree.js";
 
 describe("Worktree Service", () => {
+  let existsSpy: any;
+  let mkdirSpy: any;
+  let readdirSpy: any;
+  let copyFileSpy: any;
+
   beforeEach(() => {
     Object.values(mockGit).forEach(m => m.mockClear());
-    mockExistsSync.mockClear();
+    existsSpy = spyOn(fs, "existsSync");
+    mkdirSpy = spyOn(fsPromises, "mkdir").mockResolvedValue(undefined as any);
+    readdirSpy = spyOn(fsPromises, "readdir").mockResolvedValue([]);
+    copyFileSpy = spyOn(fsPromises, "copyFile").mockResolvedValue(undefined as any);
+  });
+
+  afterEach(() => {
+    existsSpy.mockRestore();
+    mkdirSpy.mockRestore();
+    readdirSpy.mockRestore();
+    copyFileSpy.mockRestore();
   });
 
   describe("createPickleWorktree", () => {
     test("should call git worktree add", async () => {
       // Ensure worktree doesn't exist so it triggers the prune and add
-      mockExistsSync.mockReturnValueOnce(true); // .pickle exists
-      mockExistsSync.mockReturnValueOnce(false); // session-test doesn't exist
+      existsSpy.mockReturnValueOnce(true); // .pickle exists
+      existsSpy.mockReturnValueOnce(false); // session-test doesn't exist
 
       const { worktreeDir, branchName } = await worktreeService.createPickleWorktree("test", "main", "/wd", mockGit as any);
 
@@ -68,7 +73,7 @@ describe("Worktree Service", () => {
   describe("syncWorktreeToOriginal", () => {
     test("should commit worktree changes and merge", async () => {
       // Mock worktree exists
-      mockExistsSync.mockReturnValue(true);
+      existsSpy.mockReturnValue(true);
       // Mock worktree has changes
       mockGit.status.mockResolvedValueOnce({ files: ["mod.ts"] } as any);
 
@@ -78,17 +83,12 @@ describe("Worktree Service", () => {
       expect(mockGit.commit).toHaveBeenCalled();
       expect(mockGit.merge).toHaveBeenCalled();
     });
-
-    test.skip("should fallback to copy if merge fails", async () => {
-      // Skipped: Complex mock interaction with async rejection handling
-      // The actual code catches merge errors and falls back to file copy
-    });
   });
 
   describe("cleanupPickleWorktree", () => {
     test("should call worktree remove", async () => {
       // Mock worktree exists
-      mockExistsSync.mockReturnValue(true);
+      existsSpy.mockReturnValue(true);
 
       await worktreeService.cleanupPickleWorktree("/wt", "/orig", mockGit as any);
 

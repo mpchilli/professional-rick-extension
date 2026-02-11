@@ -1,4 +1,4 @@
-import { expect, test, describe, mock, beforeEach, afterEach, beforeAll, spyOn } from "bun:test";
+import { expect, test, describe, mock, beforeEach, afterEach, beforeAll, afterAll, spyOn } from "bun:test";
 
 // 1. Setup Mocks
 const mockPlatform = mock(() => "darwin");
@@ -22,12 +22,20 @@ mock.module("node:os", () => ({
 // We'll use a dynamic import and see if we can spy on the globals
 import { Clipboard } from "./clipboard.js";
 
+const originalSpawn = globalThis.Bun.spawn;
+const originalWhich = globalThis.Bun.which;
+
 describe("clipboard.ts", () => {
     beforeAll(() => {
         // @ts-ignore
         globalThis.Bun.which = mockWhich;
         // @ts-ignore
         globalThis.Bun.spawn = mockSpawn;
+    });
+
+    afterAll(() => {
+        globalThis.Bun.spawn = originalSpawn;
+        globalThis.Bun.which = originalWhich;
     });
 
     beforeEach(() => {

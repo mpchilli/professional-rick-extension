@@ -7,7 +7,7 @@ async function main() {
     let sessionHooksLog = null;
     const log = (msg) => {
         const ts = new Date().toISOString();
-        const formatted = `[${ts}] [StopHookJS] ${msg}\n`;
+        const formatted = `[${ts}] [StopHookJS] ${msg}${os.EOL}`;
         try {
             fs.appendFileSync(globalDebugLog, formatted);
         }
@@ -43,9 +43,10 @@ async function main() {
         if (fs.existsSync(sessionsMapPath)) {
             const map = JSON.parse(fs.readFileSync(sessionsMapPath, 'utf8'));
             const sessionPath = map[process.cwd()];
-            log(`Found session path for ${process.cwd()}: ${sessionPath}`);
-            if (sessionPath)
+            if (sessionPath) {
+                log(`Found session path in map: ${sessionPath}`);
                 stateFile = path.join(sessionPath, 'state.json');
+            }
         }
     }
     if (!stateFile || !fs.existsSync(stateFile)) {
@@ -124,7 +125,35 @@ async function main() {
         }));
         return;
     }
-    // 7. Check Limits (Final Guard)
+    // 7. Adaptive Loop Recovery
+    const { LoopMonitor } = await import('../../services/loop-monitor.js');
+    const repeatCount = LoopMonitor.trackCall(state, responseText);
+    let loopMessage = null;
+
+    if (repeatCount >= 3) {
+        const sessionDir = path.dirname(stateFile);
+        const logPath = LoopMonitor.dumpBlackBox(sessionDir, input, repeatCount);
+        log(`Loop detected! Count: ${repeatCount}, Log saved: ${logPath}`);
+
+        if (repeatCount === 3) {
+            loopMessage = '🤖 **Adaptive Recovery (Tier 1)**: System Note: You are repeating an action. Analyze the failure of previous attempts and pivot your strategy.';
+        } else if (repeatCount === 4) {
+            loopMessage = '🤖 **Adaptive Recovery (Tier 2)**: System Note: Loop confirmed. Extreme variance required. Pivot to a fundamentally different approach to break the pattern.';
+        } else if (repeatCount === 5) {
+            loopMessage = '🤖 **Adaptive Recovery (Tier 3)**: CRITICAL: Repetitive block. STOP ALL TOOL USE. Output a summary of your struggle and current state to the user immediately.';
+        } else if (repeatCount >= 6) {
+            log('Decision: ALLOW (Hard Halt - Loop detected)');
+            state.active = false;
+            fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
+            console.log(JSON.stringify({
+                decision: 'allow',
+                systemMessage: `🛑 **Hard Halt**: Loop detected. Post-mortem log saved at: ${logPath}`
+            }));
+            return;
+        }
+    }
+
+    // 8. Check Limits (Final Guard)
     const now = Math.floor(Date.now() / 1000);
     const elapsedSeconds = now - state.start_time_epoch;
     const maxTimeSeconds = state.max_time_minutes * 60;
@@ -142,11 +171,15 @@ async function main() {
         console.log(JSON.stringify({ decision: 'allow' }));
         return;
     }
-    // 8. Default: Continue Loop (Prevent Exit)
-    log('Decision: BLOCK (Default continuation)');
-    let defaultFeedback = `🤖 **AI Architect Loop Active** (Iteration ${state.iteration})`;
-    if (state.max_iterations > 0)
+    // 9. Default: Continue Loop (Prevent Exit)
+    log(`Decision: BLOCK (Default continuation, repeatCount=${repeatCount})`);
+    let defaultFeedback = loopMessage || `🤖 **AI Architect Loop Active** (Iteration ${state.iteration})`;
+    if (state.max_iterations > 0 && !loopMessage)
         defaultFeedback += ` of ${state.max_iterations}`;
+
+    // Save state before exiting hook
+    fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
+
     console.log(JSON.stringify({
         decision: 'block',
         systemMessage: defaultFeedback,

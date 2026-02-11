@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { existsSync, appendFileSync, writeFileSync } from 'node:fs';
+import { existsSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as os from 'node:os';
-const EXTENSION_DIR = join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
+const EXTENSION_DIR = process.env.EXTENSION_DIR || join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
 const HANDLERS_DIR = join(EXTENSION_DIR, 'extension', 'hooks', 'handlers');
 const LOG_PATH = join(EXTENSION_DIR, 'debug.log');
 // Prevent EPIPE errors from crashing the dispatcher when Gemini closes the pipe
@@ -16,7 +16,7 @@ process.stderr.on('error', handleEpipe);
 function log(message) {
     try {
         const timestamp = new Date().toISOString();
-        appendFileSync(LOG_PATH, `[${timestamp}] [dispatcher] ${message}\n`);
+        appendFileSync(LOG_PATH, `[${timestamp}] [dispatcher] ${message}${os.EOL}`);
     }
     catch {
         /* ignore */
@@ -92,18 +92,6 @@ async function main() {
             }
             inputData = Buffer.concat(chunks).toString();
             log(`Input Data: ${inputData}`);
-            // Update Workspace Registry
-            try {
-                const data = JSON.parse(inputData);
-                if (data.cwd) {
-                    const registryPath = join(EXTENSION_DIR, 'last_workspace.txt');
-                    writeFileSync(registryPath, data.cwd);
-                    log(`Updated Workspace Registry: ${data.cwd}`);
-                }
-            }
-            catch {
-                /* ignore */
-            }
         }
         catch (e) {
             log(`Error reading stdin: ${e}`);
@@ -136,6 +124,7 @@ async function main() {
         child.stdout?.on('data', (data) => (stdout += data.toString()));
         child.stderr?.on('data', (data) => (stderr += data.toString()));
         child.on('close', (code) => {
+            log(`Hook ${hookName} finished with code ${code}. Output: ${stdout.trim()}`);
             if (stdout)
                 process.stdout.write(stdout);
             if (stderr)

@@ -1,0 +1,7 @@
+**/debug.log
+**/hooks.log
+**/logs/
+**/node_modules
+**/.git
+.gemini/sessions/**
+C:/Users/ukchim01/.gemini/antigravity/brain/**

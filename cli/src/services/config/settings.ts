@@ -4,20 +4,12 @@ import { homedir } from "node:os";
 import { PickleSettings, PickleSettingsSchema } from "./types.js";
 import type { AIProviderName } from "../providers/types.js";
 
-const SETTINGS_DIR = join(homedir(), ".pickle");
-const SETTINGS_PATH = join(SETTINGS_DIR, "settings.json");
-
-// Valid provider names
-const VALID_PROVIDERS = [
-  "gemini", "opencode", "claude", "cursor", "codex", 
-  "qwen", "droid", "copilot"
-] as const;
-
-export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-  fixed?: string; // Fixed JSON string if applicable
+function getSettingsPaths() {
+  const dir = join(homedir(), ".pickle");
+  return {
+    dir,
+    path: join(dir, "settings.json")
+  };
 }
 
 /**
@@ -119,8 +111,9 @@ export function validateSettings(content: string): ValidationResult {
  * Validate and load settings with detailed error reporting
  */
 export async function loadSettingsWithValidation(): Promise<{ settings: PickleSettings; validation: ValidationResult }> {
+  const { path } = getSettingsPaths();
   try {
-    const content = await readFile(SETTINGS_PATH, "utf-8");
+    const content = await readFile(path, "utf-8");
     const validation = validateSettings(content);
     
     // If we have a fixed version, use it
@@ -159,8 +152,9 @@ export async function loadSettingsWithValidation(): Promise<{ settings: PickleSe
  * Returns default settings if file doesn't exist or is invalid
  */
 export async function loadSettings(): Promise<PickleSettings> {
+  const { path } = getSettingsPaths();
   try {
-    const content = await readFile(SETTINGS_PATH, "utf-8");
+    const content = await readFile(path, "utf-8");
     const json = JSON.parse(content);
     return PickleSettingsSchema.parse(json);
   } catch (e) {
@@ -174,10 +168,11 @@ export async function loadSettings(): Promise<PickleSettings> {
  * Creates the directory if it doesn't exist
  */
 export async function saveSettings(settings: PickleSettings): Promise<void> {
+  const { dir, path } = getSettingsPaths();
   try {
-    await mkdir(SETTINGS_DIR, { recursive: true });
+    await mkdir(dir, { recursive: true });
     const validated = PickleSettingsSchema.parse(settings);
-    await writeFile(SETTINGS_PATH, JSON.stringify(validated, null, 2), "utf-8");
+    await writeFile(path, JSON.stringify(validated, null, 2), "utf-8");
   } catch (e) {
     throw new Error(`Failed to save settings: ${e}`);
   }

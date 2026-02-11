@@ -6,7 +6,9 @@ import { SessionStateSchema, type SessionState } from "./types.js";
 import { findProjectRoot } from "../../utils/project-root.js";
 import { loadSettings } from "./settings.js";
 
-export const GLOBAL_SESSIONS_DIR = join(homedir(), ".gemini", "extensions", "pickle-rick", "sessions");
+export function getGlobalSessionsDir(): string {
+    return join(homedir(), ".gemini", "extensions", "pickle-rick", "sessions");
+}
 
 export interface SessionSummary {
     original_prompt: string;
@@ -76,14 +78,15 @@ export async function createSession(cwd: string, prompt: string, is_prd_mode: bo
 
 export async function listSessions(cwd?: string): Promise<SessionSummary[]> {
     const sessionDirs = new Set<string>();
+    const globalSessionsDir = getGlobalSessionsDir();
 
     // 1. Check Global Sessions
-    if (existsSync(GLOBAL_SESSIONS_DIR)) {
+    if (existsSync(globalSessionsDir)) {
         try {
-            const entries = await readdir(GLOBAL_SESSIONS_DIR, { withFileTypes: true });
+            const entries = await readdir(globalSessionsDir, { withFileTypes: true });
             for (const entry of entries) {
                 if (entry.isDirectory()) {
-                    sessionDirs.add(join(GLOBAL_SESSIONS_DIR, entry.name));
+                    sessionDirs.add(join(globalSessionsDir, entry.name));
                 }
             }
         } catch (e) {}

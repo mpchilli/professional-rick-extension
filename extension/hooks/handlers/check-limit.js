@@ -4,10 +4,13 @@ import * as os from 'node:os';
 async function main() {
     const extensionDir = process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
     const globalDebugLog = path.join(extensionDir, 'debug.log');
+
+    // Check if we should ignore debug.log in searches (handled via .antigravityignore recommendation to user)
+
     let sessionHooksLog = null;
     const log = (msg) => {
         const ts = new Date().toISOString();
-        const formatted = `[${ts}] [CheckLimitJS] ${msg}\n`;
+        const formatted = `[${ts}] [CheckLimitJS] ${msg}${os.EOL}`;
         try {
             fs.appendFileSync(globalDebugLog, formatted);
         }
@@ -27,11 +30,14 @@ async function main() {
     let stateFile = process.env.ARCHITECT_STATE_FILE;
     if (!stateFile) {
         const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
+        log(`Checking sessions map at: ${sessionsMapPath}`);
         if (fs.existsSync(sessionsMapPath)) {
             const map = JSON.parse(fs.readFileSync(sessionsMapPath, 'utf8'));
             const sessionPath = map[process.cwd()];
-            if (sessionPath)
+            if (sessionPath) {
+                log(`Found session path in map: ${sessionPath}`);
                 stateFile = path.join(sessionPath, 'state.json');
+            }
         }
     }
     if (!stateFile || !fs.existsSync(stateFile)) {

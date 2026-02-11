@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 import {
   printMinimalPanel,
   Style,
@@ -14,17 +13,37 @@ async function main() {
   const args = process.argv.slice(2);
   if (args.length < 1) {
     console.log(
-      'Usage: node spawn-worker.js <task> --ticket-id <id> --ticket-path <path> [--timeout <sec>] [--output-format <fmt>]'
+      'Usage: node spawn-worker.js <task_description> --ticket-id <id> --ticket-path <path> [--timeout <sec>] [--output-format <fmt>]'
     );
     process.exit(1);
   }
 
-  const task = args[0];
+  // Find named arguments
   const ticketIdIndex = args.indexOf('--ticket-id');
   const ticketPathIndex = args.indexOf('--ticket-path');
   const ticketFileIndex = args.indexOf('--ticket-file');
   const timeoutIndex = args.indexOf('--timeout');
   const formatIndex = args.indexOf('--output-format');
+
+  // The task description is usually the first argument IF it's not a flag
+  // or we can just look for the first non-flag argument that isn't a value for a flag.
+  const namedIndices = [
+    ticketIdIndex,
+    ticketIdIndex + 1,
+    ticketPathIndex,
+    ticketPathIndex + 1,
+    ticketFileIndex,
+    ticketFileIndex + 1,
+    timeoutIndex,
+    timeoutIndex + 1,
+    formatIndex,
+    formatIndex + 1,
+  ];
+
+  const taskIndex = args.findIndex(
+    (arg, i) => !namedIndices.includes(i) && !arg.startsWith('-')
+  );
+  const task = taskIndex !== -1 ? args[taskIndex] : 'Execute ticket task';
 
   if (ticketIdIndex === -1 || ticketPathIndex === -1) {
     console.log('Error: --ticket-id and --ticket-path are required.');
@@ -108,7 +127,11 @@ async function main() {
   const cmdArgs = ['-s', '-y'];
   for (const p of includes) {
     if (fs.existsSync(p)) {
-      cmdArgs.push('--include-directories', p);
+      // Manual quoting is required on Windows when using shell: true
+      // to prevent spaces in paths from being interpreted as positional arguments.
+      const quotedPath =
+        p.includes(' ') && process.platform === 'win32' ? `"${p}"` : p;
+      cmdArgs.push('--include-directories', quotedPath);
     }
   }
   if (outputFormat !== 'text') {
@@ -145,7 +168,13 @@ async function main() {
       '\n\n1. Activate persona: `activate_skill("load-architect-persona")`.\n2. Follow \'Architect Loop\' philosophy.\n3. Output: <promise>I AM DONE</promise>';
   }
 
-  cmdArgs.push('-p', workerPrompt);
+  const finalPrompt =
+    (workerPrompt.includes(' ') || workerPrompt.includes('\n')) &&
+    process.platform === 'win32'
+      ? `"${workerPrompt.replace(/"/g, '""')}"`
+      : workerPrompt;
+
+  cmdArgs.push('-p', finalPrompt);
 
   const logStream = fs.createWriteStream(sessionLog, { flags: 'w' });
   const env = {
@@ -155,10 +184,15 @@ async function main() {
     PYTHONUNBUFFERED: '1',
   };
   const command = process.platform === 'win32' ? 'gemini.cmd' : 'gemini';
+  console.log(
+    `${Style.DIM}   Command: ${command} ${cmdArgs.join(' ').substring(0, 100)}...${Style.RESET}`
+  );
+
   const proc = spawn(command, cmdArgs, {
     cwd: process.cwd(),
     env,
     stdio: ['inherit', 'pipe', 'pipe'],
+    shell: process.platform === 'win32',
   });
 
   proc.stdout?.pipe(logStream);

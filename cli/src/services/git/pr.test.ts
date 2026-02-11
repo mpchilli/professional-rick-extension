@@ -1,4 +1,7 @@
-import { mock, expect, test, describe, beforeEach } from "bun:test";
+import { mock, expect, test, describe, beforeEach, afterEach, spyOn } from "bun:test";
+import { mkdir, writeFile, rm } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 
 const mockGit = {
         push: mock(async () => {}),
@@ -12,35 +15,33 @@ mock.module("simple-git", () => ({
 
 const mockExec = mock(async () => ({ stdout: "https://github.com/user/repo/pull/1", exitCode: 0 }));
 
-mock.module("../providers/base.js", () => ({
-        execCommand: mockExec,
-}));
-
-mock.module("node:fs", () => ({
-        existsSync: mock((path: string) => path.endsWith("prd.md")),
-        readdirSync: mock(() => []),
-}));
-
-mock.module("node:fs/promises", () => ({
-        readFile: mock(async (path: string) => {
-                if (path.endsWith("prd.md")) return `# My PRD
-## Problem Statement
-This is a problem.`;
-                return "";
-        }),
-}));
-
+import * as baseProviders from "../providers/base.js";
 import * as prService from "./pr.js";
 
 describe("PR Service", () => {
-        beforeEach(() => {
+        let tempDir: string;
+        let execSpy: any;
+
+        beforeEach(async () => {
+                tempDir = join(tmpdir(), `pickle-test-${Math.random().toString(36).slice(2)}`);
+                await mkdir(tempDir, { recursive: true });
                 mockExec.mockClear();
                 Object.values(mockGit).forEach(m => m.mockClear());
+                execSpy = spyOn(baseProviders, "execCommand").mockImplementation(mockExec as any);
+        });
+
+        afterEach(async () => {
+                await rm(tempDir, { recursive: true, force: true });
+                execSpy.mockRestore();
         });
 
         describe("generatePRDescription", () => {
                 test("should generate description from PRD", async () => {
-                        const desc = await prService.generatePRDescription("/tmp/session", "feat/test", "main");
+                        await writeFile(join(tempDir, "prd.md"), `# My PRD
+## Problem Statement
+This is a problem.`);
+                        
+                        const desc = await prService.generatePRDescription(tempDir, "feat/test", "main");
 
                         expect(desc.title).toBe("My");
                         expect(desc.body).toContain("**Problem:** This is a problem.");

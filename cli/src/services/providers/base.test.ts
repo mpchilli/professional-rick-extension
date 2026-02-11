@@ -77,6 +77,7 @@ describe("Providers Base Utils", () => {
   describe("execCommand", () => {
     test("should return result object with expected properties", async () => {
       const result = await execCommand("echo", ["hello"], ".");
+      console.log("execCommand result:", result);
       expect(result).toBeDefined();
       expect("stdout" in result).toBe(true);
       expect("stderr" in result).toBe(true);

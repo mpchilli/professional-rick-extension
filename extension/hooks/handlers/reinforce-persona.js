@@ -7,7 +7,7 @@ async function main() {
     const log = (msg) => {
         const ts = new Date().toISOString();
         try {
-            fs.appendFileSync(debugLog, `[${ts}] [ReinforcePersonaJS] ${msg}\n`);
+            fs.appendFileSync(debugLog, `[${ts}] [ReinforcePersonaJS] ${msg}${os.EOL}`);
         }
         catch {
             /* ignore */
@@ -17,11 +17,14 @@ async function main() {
     let stateFile = process.env.ARCHITECT_STATE_FILE;
     if (!stateFile) {
         const sessionsMapPath = path.join(extensionDir, 'current_sessions.json');
+        log(`Checking sessions map at: ${sessionsMapPath}`);
         if (fs.existsSync(sessionsMapPath)) {
             const map = JSON.parse(fs.readFileSync(sessionsMapPath, 'utf8'));
             const sessionPath = map[process.cwd()];
-            if (sessionPath)
+            if (sessionPath) {
+                log(`Found session path in map: ${sessionPath}`);
                 stateFile = path.join(sessionPath, 'state.json');
+            }
         }
     }
     if (!stateFile || !fs.existsSync(stateFile)) {

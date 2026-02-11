@@ -1,66 +1,53 @@
-import { mock, expect, test, describe, beforeEach } from "bun:test";
+import { expect, test, describe, beforeEach, afterEach, mock, spyOn } from "bun:test";
 import { join } from "node:path";
-
-const mockFiles = new Map<string, string>();
-
-mock.module("node:fs", () => ({
-  existsSync: (path: string) => {
-    return mockFiles.has(path) || (path.includes(".pickle/sessions") && !path.includes("definitely-not-there"));
-  }
-}));
-
-mock.module("node:fs/promises", () => ({
-  readFile: async (path: string) => {
-    if (mockFiles.has(path)) return mockFiles.get(path);
-    throw new Error(`File not found: ${path}`);
-  },
-  writeFile: async (path: string, content: string) => {
-    mockFiles.set(path, content);
-  },
-  mkdir: async () => {},
-  readdir: async (path: string) => {
-    if (path.includes("sessions")) {
-      return [{ name: "session-1", isDirectory: () => true }];
-    }
-    return [];
-  }
-}));
-
-mock.module("node:os", () => ({
-  homedir: () => "/home/testuser"
-}));
-
-mock.module("./settings.js", () => ({
-  loadSettings: async () => ({ max_iterations: 15 })
-}));
-
-mock.module("../../utils/project-root.js", () => ({
-  findProjectRoot: () => "/project"
-}));
-
-// Import AFTER mocks
-const { getSessionPath, loadState, saveState, createSession } = await import("./state.js");
+import * as fsPromises from "node:fs/promises";
+import * as fs from "node:fs";
+import { tmpdir } from "node:os";
+import * as os from "node:os";
+import { getSessionPath, loadState, saveState, createSession, listSessions } from "./state.js";
+import * as settings from "./settings.js";
+import * as projectRoot from "../../utils/project-root.js";
 
 describe("Config State", () => {
-  beforeEach(() => {
-    mockFiles.clear();
+  let tempDir: string;
+  let homeSpy: any;
+  let rootSpy: any;
+  let settingsSpy: any;
+
+  beforeEach(async () => {
+    tempDir = join(tmpdir(), `pickle-state-test-${Math.random().toString(36).slice(2)}`);
+    await fsPromises.mkdir(tempDir, { recursive: true });
+    
+    homeSpy = spyOn(os, "homedir").mockReturnValue(tempDir);
+    rootSpy = spyOn(projectRoot, "findProjectRoot").mockReturnValue(tempDir);
+    settingsSpy = spyOn(settings, "loadSettings").mockResolvedValue({ max_iterations: 15 });
+  });
+
+  afterEach(async () => {
+    homeSpy.mockRestore();
+    rootSpy.mockRestore();
+    settingsSpy.mockRestore();
+    await fsPromises.rm(tempDir, { recursive: true, force: true });
   });
 
   test("getSessionPath should return correct path", () => {
-    expect(getSessionPath("/app", "sid")).toBe(join("/app", ".pickle", "sessions", "sid"));
+    const path = getSessionPath(tempDir, "sid");
+    expect(path).toContain(join(".pickle", "sessions", "sid"));
   });
 
   test("saveState and loadState should work together", async () => {
-    const sessionDir = "/project/.pickle/sessions/test-session";
+    const sessionDir = join(tempDir, ".pickle", "sessions", "test-session");
+    await fsPromises.mkdir(sessionDir, { recursive: true });
+    
     const state: any = {
       active: true,
-      working_dir: "/project",
+      working_dir: tempDir,
       step: "prd",
       iteration: 1,
       max_iterations: 10,
       max_time_minutes: 60,
       worker_timeout_seconds: 1200,
-      start_time_epoch: Date.now(),
+      start_time_epoch: Math.floor(Date.now() / 1000),
       completion_promise: "DONE",
       original_prompt: "test prompt",
       current_ticket: "t1",
@@ -76,13 +63,18 @@ describe("Config State", () => {
   });
 
   test("loadState should return null if file does not exist", async () => {
-    const loaded = await loadState("/definitely-not-there");
+    const loaded = await loadState(join(tempDir, "non-existent"));
     expect(loaded).toBeNull();
   });
 
   test("createSession should initialize a valid session", async () => {
-    const state = await createSession("/project", "new session prompt");
+    const state = await createSession(tempDir, "new session prompt");
     expect(state.original_prompt).toBe("new session prompt");
-    expect(state.working_dir).toBe("/project");
+    expect(state.working_dir).toBe(tempDir);
+    
+    // Verify it was actually saved
+    const loaded = await loadState(state.session_dir);
+    expect(loaded).not.toBeNull();
+    expect(loaded?.original_prompt).toBe("new session prompt");
   });
 });

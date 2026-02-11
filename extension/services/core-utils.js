@@ -117,7 +117,7 @@ export async function spawn_cmd(cmd, options = {}) {
     });
 }
 export function getExtensionRoot() {
-    return path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
+    return process.env.EXTENSION_DIR || path.join(os.homedir(), '.gemini/extensions/Pro-Rick-GPro');
 }
 export function getSessionDir() {
     try {

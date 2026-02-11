@@ -1,4 +1,5 @@
-import { mock, expect, test, describe, beforeEach } from "bun:test";
+import { mock, expect, test, describe, beforeEach, afterEach, spyOn } from "bun:test";
+import * as fsPromises from "node:fs/promises";
 
 const mockGit = {
         diffSummary: mock(async () => ({ files: [] })),
@@ -13,15 +14,18 @@ mock.module("simple-git", () => ({
         simpleGit: mock(() => mockGit),
 }));
 
-mock.module("node:fs/promises", () => ({
-        readFile: mock(async () => "line1\nline2"),
-}));
-
 import * as diffService from "./diff.js";
 
 describe("Diff Service", () => {
+        let readFileSpy: any;
+
         beforeEach(() => {
                 Object.values(mockGit).forEach(m => m.mockClear());
+                readFileSpy = spyOn(fsPromises, "readFile").mockResolvedValue("line1\nline2" as any);
+        });
+
+        afterEach(() => {
+                readFileSpy.mockRestore();
         });
 
         describe("getChangedFiles", () => {

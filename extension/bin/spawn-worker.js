@@ -9,23 +9,28 @@ async function main() {
         console.log('Usage: node spawn-worker.js <task_description> --ticket-id <id> --ticket-path <path> [--timeout <sec>] [--output-format <fmt>]');
         process.exit(1);
     }
-
     // Find named arguments
     const ticketIdIndex = args.indexOf('--ticket-id');
     const ticketPathIndex = args.indexOf('--ticket-path');
     const ticketFileIndex = args.indexOf('--ticket-file');
     const timeoutIndex = args.indexOf('--timeout');
     const formatIndex = args.indexOf('--output-format');
-
     // The task description is usually the first argument IF it's not a flag
     // or we can just look for the first non-flag argument that isn't a value for a flag.
-    const namedIndices = [ticketIdIndex, ticketIdIndex + 1, ticketPathIndex, ticketPathIndex + 1,
-        ticketFileIndex, ticketFileIndex + 1, timeoutIndex, timeoutIndex + 1,
-        formatIndex, formatIndex + 1];
-
+    const namedIndices = [
+        ticketIdIndex,
+        ticketIdIndex + 1,
+        ticketPathIndex,
+        ticketPathIndex + 1,
+        ticketFileIndex,
+        ticketFileIndex + 1,
+        timeoutIndex,
+        timeoutIndex + 1,
+        formatIndex,
+        formatIndex + 1,
+    ];
     const taskIndex = args.findIndex((arg, i) => !namedIndices.includes(i) && !arg.startsWith('-'));
     const task = taskIndex !== -1 ? args[taskIndex] : 'Execute ticket task';
-
     if (ticketIdIndex === -1 || ticketPathIndex === -1) {
         console.log('Error: --ticket-id and --ticket-path are required.');
         process.exit(1);
@@ -125,25 +130,26 @@ async function main() {
         workerPrompt +=
             '\n\n1. Activate persona: `activate_skill("load-architect-persona")`.\n2. Follow \'Architect Loop\' philosophy.\n3. Output: <promise>I AM DONE</promise>';
     }
-    const finalPrompt = (workerPrompt.includes(' ') || workerPrompt.includes('\n')) && process.platform === 'win32'
+    const finalPrompt = (workerPrompt.includes(' ') || workerPrompt.includes('\n')) &&
+        process.platform === 'win32'
         ? `"${workerPrompt.replace(/"/g, '""')}"`
         : workerPrompt;
     cmdArgs.push('-p', finalPrompt);
     const logStream = fs.createWriteStream(sessionLog, { flags: 'w' });
     const env = {
         ...process.env,
+        EXTENSION_DIR: extensionRoot,
         ARCHITECT_STATE_FILE: timeoutStatePath || workerState,
         ARCHITECT_ROLE: 'worker',
         PYTHONUNBUFFERED: '1',
     };
     const command = process.platform === 'win32' ? 'gemini.cmd' : 'gemini';
     console.log(`${Style.DIM}   Command: ${command} ${cmdArgs.join(' ').substring(0, 100)}...${Style.RESET}`);
-
     const proc = spawn(command, cmdArgs, {
         cwd: process.cwd(),
         env,
         stdio: ['inherit', 'pipe', 'pipe'],
-        shell: process.platform === 'win32'
+        shell: process.platform === 'win32',
     });
     proc.stdout?.pipe(logStream);
     proc.stderr?.pipe(logStream);

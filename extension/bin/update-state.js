@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-import fs from 'node:fs';
-import path from 'node:path';
-
+import * as fs from 'fs';
+import * as path from 'path';
+/**
+ * Advanced State/Ticket Manager for AI Architect
+ */
 async function main() {
     const args = process.argv.slice(2);
     const actionOrKey = args[0];
@@ -11,6 +13,7 @@ async function main() {
     }
     try {
         if (actionOrKey === 'ticket-status') {
+            // Usage: node update-state.js ticket-status <SESSION_ROOT> <ID> <STATUS>
             const [sessionRoot, ticketId, status] = args.slice(1);
             if (!sessionRoot || !ticketId || !status) {
                 throw new Error('Usage: node update-state.js ticket-status <SESSION_ROOT> <ID> <STATUS>');
@@ -18,11 +21,12 @@ async function main() {
             updateTicketStatus(sessionRoot, ticketId, status);
         }
         else {
+            // Legacy Usage: node update-state.js <key> <value> <session_dir>
             const [value, sessionDir] = args.slice(1);
             if (!value || !sessionDir) {
                 throw new Error('Usage: node update-state.js <key> <value> <session_dir>');
             }
-            updateSimpleState(actionOrKey, value, sessionDir);
+            updateState(actionOrKey, value, sessionDir);
         }
     }
     catch (err) {
@@ -30,7 +34,7 @@ async function main() {
         process.exit(1);
     }
 }
-function updateSimpleState(key, value, sessionDir) {
+export function updateState(key, value, sessionDir) {
     const statePath = path.join(sessionDir, 'state.json');
     if (!fs.existsSync(statePath)) {
         throw new Error(`state.json not found at ${statePath}`);
@@ -40,12 +44,15 @@ function updateSimpleState(key, value, sessionDir) {
     fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
     console.log(`Successfully updated ${key} to ${value} in ${statePath}`);
 }
-function updateTicketStatus(sessionRoot, ticketId, status) {
+export function updateTicketStatus(sessionRoot, ticketId, status) {
+    // 1. Find the ticket file
+    // Tickets can be in [SESSION_ROOT] or [SESSION_ROOT]/[ID]/
     let ticketFile = path.join(sessionRoot, `linear_ticket_${ticketId}.md`);
     if (!fs.existsSync(ticketFile)) {
         ticketFile = path.join(sessionRoot, ticketId, `linear_ticket_${ticketId}.md`);
     }
     if (!fs.existsSync(ticketFile)) {
+        // If not found, try recursive search (last resort)
         const findTicket = (dir) => {
             const files = fs.readdirSync(dir);
             for (const file of files) {
@@ -66,11 +73,13 @@ function updateTicketStatus(sessionRoot, ticketId, status) {
     if (!ticketFile || !fs.existsSync(ticketFile)) {
         throw new Error(`Ticket file not found for ID: ${ticketId} in ${sessionRoot}`);
     }
+    // 2. Update the status in frontmatter
     let content = fs.readFileSync(ticketFile, 'utf-8');
     content = content.replace(/status: .*/, `status: ${status}`);
     content = content.replace(/updated: .*/, `updated: ${new Date().toISOString().split('T')[0]}`);
     fs.writeFileSync(ticketFile, content);
     console.log(`Successfully updated ticket ${ticketId} to status "${status}" in ${ticketFile}`);
+    // 3. If status is Done and it was the current_ticket, maybe clear it?
     const statePath = path.join(sessionRoot, 'state.json');
     if (fs.existsSync(statePath)) {
         const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
@@ -81,4 +90,6 @@ function updateTicketStatus(sessionRoot, ticketId, status) {
         }
     }
 }
-main();
+if (import.meta.url.endsWith(path.basename(process.argv[1])) || import.meta.url.endsWith(path.basename(process.argv[1]) + '.ts') || import.meta.url.endsWith(path.basename(process.argv[1]) + '.js')) {
+    main();
+}

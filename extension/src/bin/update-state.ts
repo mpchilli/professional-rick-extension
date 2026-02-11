@@ -29,7 +29,7 @@ async function main() {
       if (!value || !sessionDir) {
         throw new Error('Usage: node update-state.js <key> <value> <session_dir>');
       }
-      updateSimpleState(actionOrKey, value, sessionDir);
+      updateState(actionOrKey, value, sessionDir);
     }
   } catch (err: any) {
     console.error(`Failed to update state: ${err.message}`);
@@ -37,7 +37,7 @@ async function main() {
   }
 }
 
-function updateSimpleState(key: string, value: string, sessionDir: string) {
+export function updateState(key: string, value: string, sessionDir: string) {
   const statePath = path.join(sessionDir, 'state.json');
   if (!fs.existsSync(statePath)) {
     throw new Error(`state.json not found at ${statePath}`);
@@ -49,7 +49,7 @@ function updateSimpleState(key: string, value: string, sessionDir: string) {
   console.log(`Successfully updated ${key} to ${value} in ${statePath}`);
 }
 
-function updateTicketStatus(sessionRoot: string, ticketId: string, status: string) {
+export function updateTicketStatus(sessionRoot: string, ticketId: string, status: string) {
   // 1. Find the ticket file
   // Tickets can be in [SESSION_ROOT] or [SESSION_ROOT]/[ID]/
   let ticketFile = path.join(sessionRoot, `linear_ticket_${ticketId}.md`);
@@ -99,4 +99,6 @@ function updateTicketStatus(sessionRoot: string, ticketId: string, status: strin
   }
 }
 
-main();
+if (import.meta.url.endsWith(path.basename(process.argv[1])) || import.meta.url.endsWith(path.basename(process.argv[1]) + '.ts') || import.meta.url.endsWith(path.basename(process.argv[1]) + '.js')) {
+  main();
+}
